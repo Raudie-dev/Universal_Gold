@@ -1,0 +1,8 @@
+{# Si tiene padre, imprime el padre primero #}
+{% if cat.padre %}
+    {% include "includes/texto_jerarquia.html" with cat=cat.padre %}
+    <i class="fas fa-chevron-right mx-2" style="font-size: 0.6em; opacity: 0.6;"></i>
+{% endif %}
+
+{# Imprime la categoría actual #}
+<span class="fw-bold">{{ cat.nombre }}</span>

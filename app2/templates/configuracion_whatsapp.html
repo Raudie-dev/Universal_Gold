@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Configuración WhatsApp{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="page-header mb-4">
+    <h1 class="page-title">Configurar WhatsApp</h1>
+  </div>
+
+  <div class="row">
+    <!-- Configuración del Número de WhatsApp -->
+    <div class="col-lg-6 mb-4">
+      <div class="card h-100">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0"><i class="fab fa-whatsapp me-2"></i>Número de WhatsApp</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-muted small">Configure el número de teléfono donde recibirán los mensajes de las órdenes.</p>
+          <form method="post" class="mb-0">
+            {% csrf_token %}
+            <input type="hidden" name="guardar_numero" value="1">
+            <div class="mb-3">
+              <label for="whatsapp_empresa" class="form-label fw-bold">Número de WhatsApp</label>
+              <input
+                id="whatsapp_empresa"
+                name="whatsapp_empresa"
+                class="form-control"
+                value="{{ whatsapp_empresa }}"
+                placeholder="Ej: +584121234567"
+                required
+              />
+              <div class="form-text">Solo dígitos y/o signo +. Se convertirá automáticamente para el enlace wa.me.</div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">
+              <i class="fas fa-save me-2"></i>Guardar Número
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+<!-- Configuración del Saludo de WhatsApp -->
+    <div class="col-lg-6 mb-4">
+      <div class="card h-100">
+        <div class="card-header bg-success text-white">
+          <h5 class="mb-0"><i class="fas fa-comment-dots me-2"></i>Saludo de WhatsApp</h5>
+        </div>
+        <div class="card-body">
+          <p class="text-muted small">Este texto es lo único que puede personalizar el administrador. El contenido de abajo (Cliente, productos, total, etc.) es fijo.</p>
+          <form method="post" class="mb-0">
+            {% csrf_token %}
+            <input type="hidden" name="guardar_saludo" value="1">
+            <div class="mb-3">
+              <label for="whatsapp_saludo" class="form-label fw-bold">Inicio del mensaje</label>
+              <textarea
+                id="whatsapp_saludo"
+                name="whatsapp_saludo"
+                class="form-control"
+                rows="3"
+                placeholder="Ej: Hola, buenos días. Me interesa solicitar una cotización."
+                required
+              >{{ whatsapp_saludo }}</textarea>
+              <div class="form-text">
+                Solo puedes editar el saludo inicial. El resto del mensaje se agrega automáticamente:
+                <pre style="white-space: pre-wrap;">Cliente: {cliente}
+Teléfono: {telefono}
+Fecha: {fecha}
+
+Productos:
+{productos}
+
+Total: {total}
+
+Mensaje adicional: {mensaje}</pre>
+              </div>
+            </div>
+
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-success flex-fill">
+                <i class="fas fa-save me-2"></i>Guardar Mensaje
+              </button>
+              <button type="button" id="restaurar_default" class="btn btn-outline-secondary">
+                <i class="fas fa-undo me-2"></i>Restaurar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const textarea = document.getElementById('whatsapp_saludo');
+    const restaurarBtn = document.getElementById('restaurar_default');
+
+    // Restaurar mensaje por defecto
+    restaurarBtn.addEventListener('click', function() {
+        const defaultSaludo = 'Hola, buenos días. Me interesa solicitar una cotización.';
+        textarea.value = defaultSaludo;
+    });
+});
+</script>
+{% endblock %}

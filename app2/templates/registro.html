@@ -1,0 +1,497 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Agregar Productos y Categorias{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Estilos auxiliares para el funcionamiento del acordeón en tabla */
+    .cursor-pointer {
+        cursor: pointer;
+    }
+    .rotate-icon {
+        transition: transform 0.3s ease;
+    }
+    /* Rota la flecha cuando el acordeón está abierto */
+    [aria-expanded="true"] .rotate-icon {
+        transform: rotate(90deg);
+    }
+    /* Indentación para jerarquía visual */
+    .indent-1 { padding-left: 1rem !important; }
+    .indent-2 { padding-left: 3.5rem !important; position: relative; }
+    .indent-3 { padding-left: 6rem !important; position: relative; }
+    
+    /* Líneas guías visuales sutiles para hijos */
+    .indent-2::before {
+        content: ''; position: absolute; left: 2rem; top: 0; bottom: 0;
+        width: 2px; background-color: #dee2e6;
+    }
+    .indent-3::before {
+        content: ''; position: absolute; left: 2rem; top: 0; bottom: 0;
+        width: 2px; background-color: #dee2e6;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+  <!-- Page Header -->
+  <div class="page-header my-4">
+    <h1 class="page-title">Agregar Productos y Categorías</h1>
+  </div>
+
+  <!-- PANEL DE CONTROL -->
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h5 class="mb-1 text-dark"><i class="fas fa-tools me-2 text-primary"></i>Panel de Registro</h5>
+          <p class="text-muted mb-0">Utiliza los botones para registrar nuevos elementos en el sistema.</p>
+        </div>
+        <div class="col-md-4  text-md-end mt-3 mt-md-0 d-flex flex-column gap-2 justify-content-end">
+          <!-- Botón Nueva Categoría -->
+          <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#modalCrearCategoria">
+            <i class="fas fa-tags me-1"></i> Nueva Categoría
+          </button>
+          <!-- Botón Nuevo Producto -->
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCrearProducto">
+            <i class="fas fa-plus-circle me-1"></i> Nuevo Producto
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LISTADO DE CATEGORÍAS (JERÁRQUICO TIPO ACORDEÓN) -->
+  <div class="card shadow-sm">
+    <div class="card-header d-flex justify-content-between align-items-center py-3">
+        <h5 class="m-0"><i class="fas fa-list me-2"></i>Estructura de Categorías</h5>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+          <thead class="table-light">
+            <tr>
+              <th style="width: 60%;">Nombre de Categoría</th>
+              <th>Tipo</th>
+              <th class="text-end">Acciones</th>
+            </tr>
+          </thead>
+            <tbody>
+              {% for cat in categorias %}
+                {# IMPORTANTE: Solo iniciamos el ciclo con las categorías PADRE (Raíz) #}
+                {% if not cat.padre %}
+                    
+                    {# Incluimos el archivo recursivo comenzando en nivel 0 #}
+                    {% include "includes/fila_categoria.html" with cat=cat nivel=0 %}
+                    
+                {% endif %}
+              {% empty %}
+                <tr><td colspan="3" class="text-center p-4">No hay categorías registradas.</td></tr>
+              {% endfor %}
+            </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div> 
+{% endblock content %}
+
+
+<!-- BLOQUE DE MODALES -->
+{% block modals %}
+
+<!-- MODAL 1: CREAR CATEGORÍA (Con soporte jerárquico de 3 niveles) -->
+<div class="modal fade" id="modalCrearCategoria" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-secondary text-white">
+        <h5 class="modal-title"><i class="fas fa-tag me-2"></i> Nueva Categoría</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <form method="post">
+        {% csrf_token %}
+        <div class="modal-body p-4">
+          
+          <!-- Nombre -->
+          <div class="mb-3">
+            <label class="form-label fw-bold">Nombre de la Categoría</label>
+            <input type="text" name="categoria_nombre" class="form-control" required placeholder="Ej. Motores">
+          </div>
+
+          <!-- Selector de Padre (3 Niveles) -->
+          <div class="mb-3">
+            <label class="form-label fw-bold">Categoría Padre <small class="text-muted fw-normal">(Opcional)</small></label>
+              <select name="categoria_padre" class="form-select">
+                  <option value="">-- Es una Categoría Principal (Nivel 1) --</option>
+                  {% for cat in categorias %}
+                      {% if not cat.padre %}
+                          {# Usamos el include recursivo #}
+                          {% include "includes/opcion_categoria.html" with cat=cat nivel=0 %}
+                      {% endif %}
+                  {% endfor %}
+              </select>
+            <div class="form-text">Si seleccionas un padre, esta será una subcategoría.</div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" name="crear_categoria" class="btn btn-primary"><i class="fas fa-save me-1"></i> Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL 2: CREAR PRODUCTO (Selector de Categoría mejorado) -->
+<div class="modal fade" id="modalCrearProducto" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title"><i class="fas fa-box-open me-2"></i> Registrar Nuevo Producto</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="modal-body p-4">
+          <div class="row g-4">
+            <!-- Columna Izquierda -->
+            <div class="col-md-8">
+              <div class="mb-3">
+                <label class="form-label fw-bold">Nombre del Producto</label>
+                <input type="text" name="nombre" class="form-control form-control-lg" placeholder="Nombre del producto" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-bold">Descripción</label>
+                <textarea name="descripcion" rows="5" class="form-control" placeholder="Detalles del producto..."></textarea>
+              </div>
+              <div class="mb-3">
+                  <label class="form-label fw-bold">Imágenes del Producto</label>
+                  <input type="file" name="imagenes" accept="image/*" class="form-control" multiple id="imagenesNuevoProducto">
+                  <small class="text-muted">Selecciona varias imágenes. La primera en el orden será la portada.</small>
+                  <div id="imagenesPreview" class="mt-3" style="display: none;">
+                      <label class="form-label small fw-bold">Previsualización y orden (arrastra para reordenar)</label>
+                      <div id="imagenesList" class="d-flex flex-wrap gap-2"></div>
+                  </div>
+              </div>
+            </div>
+            <!-- Columna Derecha -->
+            <div class="col-md-4">
+              <div class="bg-light p-3 rounded h-100 border">
+                
+                <div class="mb-3">
+                  <label class="form-label fw-bold">Precio</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-dark text-white border-secondary">$</span>
+                    <input type="number" step="0.01" name="precio" class="form-control" placeholder="0.00" required>
+                  </div>
+                </div>
+
+                <hr class="border-secondary">
+                
+                <!-- SELECTOR MULTIPLE CON JERARQUÍA -->
+                <div class="mb-3">
+                  <label class="form-label fw-bold">Asignar Categorías</label>
+                    <select name="categoria_ids" class="form-select" multiple size="10">
+                        {% for cat in categorias %}
+                            {% if not cat.padre %}
+                                {% include "includes/opcion_categoria.html" with cat=cat nivel=0 %}
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                  <small class="form-text text-muted">Ctrl + Clic para selección múltiple.</small>
+                </div>
+
+                <hr class="border-secondary">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" role="switch" name="agotado" id="checkAgotadoNuevo">
+                  <label class="form-check-label fw-bold" for="checkAgotadoNuevo">Marcar como Agotado</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" name="crear_producto" class="btn btn-primary"><i class="fas fa-save me-1"></i> Registrar Producto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL 3: ELIMINAR CATEGORÍA (IGUAL) -->
+<div class="modal fade" id="modalEliminarCategoria" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i> Confirmar Eliminación</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body text-center p-4">
+        <i class="fas fa-trash-alt fa-3x text-danger mb-3"></i>
+        <p class="mb-1">¿Estás seguro de que deseas eliminar la categoría:</p>
+        <h4 id="nombreCategoriaBorrar" class="fw-bold"></h4>
+        <p class="text-danger small mt-2">¡Cuidado! Si eliminas una categoría padre, se borrarán también sus subcategorías.</p>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" name="eliminar_categoria" id="btnConfirmarEliminar" value="" class="btn btn-danger">
+                Sí, Eliminar
+            </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalEditarCategoria" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-warning text-dark">
+        <h5 class="modal-title"><i class="fas fa-edit me-2"></i> Editar Categoría</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <form method="post">
+        {% csrf_token %}
+        <div class="modal-body p-4">
+          
+          <!-- ID Oculto para saber cuál editar -->
+          <input type="hidden" name="editar_categoria_id" id="editCatId">
+
+          <!-- Nombre -->
+          <div class="mb-3">
+            <label class="form-label fw-bold">Nombre de la Categoría</label>
+            <input type="text" name="categoria_nombre" id="editCatNombre" class="form-control" required>
+          </div>
+
+          <!-- Selector de Padre (Nivel) -->
+          <div class="mb-3">
+            <label class="form-label fw-bold">Categoría Padre (Nivel)</label>
+              <select name="categoria_padre" id="editCatPadre" class="form-select">
+                  <option value="">-- Es una Categoría Principal (Nivel 1) --</option>
+                  {% for cat in categorias %}
+                      <!-- Usamos el include para llenar las opciones igual que en crear -->
+                      {% if not cat.padre %}
+                          {% include "includes/opcion_categoria.html" with cat=cat nivel=0 %}
+                      {% endif %}
+                  {% endfor %}
+              </select>
+            <div class="form-text">Cambia el padre para mover la categoría de nivel.</div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" name="editar_categoria" class="btn btn-warning"><i class="fas fa-save me-1"></i> Actualizar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPT (Funcionalidad para pasar datos al modal de eliminar) -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        
+        // 1. Lógica para Modal Eliminar (Tu código original)
+        var modalEliminar = document.getElementById('modalEliminarCategoria');
+        if (modalEliminar) {
+            modalEliminar.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                var catId = button.getAttribute('data-bs-id');
+                var catNombre = button.getAttribute('data-bs-nombre');
+                
+                modalEliminar.querySelector('#nombreCategoriaBorrar').textContent = catNombre;
+                modalEliminar.querySelector('#btnConfirmarEliminar').value = catId;
+            });
+        }
+
+        // 2. NUEVA: Lógica para Modal Editar
+        var modalEditar = document.getElementById('modalEditarCategoria');
+        if (modalEditar) {
+            modalEditar.addEventListener('show.bs.modal', function (event) {
+                var button = event.relatedTarget;
+                
+                // Obtener datos del botón
+                var catId = button.getAttribute('data-bs-id');
+                var catNombre = button.getAttribute('data-bs-nombre');
+                var catPadreId = button.getAttribute('data-bs-padre'); // ID del padre actual
+                
+                // Asignar valores a los inputs del modal
+                modalEditar.querySelector('#editCatId').value = catId;
+                modalEditar.querySelector('#editCatNombre').value = catNombre;
+                
+                // Asignar el select del padre
+                var selectPadre = modalEditar.querySelector('#editCatPadre');
+                if (catPadreId && catPadreId !== 'None') {
+                    selectPadre.value = catPadreId;
+                } else {
+                    selectPadre.value = ""; // Es principal
+                }
+            });
+        }
+
+        // 3. Nueva: Lógica para previsualización de imágenes en modal crear producto
+        const imagenesInput = document.getElementById('imagenesNuevoProducto');
+        const previewDiv = document.getElementById('imagenesPreview');
+        const imagenesList = document.getElementById('imagenesList');
+
+        if (imagenesInput) {
+            imagenesInput.addEventListener('change', function(e) {
+                const files = Array.from(e.target.files);
+                if (files.length > 0) {
+                    previewDiv.style.display = 'block';
+                    imagenesList.innerHTML = '';
+                    
+                    files.forEach((file, index) => {
+                        if (file.type.startsWith('image/')) {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                const div = document.createElement('div');
+                                div.className = 'position-relative';
+                                div.draggable = true;
+                                div.dataset.index = index;
+                                
+                                div.innerHTML = `
+                                    <img src="${e.target.result}" class="rounded border" style="width: 80px; height: 80px; object-fit: cover; cursor: grab;">
+                                    <div class="position-absolute top-0 end-0">
+                                        <button type="button" class="btn btn-sm btn-danger btn-remove-image" data-index="${index}">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                    ${index === 0 ? '<small class="text-primary fw-bold d-block">Portada</small>' : ''}
+                                `;
+                                
+                                // Drag and drop functionality
+                                div.addEventListener('dragstart', handleDragStart);
+                                div.addEventListener('dragover', handleDragOver);
+                                div.addEventListener('drop', handleDrop);
+                                div.addEventListener('dragend', handleDragEnd);
+                                
+                                imagenesList.appendChild(div);
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    });
+                } else {
+                    previewDiv.style.display = 'none';
+                }
+            });
+        }
+
+        // Drag and drop handlers
+        let draggedElement = null;
+
+        function handleDragStart(e) {
+            draggedElement = e.target.closest('.position-relative');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', e.target.outerHTML);
+            e.target.style.opacity = '0.5';
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const target = e.target.closest('.position-relative');
+            if (target && target !== draggedElement) {
+                const allItems = Array.from(imagenesList.children);
+                const draggedIndex = Array.from(imagenesList.children).indexOf(draggedElement);
+                const targetIndex = Array.from(imagenesList.children).indexOf(target);
+                
+                // Reorder the array
+                const [removed] = allItems.splice(draggedIndex, 1);
+                allItems.splice(targetIndex, 0, removed);
+                
+                // Clear and re-append
+                imagenesList.innerHTML = '';
+                allItems.forEach((item, index) => {
+                    const img = item.querySelector('img');
+                    const removeBtn = item.querySelector('.btn-remove-image');
+                    const portadaText = item.querySelector('small');
+                    
+                    if (portadaText) {
+                        portadaText.remove();
+                    }
+                    
+                    if (index === 0) {
+                        const small = document.createElement('small');
+                        small.className = 'text-primary fw-bold d-block';
+                        small.textContent = 'Portada';
+                        item.appendChild(small);
+                    }
+                    
+                    imagenesList.appendChild(item);
+                });
+            }
+        }
+
+        function handleDragEnd(e) {
+            e.target.style.opacity = '1';
+            draggedElement = null;
+        }
+
+        // Remove image functionality
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('btn-remove-image') || e.target.closest('.btn-remove-image')) {
+                const index = e.target.closest('.btn-remove-image').dataset.index;
+                const item = e.target.closest('.position-relative');
+                item.remove();
+                
+                // Update portada labels
+                const remainingItems = imagenesList.querySelectorAll('.position-relative');
+                remainingItems.forEach((item, idx) => {
+                    const portadaText = item.querySelector('small');
+                    if (portadaText) {
+                        portadaText.remove();
+                    }
+                    if (idx === 0) {
+                        const small = document.createElement('small');
+                        small.className = 'text-primary fw-bold d-block';
+                        small.textContent = 'Portada';
+                        item.appendChild(small);
+                    }
+                });
+                
+                // Update file input (remove the file from the list)
+                const dt = new DataTransfer();
+                const files = Array.from(imagenesInput.files);
+                files.splice(index, 1);
+                files.forEach(file => dt.items.add(file));
+                imagenesInput.files = dt.files;
+            }
+        });
+
+        // On form submit, reorder the files based on the preview order
+        const form = document.querySelector('#modalCrearProducto form');
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                const previewItems = imagenesList.querySelectorAll('.position-relative');
+                if (previewItems.length > 0) {
+                    const dt = new DataTransfer();
+                    previewItems.forEach(item => {
+                        const index = item.dataset.index;
+                        const originalFile = Array.from(imagenesInput.files)[index];
+                        if (originalFile) {
+                            dt.items.add(originalFile);
+                        }
+                    });
+                    imagenesInput.files = dt.files;
+                }
+            });
+        }
+    });
+</script>
+
+{% endblock modals %}

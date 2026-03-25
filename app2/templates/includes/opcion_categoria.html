@@ -1,0 +1,18 @@
+<!-- templates/includes/opcion_categoria.html -->
+
+<!-- Opción Actual -->
+<option value="{{ cat.id }}">
+    {# Generamos espacios visuales según el nivel #}
+    {% if nivel == 0 %}📁 {% endif %}
+    {% if nivel > 0 %}&nbsp;&nbsp;{% endif %}
+    
+    {# Ciclo simple para añadir guiones según profundidad #}
+    {% for i in "x"|rjust:nivel %}↳&nbsp;{% endfor %}
+    
+    {{ cat.nombre }}
+</option>
+
+<!-- Recursividad para hijos en el Select -->
+{% for hijo in cat.subcategorias.all %}
+    {% include "includes/opcion_categoria.html" with cat=hijo nivel=nivel|add:"1" %}
+{% endfor %}

@@ -1,0 +1,260 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Gestión de Usuarios - EDES{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+  <!-- Page Header -->
+  <div class="page-header my-4 d-flex justify-content-between align-items-center">
+    <h1 class="page-title"><i class="fas fa-users-cog me-2 text-primary"></i>Gestión de Usuarios</h1>
+    <button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#collapseNuevoUsuario">
+        <i class="fas fa-user-plus me-1"></i> Nuevo Administrador
+    </button>
+  </div>
+
+  <!-- FORMULARIO CREAR (Colapsable) -->
+  <div class="collapse mb-4" id="collapseNuevoUsuario">
+      <div class="card shadow-sm border-primary">
+          <div class="card-header bg-primary text-white">
+              <h5 class="mb-0">Registrar Nuevo Administrador</h5>
+          </div>
+          <div class="card-body">
+              <form method="post" class="row g-3">
+                  {% csrf_token %}
+                  <div class="col-md-3">
+                      <label class="form-label fw-bold">Nombre de Usuario *</label>
+                      <input type="text" name="nombre" class="form-control" required>
+                  </div>
+                  <div class="col-md-3">
+                      <label class="form-label fw-bold">Contraseña *</label>
+                      <input type="password" name="password" class="form-control" required>
+                  </div>
+                  <div class="col-md-3">
+                      <label class="form-label fw-bold">Email</label>
+                      <input type="email" name="email" class="form-control">
+                  </div>
+                  <div class="col-md-3">
+                      <label class="form-label fw-bold">Teléfono</label>
+                      <input type="text" name="telefono" class="form-control">
+                  </div>
+                  <div class="col-12 text-end">
+                      <button type="submit" name="crear_usuario" class="btn btn-success px-4">
+                          <i class="fas fa-save me-1"></i> Guardar Usuario
+                      </button>
+                  </div>
+              </form>
+          </div>
+      </div>
+  </div>
+
+  <!-- TABLA DE USUARIOS -->
+  <div class="card shadow-sm">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="ps-4">Admin</th>
+              <th>Contacto</th>
+              <th>Estado</th>
+              <th class="text-end pe-4">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in usuarios %}
+            <tr>
+              <td class="ps-4">
+                <div class="d-flex align-items-center">
+                    <div class="rounded-circle {% if u.bloqueado %}bg-secondary{% else %}bg-primary{% endif %} text-white d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <span class="fw-bold d-block {% if u.bloqueado %}text-muted text-decoration-line-through{% else %}text-dark{% endif %}">{{ u.nombre }}</span>
+                        {% if u.id == user_id_sesion %}
+                            <span class="badge bg-info text-dark small" style="font-size: 0.7rem;">TÚ (Sesión actual)</span>
+                        {% endif %}
+                    </div>
+                </div>
+              </td>
+              <td>
+                <div class="small">
+                    <div class="text-muted"><i class="fas fa-envelope me-1"></i> {{ u.email|default:"---" }}</div>
+                    <div class="text-muted"><i class="fas fa-phone me-1"></i> {{ u.telefono|default:"---" }}</div>
+                </div>
+              </td>
+              <td>
+                {% if u.bloqueado %}
+                  <span class="badge rounded-pill bg-danger bg-opacity-10 text-danger border border-danger">
+                    <i class="fas fa-user-lock me-1"></i> Bloqueado
+                  </span>
+                {% else %}
+                  <span class="badge rounded-pill bg-success bg-opacity-10 text-success border border-success">
+                    <i class="fas fa-check-circle me-1"></i> Activo
+                  </span>
+                {% endif %}
+              </td>
+              <td class="text-end pe-4">
+                <div class="d-flex justify-content-end gap-2">
+                    
+                    <!-- BOTÓN EDITAR (MODAL) -->
+                    <button class="btn btn-sm btn-outline-primary" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#modalEditUser{{ u.id }}"
+                            title="Editar Datos">
+                        <i class="fas fa-user-edit"></i>
+                    </button>
+
+                    {% if u.id != user_id_sesion %}
+                        <!-- BOTÓN BLOQUEO RÁPIDO (Envía el form de edición solo con el cambio de bloqueo) -->
+                        <form method="post" style="display:contents;">
+                            {% csrf_token %}
+                            <input type="hidden" name="usuario_id" value="{{ u.id }}">
+                            <input type="hidden" name="nombre" value="{{ u.nombre }}"> <!-- Requerido por la lógica del crud -->
+                            {% if u.bloqueado %}
+                                <button type="submit" name="editar_usuario" class="btn btn-sm btn-outline-success" title="Desbloquear Usuario">
+                                    <i class="fas fa-unlock"></i>
+                                </button>
+                            {% else %}
+                                <input type="hidden" name="bloqueado" value="on">
+                                <button type="submit" name="editar_usuario" class="btn btn-sm btn-outline-warning" title="Bloquear Usuario">
+                                    <i class="fas fa-ban"></i>
+                                </button>
+                            {% endif %}
+                        </form>
+
+                        <!-- BOTÓN ELIMINAR -->
+                        <button class="btn btn-sm btn-outline-danger" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#modalEliminarUsuario"
+                                data-bs-id="{{ u.id }}"
+                                data-bs-nombre="{{ u.nombre }}"
+                                title="Eliminar permanentemente">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    {% endif %}
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block modals %}
+  <!-- MODALES DE EDICIÓN -->
+  {% for u in usuarios %}
+  <div class="modal fade" id="modalEditUser{{ u.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Editar Administrador: {{ u.nombre }}</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <form method="post">
+          {% csrf_token %}
+          <div class="modal-body p-4">
+            <input type="hidden" name="usuario_id" value="{{ u.id }}">
+            
+            <div class="mb-3">
+                <label class="form-label fw-bold">Nombre de Usuario</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                    <input type="text" name="nombre" class="form-control" value="{{ u.nombre }}" required>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">Email</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                    <input type="email" name="email" class="form-control" value="{{ u.email|default:'' }}">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">Teléfono</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                    <input type="text" name="telefono" class="form-control" value="{{ u.telefono|default:'' }}">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold text-primary">Cambiar Contraseña</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-key"></i></span>
+                    <input type="password" name="password" class="form-control" placeholder="Dejar en blanco para no cambiar">
+                </div>
+                <small class="text-muted">Solo completa este campo si deseas cambiar la clave actual.</small>
+            </div>
+
+            {% if u.id != user_id_sesion %}
+            <hr>
+            <div class="form-check form-switch p-3 bg-light rounded border">
+                <input class="form-check-input ms-0 me-2" type="checkbox" name="bloqueado" id="block{{ u.id }}" {% if u.bloqueado %}checked{% endif %}>
+                <label class="form-check-label text-danger fw-bold" for="block{{ u.id }}">
+                    <i class="fas fa-user-lock me-1"></i> Bloquear acceso al sistema
+                </label>
+            </div>
+            {% endif %}
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" name="editar_usuario" class="btn btn-primary px-4">
+                <i class="fas fa-save me-1"></i> Guardar Cambios
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+  <!-- MODAL ELIMINAR (Igual al anterior, funciona con el Script JS) -->
+  <div class="modal fade" id="modalEliminarUsuario" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i> Confirmar Eliminación</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center p-4">
+          <div class="mb-3">
+              <i class="fas fa-trash-alt fa-3x text-danger mb-3"></i>
+          </div>
+          <p class="mb-1 text-muted">¿Está seguro de que desea eliminar permanentemente al administrador?</p>
+          <h3 id="nombreUserBorrar" class="fw-bold text-dark"></h3>
+          <p class="text-danger small mt-3"><i class="fas fa-info-circle me-1"></i> Esta acción no se puede deshacer y el usuario perderá todo acceso.</p>
+        </div>
+        <div class="modal-footer justify-content-center bg-light">
+          <form method="post">
+            {% csrf_token %}
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" name="eliminar_usuario" id="btnConfirmarEliminarUser" value="" class="btn btn-danger px-4">
+                Sí, Eliminar Usuario
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+      document.addEventListener('DOMContentLoaded', function () {
+          var modalEliminar = document.getElementById('modalEliminarUsuario');
+          if(modalEliminar){
+              modalEliminar.addEventListener('show.bs.modal', function (event) {
+                  var button = event.relatedTarget;
+                  var uid = button.getAttribute('data-bs-id');
+                  var unombre = button.getAttribute('data-bs-nombre');
+                  
+                  modalEliminar.querySelector('#nombreUserBorrar').textContent = unombre;
+                  modalEliminar.querySelector('#btnConfirmarEliminarUser').value = uid;
+              });
+          }
+      });
+  </script>
+{% endblock %}

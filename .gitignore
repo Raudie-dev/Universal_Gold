@@ -1,0 +1,77 @@
+# =========================
+# Python / Django
+# =========================
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Django specific
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+# db.sqlite3 NO se ignora (lo dejamos versionado)
+
+# Media / Static
+# Ignorar solo archivos generados por collectstatic
+/staticfiles/
+# No ignorar la carpeta media para mantener imágenes subidas
+
+# Migrations
+# Ignorar migraciones solo de cache
+*/migrations/*.pyc
+*/migrations/*.pyo
+*/migrations/__pycache__/
+# Si quieres ignorar todas las migraciones (opcional)
+# */migrations/
+
+# Environments
+venv/
+env/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE / Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs / temp
+*.log
+*.tmp
+*.bak
+*.old
+*.orig
+*.rej
+
+# System files
+.DS_Store
+Thumbs.db

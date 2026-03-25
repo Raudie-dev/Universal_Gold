@@ -1,0 +1,682 @@
+/* =====================================================
+        VARIABLES EDES VENEZUELA - BRAND IDENTITY
+==================================================== */
+:root {
+  /* Colores principales */
+  --primary-color: #f6650f;
+  --primary-hover: #d95300;
+  --secondary-color: #004d25;
+  --secondary-hover: #00381a;
+  --accent-color: #8cc63f;
+  --accent-hover: #7bb235;
+
+  /* Colores de fondo y texto */
+  --bg-color: #f6f6f6;
+  --card-bg: #ffffff;
+  --text-color: #333333;
+  --text-muted: #6c757d;
+  --white: #ffffff;
+
+  /* Colores del footer */
+  --footer-color: #111111;
+  --footer-text: #aaaaaa;
+
+  /* Variables de diseño */
+  --border-radius: 16px;
+  --border-radius-sm: 8px;
+  --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --box-shadow-lg: 0 15px 35px rgba(0, 0, 0, 0.12);
+
+  /* Fuentes */
+  --font-heading: "Anton", sans-serif;
+  --font-body: "Poppins", sans-serif;
+
+  /* Dimensiones */
+  --sidebar-width: 300px;
+  --sidebar-collapsed-width: 80px;
+  --header-height: 70px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* =====================================================
+           ESTRUCTURA PRINCIPAL
+===================================================== */
+body {
+  background: var(--bg-color);
+  font-family: var(--font-body);
+  color: var(--text-color);
+  line-height: 1.7;
+  transition: var(--transition);
+  padding-top: var(--header-height);
+}
+
+/* =====================================================
+           HEADER SUPERIOR - ESTILO EDES
+===================================================== */
+.admin-header {
+  background: var(--secondary-color);
+  border-bottom: 3px solid var(--primary-color);
+  height: var(--header-height);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1020;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.25);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  padding: 0 1.5rem;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: var(--white);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: var(--border-radius-sm);
+  transition: var(--transition);
+}
+
+.mobile-menu-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  font-family: var(--font-heading);
+  font-weight: 400;
+  color: var(--white);
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.brand i {
+  font-size: 0.85rem;
+  color: var(--accent-color);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-action-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: var(--white);
+  cursor: pointer;
+  padding: 0.6rem;
+  border-radius: var(--border-radius-sm);
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-action-btn:hover {
+  background: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--white);
+  font-weight: 500;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-weight: bold;
+}
+
+/* =====================================================
+           SIDEBAR - ESTILO EDES
+===================================================== */
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--secondary-color);
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  bottom: 0;
+  z-index: 1010;
+  transition: var(--transition);
+  overflow-y: auto;
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+  /* Añadir borde sutil para separación visual */
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-collapsed {
+  width: var(--sidebar-collapsed-width);
+}
+
+.sidebar-collapsed .nav-link span,
+.sidebar-collapsed .nav-link .badge {
+  display: none;
+}
+
+.sidebar-collapsed .sidebar-header h5 {
+  display: none;
+}
+
+.sidebar-header {
+  padding: 1.5rem 1rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 1rem;
+}
+
+.sidebar-header h5 {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: var(--accent-color);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.sidebar .nav-link {
+  color: rgba(255, 255, 255, 0.8) !important;
+  font-weight: 500;
+  padding: 0.875rem 1rem;
+  border-radius: var(--border-radius-sm);
+  margin: 0.25rem 0.75rem;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  white-space: nowrap;
+  position: relative;
+}
+
+.sidebar .nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--white) !important;
+  transform: translateX(4px);
+}
+
+.sidebar .nav-link.active {
+  background: var(--primary-color);
+  color: var(--white) !important;
+  font-weight: 600;
+  box-shadow: var(--box-shadow);
+}
+
+.sidebar .nav-link.active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 60%;
+  background: var(--accent-color);
+  border-radius: 0 4px 4px 0;
+}
+
+.sidebar .nav-link i {
+  width: 20px;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.sidebar .badge {
+  margin-left: auto;
+  background: var(--accent-color);
+  color: var(--white);
+  font-weight: 600;
+}
+
+/* =====================================================
+           CONTENIDO PRINCIPAL
+===================================================== */
+.content-area {
+  margin-left: var(--sidebar-width);
+  padding: 2rem;
+  transition: var(--transition);
+  min-height: calc(100vh - var(--header-height));
+}
+
+.content-expanded {
+  margin-left: var(--sidebar-collapsed-width);
+}
+
+.content-full {
+  margin-left: 0;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.page-title {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 400;
+  color: var(--secondary-color);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+}
+
+.page-title::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 5px;
+  background-color: var(--primary-color);
+  margin: 10px 0 0;
+  border-radius: 10px;
+}
+
+.page-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* =====================================================
+           COMPONENTES MEJORADOS - ESTILO EDES
+===================================================== */
+.card {
+  background: var(--card-bg);
+  border: none;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  transition: var(--transition);
+  overflow: hidden;
+}
+
+.card:hover {
+  box-shadow: var(--box-shadow-lg);
+  transform: translateY(-5px);
+}
+
+.card-header {
+  background: var(--secondary-color);
+  color: var(--white);
+  font-family: var(--font-heading);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 3px solid var(--primary-color);
+  padding: 1rem 1.5rem;
+}
+
+.alert {
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  border: none;
+  padding: 1rem 1.5rem;
+}
+
+.btn {
+  border-radius: 50px;
+  font-weight: 600;
+  padding: 0.7rem 1.8rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-body);
+  letter-spacing: 0.5px;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(246, 101, 15, 0.3);
+}
+
+.btn-secondary {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+}
+
+.btn-secondary:hover {
+  background-color: var(--secondary-hover);
+  border-color: var(--secondary-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 77, 37, 0.3);
+}
+
+.btn-accent {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  color: var(--white);
+}
+
+.btn-accent:hover {
+  background-color: var(--accent-hover);
+  border-color: var(--accent-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(140, 198, 63, 0.3);
+}
+
+.badge {
+  border-radius: 50px;
+  font-weight: 600;
+}
+
+.bg-primary {
+  background-color: var(--primary-color) !important;
+}
+
+.bg-secondary {
+  background-color: var(--secondary-color) !important;
+}
+
+.bg-accent {
+  background-color: var(--accent-color) !important;
+}
+
+.text-primary {
+  color: var(--primary-color) !important;
+}
+
+.text-secondary {
+  color: var(--secondary-color) !important;
+}
+
+.text-accent {
+  color: var(--accent-color) !important;
+}
+
+/* =====================================================
+           STAT CARDS - TARJETAS DE ESTADÍSTICAS
+===================================================== */
+.stat-card {
+  background: linear-gradient(
+    135deg,
+    var(--secondary-color),
+    var(--primary-color)
+  );
+  color: white;
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  box-shadow: var(--box-shadow);
+  transition: var(--transition);
+  border: none;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--box-shadow-lg);
+}
+
+.stat-card .stat-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  opacity: 0.9;
+}
+
+.stat-card .stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.stat-card .stat-label {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+/* =====================================================
+           FOOTER MEJORADO - ESTILO EDES
+===================================================== */
+.footer {
+  background-color: var(--footer-color);
+  color: var(--footer-text);
+  padding: 3rem 0 2rem;
+  margin-top: 4rem;
+  border-top: 5px solid var(--primary-color);
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-logo {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: var(--accent-color) !important;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.footer-links {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.footer-links a {
+  color: var(--footer-text);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.footer-links a:hover {
+  color: var(--accent-color);
+  padding-left: 5px;
+}
+
+/* =====================================================
+           OVERLAY PARA MÓVIL
+==================================================== */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1005;
+  display: none;
+}
+
+/* =====================================================
+           BREADCRUMB MEJORADO
+==================================================== */
+.breadcrumb {
+  background: var(--card-bg);
+  border-radius: var(--border-radius-sm);
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--box-shadow);
+}
+
+.breadcrumb-item a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.breadcrumb-item a:hover {
+  color: var(--primary-hover);
+}
+
+/* =====================================================
+           RESPONSIVE DESIGN
+==================================================== */
+@media (max-width: 992px) {
+  :root {
+    --sidebar-width: 260px;
+  }
+
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar-mobile-open {
+    transform: translateX(0);
+  }
+
+  .content-area {
+    margin-left: 0 !important;
+  }
+
+  .mobile-menu-btn {
+    display: block;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .page-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .user-info span {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .content-area {
+    padding: 1.5rem 1rem;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .header-content {
+    padding: 0 1rem;
+  }
+
+  .page-title {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .page-title {
+    font-size: 1.5rem;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .page-title::after {
+    margin: 10px auto 0;
+  }
+
+  .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .page-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .page-actions .btn {
+    width: 100%;
+  }
+}
+
+/* =====================================================
+           UTILIDADES Y ANIMACIONES
+==================================================== */
+.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hover-scale {
+  transition: var(--transition);
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+.table th {
+  background: var(--secondary-color);
+  color: var(--white);
+  font-weight: 600;
+  border-bottom: 2px solid var(--primary-color);
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(246, 101, 15, 0.05);
+}
+.modal {
+  z-index: 1060 !important;
+}
+
+.modal-backdrop {
+  z-index: 1059 !important;
+}

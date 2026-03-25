@@ -1,0 +1,18 @@
+<!-- templates/includes/opcion_categoria_publica.html -->
+
+<option value="{{ cat.id }}" class="{% if level == 0 %}fw-bold text-dark{% else %}text-muted{% endif %}"
+    {# Verificamos si esta es la categoría seleccionada en la URL #}
+    {% if current_selected|stringformat:"s" == cat.id|stringformat:"s" %}selected{% endif %}>
+    
+    {# Indentación visual #}
+    {% if level == 0 %}📂 {% endif %}
+    {% for i in "x"|rjust:level %}&nbsp;&nbsp;&nbsp;{% endfor %}
+    {% if level > 0 %}↳ {% endif %}
+    
+    {{ cat.nombre }}
+</option>
+
+{# Llamada recursiva a los hijos #}
+{% for hijo in cat.subcategorias.all %}
+    {% include "includes/opcion_categoria_publica.html" with cat=hijo level=level|add:"1" current_selected=current_selected %}
+{% endfor %}

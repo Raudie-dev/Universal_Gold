@@ -1,0 +1,813 @@
+{% extends 'base_index.html' %} {% load static %}
+
+{% block title %}Inicio | EDES{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+    {% for message in messages %}
+    <div id="toast-{{ forloop.counter }}" class="toast align-items-center {% if message.tags == 'success' %}bg-success text-white border-0 {% elif message.tags == 'error' %}bg-danger text-white border-0 {% elif message.tags == 'warning' %}bg-warning text-dark border-0 {% else %}bg-secondary text-white border-0{% endif %}" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <strong> {% if message.tags == 'success' %} <i class="fas fa-check-circle me-2"></i> ¡Éxito! {% elif message.tags == 'error' %} <i class="fas fa-exclamation-triangle me-2"></i> Error {% elif message.tags == 'warning' %} <i class="fas fa-exclamation-circle me-2"></i> Atención {% else %} <i class="fas fa-info-circle me-2"></i> Notificación {% endif %}</strong><br> {{ message }}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Hero Carousel -->
+<section class="hero-section">
+    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="4"></button>
+        </div>
+        <div class="carousel-inner">
+            <!-- Slide 1 -->
+            <div class="carousel-item active hero-carousel-item" style="background-image: url('https://www.bardahlindustria.com/wp-content/uploads/2019/03/el-futuro-de-la-industria-montacargas.png');">
+                <div class="hero-overlay">
+                    <div class="container hero-content" data-aos="fade-up">
+                        <span class="badge bg-primary text-white mb-3 px-3 py-2 rounded-pill animate__animated animate__fadeInDown">GARANTIZANDO EL MOVIMIENTO</span>
+                        <h1 class="display-2 fw-bold mb-3 text-white">Equipamiento <br><span class="text-primary">Soluciones completas</span></h1>
+                        <p class="lead mb-4 fs-4 text-light">Soluciones integrales de venta y alquiler con equipos de última generación y accesorios para optimizar sus operaciones.</p>
+                        <div class="btn-group">
+                            <a href="{% url 'tienda' %}" class="btn btn-primary btn-lg rounded-pill px-5 text-white shadow-lg hover-scale">Ver Catálogo</a>
+                            <a href="#contacto" class="btn btn-outline-light btn-lg rounded-pill px-5 hover-scale">Contáctanos</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Slide 2 -->
+              <div class="carousel-item hero-carousel-item" style="background-image: url('{% static 'images/diseno-hero2.png' %}');">
+                <div class="hero-overlay">
+                    <div class="container hero-content" data-aos="fade-up">
+                        <span class="badge bg-primary text-white mb-3 px-3 py-2 rounded-pill">SOPORTE ROBUSTO</span>
+                        <h1 class="display-2 fw-bold mb-3 text-white">Energía <br><span class="text-primary">Industrial Eficiente</span></h1>
+                        <p class="lead mb-4 fs-4 text-light">La energía que necesita tu empresa la encuentras aquí con baterías y cargadores inteligentes de última generación.</p>
+                        <a href="#contacto" class="btn btn-primary btn-lg rounded-pill px-5 text-white shadow-lg hover-scale">¡Optimizar mi flota hoy!</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Slide 3 -->
+              <div class="carousel-item hero-carousel-item" style="background-image: url('{% static 'images/diseno-hero1.png' %}');">
+                <div class="hero-overlay">
+                    <div class="container hero-content" data-aos="fade-up">
+                        <span class="badge bg-primary text-white mb-3 px-3 py-2 rounded-pill">EL PODER DE LA EXCELENCIA</span>
+                        <h1 class="display-2 fw-bold mb-3 text-white">CONFIABILIDAD<br><span class="text-primary">INQUEBRANTABLE</span></h1>
+                        <p class="lead mb-4 fs-4 text-light">Elevando el estándar de calidad y servicio en cada operación.</p>
+                        <a href="{% url 'tienda' %}" class="btn btn-primary btn-lg rounded-pill px-5 text-white shadow-lg hover-scale">Programar Mantenimiento</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Slide 4 -->
+            <div class="carousel-item hero-carousel-item" style="background-image: url('{% static 'images/unnamed.jpg' %}');">
+                <div class="hero-overlay">
+                    <div class="container hero-content" data-aos="fade-up">
+                        <span class="badge bg-primary text-white mb-3 px-3 py-2 rounded-pill">TALLER MECÁNICO PROFESIONAL</span>
+                        <h1 class="display-2 fw-bold mb-3 text-white">Servicio Técnico <br><span class="text-primary">Reparaciones Integrales</span></h1>
+                        <p class="lead mb-4 fs-4 text-light">
+                            Taller especializado con diagnóstico electrónico y herramientas avanzadas para reparaciones integrales y puesta a punto de equipos.
+                        </p>
+                        <div class="btn-group">
+                            <a href="#reparaciones" class="btn btn-primary btn-lg rounded-pill px-6 text-white shadow-lg hover-scale"> Conoce Nuestro Taller</a>
+                            <a href="{% url 'carrito' %}" class="btn btn-outline-light btn-lg rounded-pill px-5 hover-scale">Solicitar Servicio</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Slide 5 -->
+            <div class="carousel-item hero-carousel-item" style="background-image: url('https://st3.depositphotos.com/1017986/12717/i/450/depositphotos_127179390-stock-photo-auto-mechanic-or-smith-with.jpg');">
+                <div class="hero-overlay">
+                    <div class="container hero-content" data-aos="fade-up">
+                        <span class="badge bg-primary text-white mb-3 px-3 py-2 rounded-pill">CON LA MEJOR CALIDAD EN REPUESTOS</span>
+                        <h1 class="display-2 fw-bold mb-3 text-white">Repuestos <spam class="text-primary">Multimarca</spam></h1>
+                        <p class="mb-4 fs-4 text-light">
+                             Amplio inventario de partes originales y <br> reemplazos de alta calidad para tus máquinas.
+                        </p>
+                        <a href="{% url 'carrito' %}" class="btn btn-primary btn-lg rounded-pill px-6 text-white shadow-lg hover-scale">Solicitar Orden</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+</section>
+
+<!-- Features Icons -->
+<section class="section py-5 position-relative" style="background: linear-gradient(135deg, #f9f9f9 0%, white 100%);">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="icon-circle">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h4 class="mb-3">Logística Integral</h4>
+                    <p class="text-muted">Soluciones completas en venta y alquiler para optimizar sus operaciones.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="icon-circle">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h4 class="mb-3">Soporte Posventa</h4>
+                    <p class="text-muted">Servicio robusto y continuo que asegura su continuidad operativa.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="icon-circle">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h4 class="mb-3">Energía Industrial</h4>
+                    <p class="text-muted">Maximice la productividad con nuestras soluciones de energía confiable.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="section py-5 overflow-hidden" style="background-color: #f8f9fa;">
+    <div class="container">
+        <div class="row align-items-center gy-5">
+            <div class="col-lg-6 order-lg-2" data-aos="fade-left">
+                <div class="position-relative ps-lg-5">
+                    <img src="{% static 'images/foto-1.jpeg' %}" alt="Almacén" class="img-fluid rounded-4 shadow-lg" style="border-bottom: 8px solid var(--primary-color);">
+                    <div class="position-absolute bottom-0 start-0 bg-secondary text-white p-4 rounded-3 shadow m-4 d-none d-md-block animate__animated animate__fadeInUp" style="max-width: 220px;">
+                        <h3 class="text-primary display-4 fw-bold mb-0">15+</h3>
+                        <p class="mb-0 fw-bold">Años de Excelencia</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 order-lg-1" data-aos="fade-right">
+                <span class="text-primary fw-bold text-uppercase letter-spacing-2 d-block mb-2">Sobre EDES</span>
+                <h2 class="section-title text-start mx-0 mb-4 display-4">El Poder De La Excelencia</h2>
+                
+                <div class="mb-4 p-4 bg-white rounded-4 shadow-sm border-start border-4 border-primary">
+                    <h4 class=" fw-bold mb-2"><i class="fas fa-bullseye me-2 text-primary"></i>Misión</h4>
+                    <p class="text-muted mb-0">Nuestra misión es ayudar a garantizar la eficiencia y maximizar la productividad de nuestros clientes, brindando soluciones integrales en logística y energía industrial (venta, alquiler y servicio), con un soporte posventa robusto que no se detiene y que asegura la continuidad operativa.</p>
+                </div>
+
+                <div class="mb-4 p-4 bg-white rounded-4 shadow-sm border-start border-4 border-secondary">
+                    <h4 class="fw-bold mb-2"><i class="fas fa-eye me-2 text-primary"></i>Visión</h4>
+                    <p class="text-muted mb-0">Ser el referente indiscutible, a nivel nacional e internacional, en soluciones de Logística y Energía Industrial. Nos inspira <p class="text-muted mb-0" style="font-size: 1.2rem; font-weight: 800;">El Poder De La Excelencia</p> Lo cual nos convierte en una marca líder, elegida por la confiabilidad inquebrantable de nuestros productos y servicios, superando consistentemente las expectativas de nuestros clientes.</p>
+                </div>
+
+                <div class="mt-4">
+                    <a href="#contacto" class="btn btn-outline-secondary rounded-pill px-4 hover-scale">Contáctanos</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Featured Products Preview -->
+    <section class="section py-5 bg-white position-relative" style="z-index: 10; margin-top: -50px;">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="section-title d-inline-block">Productos Destacados</h2>
+                <p class="text-muted mt-2">Calidad garantizada para su maquinaria</p>
+            </div>
+            
+            <!-- CONTENEDOR DE PRODUCTOS -->
+            <div class="row g-4">
+                {# Ya no necesitamos |slice:":4" porque la vista ya envía solo 4 aleatorios #}
+                {% for producto in productos %}
+                <div class="col-6 col-md-6 col-lg-3" data-aos="zoom-in" data-aos-delay="{{ forloop.counter }}00">
+                    <div class="card h-100 product-card border-0 shadow-sm no-tilt">
+                        <div class="position-relative overflow-hidden rounded-top-3">
+                            {% if producto.portada %}
+                            <img src="{{ producto.portada.url }}" class="card-img-top" alt="{{ producto.nombre }}" style="height: 100%; object-fit: cover;">
+                            {% elif producto.imagen %}
+                            <img src="{{ producto.imagen.url }}" class="card-img-top" alt="{{ producto.nombre }}" style="height: 100%; object-fit: cover;">
+                            {% else %}
+                            <img src="{% static 'images/default_event.jpg' %}" class="card-img-top" alt="Sin imagen" style="height: 100%; object-fit: cover;">
+                            {% endif %}
+                            
+                            <div class="overlay-action d-flex align-items-center justify-content-center">
+                                 <a href="{% url 'productos' producto.id %}" class="btn btn-light rounded-pill px-4 shadow-sm fw-bold transform-scale">Ver Detalles</a>
+                            </div>
+                            
+                            <span class="position-absolute top-0 end-0 bg-primary text-white px-3 py-1 m-2 rounded-pill fw-bold shadow-sm font-monospace">${{ producto.precio }}</span>
+                        </div>
+                        <div class="card-body d-flex flex-column pt-4">
+                            <h5 class="card-title fw-bold text-dark">{{ producto.nombre }}</h5>
+                            <p class="card-text text-muted small flex-grow-1">{{ producto.descripcion|truncatechars:60 }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center py-5">
+                    <div class="text-muted">
+                        <i class="fas fa-box-open fa-3x mb-3 opacity-50"></i>
+                        <p>Visita nuestra tienda para ver el catálogo completo.</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="text-center mt-5" data-aos="fade-up">
+                <a href="{% url 'tienda' %}" class="btn btn-secondary btn-lg rounded-pill px-5 shadow hover-scale">Ver Todo el Catálogo</a>
+            </div>
+        </div>
+    </section>
+</section>
+
+<!-- Brands Carousel Section -->
+<section id="marcas-carousel" class="brands-carousel-section py-5">
+    <div class="container">
+        <!-- Header Sección -->
+        <div class="reparaciones-header text-center mb-5" data-aos="fade-up">
+            <span class="subtitle">Nuestras Asociaciones</span>
+            <h2 class="reparaciones-title">CALIDAD GLOBAL GARANTIZADA</h2>
+            <p class="reparaciones-description">¿No encuentra su marca? Contáctenos aquí.</p>
+        </div>
+
+        <!-- Auto-scrolling Carousel - Row 1 (Left to Right) -->
+        <div class="brands-carousel-wrapper" data-aos="fade-up">
+            <div class="brands-carousel-container">
+                <div class="brands-carousel-track brands-carousel-ltr" id="brandsCarouselTrackLTR">
+                    <!-- Brand 1 -->
+                    <div class="brand-carousel-item">
+                        <div class="brand-logo-wrapper">
+                            <img src="{% static 'images/1.png' %}" alt="Denso - Componentes de Automoción" class="brand-logo" loading="lazy">
+                        </div>
+                    </div>
+                    <!-- Brand 2 -->
+                    <div class="brand-carousel-item">
+                        <div class="brand-logo-wrapper">
+                            <img src="{% static 'images/2.png' %}" alt="Donaldson - Sistemas de Filtración" class="brand-logo" loading="lazy">
+                        </div>
+                    </div>
+                    <!-- Brand 3 -->
+                    <div class="brand-carousel-item">
+                        <div class="brand-logo-wrapper">
+                            <img src="{% static 'images/3.png' %}" alt="Clark - Equipamiento Logístico" class="brand-logo" loading="lazy">
+                        </div>
+                    </div>
+                    <!-- Brand 4 -->
+                    <div class="brand-carousel-item">
+                        <div class="brand-logo-wrapper">
+                            <img src="{% static 'images/4.png' %}" alt="Nilfisk - Equipos de Limpieza" class="brand-logo" loading="lazy">
+                        </div>
+                    </div>
+                    <!-- Brand 5 -->
+                    <div class="brand-carousel-item">
+                        <div class="brand-logo-wrapper">
+                            <img src="{% static 'images/5.png' %}" alt="Howo - Camiones Pesados" class="brand-logo" loading="lazy">
+                        </div>
+                    </div>
+                    <!-- Brand 6 -->
+                    <div class="brand-carousel-item">
+                        <div class="brand-logo-wrapper">
+                            <img src="{% static 'images/6.png' %}" alt="Optibelt - Correas y Poleas" class="brand-logo" loading="lazy">
+                        </div>
+                    </div>
+                    <!-- Brand 7 -->
+                    <div class="brand-carousel-item">
+                        <div class="brand-logo-wrapper">
+                            <img src="{% static 'images/7.png' %}" alt="Banner - Sensores Industriales" class="brand-logo" loading="lazy">
+                        </div>
+                    </div>
+                    <!-- Brand 8 -->
+                    <div class="brand-carousel-item">
+                        <div class="brand-logo-wrapper">
+                            <img src="{% static 'images/8.png' %}" alt="Bühler - Soluciones de Procesos" class="brand-logo" loading="lazy">
+                        </div>
+                    </div>
+                    <!-- Brand 9 -->
+                    <div class="brand-carousel-item">
+                        <div class="brand-logo-wrapper">
+                            <img src="{% static 'images/9.png' %}" alt="Additional Brand 1" class="brand-logo" loading="lazy">
+                        </div>
+                    </div>
+                    <!-- Brand 10 -->
+                    <div class="brand-carousel-item">
+                        <div class="brand-logo-wrapper">
+                            <img src="{% static 'images/10.png' %}" alt="Additional Brand 2" class="brand-logo" loading="lazy">
+                        </div>
+                    </div>
+                    <!-- Brand 11 -->
+                    <div class="brand-carousel-item">
+                        <div class="brand-logo-wrapper">
+                            <img src="{% static 'images/11.png' %}" alt="Additional Brand 3" class="brand-logo" loading="lazy">
+                        </div>
+                    </div>
+                    <!-- Brand 12 -->
+                    <div class="brand-carousel-item">
+                        <div class="brand-logo-wrapper">
+                            <img src="{% static 'images/12.png' %}" alt="Bühler - Soluciones de Procesos" class="brand-logo" loading="lazy">
+                        </div>
+                    </div>
+                    <!-- Brand 13 -->
+                    <div class="brand-carousel-item">
+                        <div class="brand-logo-wrapper">
+                            <img src="{% static 'images/13.png' %}" alt="Additional Brand 4" class="brand-logo" loading="lazy">
+                        </div>
+                    </div>
+                    <!-- Brand 14 -->
+                    <div class="brand-carousel-item">
+                        <div class="brand-logo-wrapper">
+                            <img src="{% static 'images/14.png' %}" alt="Additional Brand 5" class="brand-logo" loading="lazy">
+                        </div>
+                    </div>
+                    <!-- Brand 15 -->
+                    <div class="brand-carousel-item">
+                        <div class="brand-logo-wrapper">
+                            <img src="{% static 'images/15.png' %}" alt="Additional Brand 6" class="brand-logo" loading="lazy">
+                        </div>
+                    </div>
+                    <!-- Brand 16 -->
+                    <div class="brand-carousel-item">
+                        <div class="brand-logo-wrapper">
+                            <img src="{% static 'images/16.png' %}" alt="Additional Brand 7" class="brand-logo" loading="lazy">
+                        </div>
+                    </div>
+                    <!-- Brand 17 -->
+                    <div class="brand-carousel-item">
+                        <div class="brand-logo-wrapper">
+                            <img src="{% static 'images/17.png' %}" alt="Additional Brand 8" class="brand-logo" loading="lazy">
+                        </div>
+                    </div>
+                    <!-- Brand 18 -->
+                    <div class="brand-carousel-item">
+                        <div class="brand-logo-wrapper">
+                            <img src="{% static 'images/18.png' %}" alt="Additional Brand 9" class="brand-logo" loading="lazy">
+                        </div>
+                    </div>
+                    <!-- Brand 19 -->
+                    <div class="brand-carousel-item">
+                        <div class="brand-logo-wrapper">
+                            <img src="{% static 'images/19.png' %}" alt="Additional Brand 10" class="brand-logo" loading="lazy">
+                        </div>
+                    </div>
+                    <!-- Brand 20 -->
+                    <div class="brand-carousel-item">
+                        <div class="brand-logo-wrapper">
+                            <img src="{% static 'images/20.png' %}" alt="Additional Brand 11" class="brand-logo" loading="lazy">
+                        </div>
+                    </div>
+                    <!-- Brand 21 -->
+                    <div class="brand-carousel-item">
+                        <div class="brand-logo-wrapper">
+                            <img src="{% static 'images/21.png' %}" alt="Additional Brand 12" class="brand-logo" loading="lazy">
+                        </div>
+                    </div>
+                    <!-- Brand 22 -->
+                    <div class="brand-carousel-item">
+                        <div class="brand-logo-wrapper">
+                            <img src="{% static 'images/22.png' %}" alt="Additional Brand 13" class="brand-logo" loading="lazy">
+                        </div>
+                    </div>
+                    <!-- Brand 23 -->
+                    <div class="brand-carousel-item">
+                        <div class="brand-logo-wrapper">
+                            <img src="{% static 'images/23.png' %}" alt="Additional Brand 14" class="brand-logo" loading="lazy">
+                        </div>
+                    </div>
+                    <!-- Brand 24 -->
+                    <div class="brand-carousel-item">
+                        <div class="brand-logo-wrapper">
+                            <img src="{% static 'images/24.png' %}" alt="Additional Brand 15" class="brand-logo" loading="lazy">
+                        </div>
+                    </div>
+                    <!-- Brand 25 -->
+                    <div class="brand-carousel-item">
+                        <div class="brand-logo-wrapper">
+                            <img src="{% static 'images/25.png' %}" alt="Additional Brand 16" class="brand-logo" loading="lazy">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Disclaimer Legal -->
+        <div class="brands-disclaimer text-center mt-5" data-aos="fade-up" data-aos-delay="200">
+            <p class="small text-muted" style="font-size: 0.85rem; line-height: 1.8;">
+                Marcas y logotipos se exhiben únicamente como referencia de compatibilidad y suministro de productos de calidad. EDES es una entidad independiente de los fabricantes mencionados.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Nueva sección de Carrusel Antes y Después de Reparaciones -->
+<section id="reparaciones" class="reparaciones-section">
+    <div class="container">
+        <!-- Header Sección -->
+        <div class="reparaciones-header" data-aos="fade-up">
+            <span class="subtitle">Nuestro Trabajo</span>
+            <h2 class="reparaciones-title">Antes y Después</h2>
+            <br class="reparaciones-description"><b>Resultados reales:</b> Reactivamos la potencia de su flota logística</p>
+        </div>
+
+        <!-- Carrusel Personalizado -->
+        <div class="ba-carousel-wrapper" data-aos="fade-up" data-aos-delay="100">
+            <div class="ba-carousel">
+                <div class="ba-carousel-track" id="baCarouselTrack">
+                    <!-- Slide 1 -->
+                    <div class="ba-slide">
+                        <div class="ba-comparison">
+                            <div class="ba-image-container ba-before">
+                                <div class="ba-label ba-label-before">
+                                    <span class="ba-label-icon">&#10005;</span>
+                                    <span>ANTES</span>
+                                </div>
+                                <img src="{% static 'images/Montacargas a combustion Clark/Caso de exito 1/SERVICIO Camara o culata montacargas Clark ANTES 1.jpg' %}" alt="Montacargas antes de reparación">
+                                <div class="ba-image-overlay ba-overlay-before">
+                                    <p>SERVICIO Camara o culata montacargas Clark ANTES</p>
+                                </div>
+                            </div>
+                            <div class="ba-arrow-divider">
+                                <div class="ba-arrow-circle">
+                                    <span>&#10140;</span>
+                                </div>
+                            </div>
+                            <div class="ba-image-container ba-after">
+                                <div class="ba-label ba-label-after">
+                                    <span class="ba-label-icon">&#10003;</span>
+                                    <span>DESPUÉS</span>
+                                </div>
+                                <img src="{% static 'images/Montacargas a combustion Clark/Caso de exito 1/SERVICIO Camara o culata montacargas Clark DESPUES 3.jpg' %}" alt="Montacargas después de reparación">
+                                <div class="ba-image-overlay ba-overlay-after">
+                                    <p>100% Operativo</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ba-slide-info">
+                            <span class="ba-slide-tag">Reparación Completa</span>
+                            <h3 class="ba-slide-title">Reparación de cámara de montacargas Clark</h3>
+                            <p class="ba-slide-desc">
+                                Reparación integral de cámara o culata, restaurando la funcionalidad óptima del motor.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Slide 2 -->
+                    <div class="ba-slide">
+                        <div class="ba-comparison">
+                            <div class="ba-image-container ba-before">
+                                <div class="ba-label ba-label-before">
+                                    <span class="ba-label-icon">&#10005;</span>
+                                    <span>ANTES</span>
+                                </div>
+                                <img src="{% static 'images/Baterias industriales/Caso de exito 1/SERVICIO Regeneracion bateria industrial ANTES 1.jpg' %}" alt="Motor antes de reparación">
+                                <div class="ba-image-overlay ba-overlay-before">
+                                    <p>Servicio de Mantenimiento y Regeneración de Batería Industrial</p>
+                                </div>
+                            </div>
+                            <div class="ba-arrow-divider">
+                                <div class="ba-arrow-circle">
+                                    <span>&#10140;</span>
+                                </div>
+                            </div>
+                            <div class="ba-image-container ba-after">
+                                <div class="ba-label ba-label-after">
+                                    <span class="ba-label-icon">&#10003;</span>
+                                    <span>DESPUÉS</span>
+                                </div>
+                                <img src="{% static 'images/Baterias industriales/Caso de exito 1/SERVICIO Regeneracion bateria industrial DESPUES 4.jpg' %}" alt="Motor después de reparación">
+                                <div class="ba-image-overlay ba-overlay-after">
+                                    <p>
+                                        Batería Industrial 100% Operativa
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ba-slide-info">
+                            <span class="ba-slide-tag">Regeneración</span>
+                            <h3 class="ba-slide-title">Batería Industrial</h3>
+                            <p class="ba-slide-desc">
+                                Servicio de mantenimiento y regeneración que restaura la capacidad y rendimiento de la batería.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3 -->
+                    <div class="ba-slide">
+                        <div class="ba-comparison">
+                            <div class="ba-image-container ba-before">
+                                <div class="ba-label ba-label-before">
+                                    <span class="ba-label-icon">&#10005;</span>
+                                    <span>ANTES</span>
+                                </div>
+                                <img src="{% static 'images/Transpaletas hidraulicas manuales/Caso de exito 1/SERVICIO Overhaul Transpaleta manual ANTES 1.jpg' %}" alt="Estructura antes de reparación">
+                                <div class="ba-image-overlay ba-overlay-before">
+                                    <p>
+                                        Servicio de Overhaul para Transpaleta Manual 
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="ba-arrow-divider">
+                                <div class="ba-arrow-circle">
+                                    <span>&#10140;</span>
+                                </div>
+                            </div>
+                            <div class="ba-image-container ba-after">
+                                <div class="ba-label ba-label-after">
+                                    <span class="ba-label-icon">&#10003;</span>
+                                    <span>DESPUÉS</span>
+                                </div>
+                                 <img src="{% static 'images/Transpaletas hidraulicas manuales/Caso de exito 1/SERVICIO Overhaul Transpaleta manual DESPUES 2.jpg' %}" alt="Estructura después de reparación">
+                                <div class="ba-image-overlay ba-overlay-after">
+                                    <p>
+                                        Transpaleta Manual 100% Operativa
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ba-slide-info">
+                            <span class="ba-slide-tag">
+                                Overhaul Completo
+                            </span>
+                            <h3 class="ba-slide-title">
+                                Transpaleta Manual
+                            </h3>
+                            <p class="ba-slide-desc">
+                                Servicio de overhaul que garantiza el óptimo funcionamiento y seguridad de la transpaleta.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Slide 4 -->
+                    <div class="ba-slide">
+                        <div class="ba-comparison">
+                            <div class="ba-image-container ba-before">
+                                <div class="ba-label ba-label-before">
+                                    <span class="ba-label-icon">&#10005;</span>
+                                    <span>ANTES</span>
+                                </div>
+                               <img src="{% static 'images/Cargadores de baterias/Caso de exito 1/SERVICIO Overhaul cargador de bateria industrial ANTES 1.jpg' %}" alt="Estructura antes de reparación">
+                                <div class="ba-image-overlay ba-overlay-before">
+                                    <p>
+                                        Servicio de Overhaul para Cargador de Batería Industrial
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="ba-arrow-divider">
+                                <div class="ba-arrow-circle">
+                                    <span>&#10140;</span>
+                                </div>
+                            </div>
+                            <div class="ba-image-container ba-after">
+                                <div class="ba-label ba-label-after">
+                                    <span class="ba-label-icon">&#10003;</span>
+                                    <span>DESPUÉS</span>
+                                </div>
+                                <img src="{% static 'images/Cargadores de baterias/Caso de exito 1/SERVICIO Overhaul cargador de bateria industrial DESPUES 2.jpg' %}" alt="Estructura después de reparación">
+                                <div class="ba-image-overlay ba-overlay-after">
+                                    <p>
+                                        Cargador de Batería Industrial 100% Operativo
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ba-slide-info">
+                            <span class="ba-slide-tag">
+                                Overhaul Completo
+                            </span>
+                            <h3 class="ba-slide-title">
+                                Cargador de Batería Industrial
+                            </h3>
+                            <p class="ba-slide-desc">
+                                Servicio de overhaul que garantiza el óptimo funcionamiento y seguridad del cargador.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controles del Carrusel -->
+                <div class="ba-controls">
+                    <button class="ba-control-btn ba-prev" id="baPrev" aria-label="Anterior">
+                        <span>&#10094;</span>
+                    </button>
+                    <div class="ba-dots" id="baDots">
+                        <button class="ba-dot active" data-index="0" aria-label="Slide 1"></button>
+                        <button class="ba-dot" data-index="1" aria-label="Slide 2"></button>
+                        <button class="ba-dot" data-index="2" aria-label="Slide 3"></button>
+                        <button class="ba-dot" data-index="3" aria-label="Slide 4"></button>
+                    </div>
+                    <button class="ba-control-btn ba-next" id="baNext" aria-label="Siguiente">
+                        <span>&#10095;</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- NUEVA SECCIÓN: MARCAS ASOCIADAS -->
+
+
+<!-- FAQ Section -->
+<section class="section py-5" style="background-color: #f1f3f5;">
+    <div class="container">
+
+        <!-- Header Sección -->
+        <div class="reparaciones-header" data-aos="fade-up">
+            <span class="subtitle">Ayuda y Soporte</span>
+            <h2 class="reparaciones-title">Preguntas Frecuentes</h2>
+            <p class="reparaciones-description">Respuestas a las dudas más comunes sobre nuestros servicios y productos.</p>
+        </div>
+
+        <div class="row justify-content-center align-items-start gy-4">
+            <div class="col-lg-5 d-none d-lg-block" data-aos="fade-right">
+                <img src="https://img.freepik.com/foto-gratis/hombre-que-trabaja-almacen-conduce-carretilla-elevadora_1303-26625.jpg?semt=ais_se_enriched&w=740&q=80" alt="Soporte EDES" class="img-fluid rounded-4 shadow-lg" style="height: 100%; object-fit: cover; min-height: 400px;">
+            </div>
+
+            <!-- Acordeón de Preguntas -->
+            <div class="col-lg-7" data-aos="fade-left">
+                <div class="accordion accordion-flush shadow-sm rounded-4 overflow-hidden bg-white" id="faqAccordion">
+                    
+                    <!-- Pregunta 1 -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button text-dark py-4" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                <i class="fas fa-boxes text-primary me-3"></i> ¿Qué servicios ofrece EDES?
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted pb-4">
+                                Ofrecemos soluciones integrales en <strong>logística y energía industrial</strong>. Esto incluye la venta y alquiler de maquinaria (montacargas), comercialización de repuestos originales, baterías industriales y un servicio técnico especializado para garantizar su continuidad operativa.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 2 -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed text-dark py-4" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                <i class="fas fa-wrench text-primary me-3"></i> ¿Ofrecen servicio técnico y mantenimiento?
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted pb-4">
+                                Sí, contamos con un <strong>soporte posventa robusto</strong>. Nuestro equipo técnico especializado realiza mantenimiento preventivo y correctivo para maximizar la vida útil de sus equipos y evitar paradas inesperadas en su operación.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 3 -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed text-dark py-4" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                <i class="fas fa-map-marker-alt text-primary me-3"></i> ¿Cuál es su zona de cobertura?
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted pb-4">
+                                EDES tiene capacidad para atender requerimientos a <strong>nivel nacional</strong>. Nuestra visión nos impulsa a ser referentes tanto local como internacionalmente, asegurando que su industria tenga respaldo donde lo necesite.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 4 -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFour">
+                            <button class="accordion-button collapsed text-dark py-4" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                <i class="fas fa-file-invoice-dollar text-primary me-3"></i> ¿Cómo puedo solicitar una cotización?
+                            </button>
+                        </h2>
+                        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-muted pb-4">
+                                Es muy sencillo. Puede navegar por nuestro <a href="{% url 'tienda' %}" class="text-primary text-decoration-none">catálogo en línea</a> para ver nuestros productos, o utilizar el botón de "Solicitar Cotización" al final de esta página. También atendemos directamente vía WhatsApp para una respuesta inmediata.
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ======================= SECCIÓN DE CONTACTO ======================= -->
+<section id="contacto" class="section py-5" style="background-color: #f8f9fa">
+  <div class="container">
+    <!-- Header de la Sección -->
+    <div class="text-center mb-5" data-aos="fade-up">
+      <span class="text-primary fw-bold text-uppercase letter-spacing-2 d-block mb-2">Hablemos</span>
+      <h2 class="section-title d-inline-block">Póngase en Contacto</h2>
+      <p class="text-muted mt-2">¿Listo para potenciar su operación? <br> Llene el formulario y nuestro equipo se comunicará con usted a la brevedad.</p>
+    </div>
+
+    <!-- Fila centrada -->
+    <div class="row g-5 justify-content-center">
+
+      <!-- Columna del Formulario con ancho ajustado -->
+      <div class="col-lg-8 col-md-10" data-aos="fade-up">
+        <div class="card border-0 shadow-sm p-4 p-md-5 rounded-4">
+          <!-- El action y method no cambian -->
+          <form action="{% url 'guardar_contacto' %}" method="post">
+            {% csrf_token %}
+            <div class="row g-4">
+              <!-- Campo: Nombre Completo -->
+              <div class="col-12">
+                <label for="nombre" class="form-label fw-bold">Nombre Completo</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-end-0"><i class="fas fa-user text-muted"></i></span>
+                  <input type="text" class="form-control border-start-0" id="nombre" name="nombre" placeholder="Ej: Juan Pérez" required />
+                </div>
+              </div>
+
+              <!-- Campo: Teléfono -->
+              <div class="col-md-6">
+                <label for="telefono" class="form-label fw-bold">Teléfono</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-end-0"><i class="fas fa-phone text-muted"></i></span>
+                  <input type="tel" class="form-control border-start-0" id="telefono" name="telefono" placeholder="Ej: (+58) 414-1234567" required />
+                </div>
+              </div>
+
+              <!-- Campo: Correo Electrónico -->
+              <div class="col-md-6">
+                <label for="correo" class="form-label fw-bold">Correo Electrónico</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-end-0"><i class="fas fa-envelope text-muted"></i></span>
+                  <input type="email" class="form-control border-start-0" id="correo" name="correo" placeholder="Ej: juan.perez@email.com" required />
+                </div>
+              </div>
+
+              <!-- Campo: Motivo de Contacto -->
+              <div class="col-12">
+                <label for="motivo" class="form-label fw-bold">Motivo de Contacto</label>
+                <select class="form-select" id="motivo" name="motivo" required>
+                  <option value="" disabled selected>Seleccione un motivo...</option>
+                  <option value="cotizacion_repuestos">Solicitar Cotización de Repuestos</option>
+                  <option value="soporte_tecnico">Soporte Técnico / Mantenimiento</option>
+                  <option value="alquiler_equipos">Información sobre Alquiler de Equipos</option>
+                  <option value="info_general">Consulta General</option>
+                  <option value="otro">Otro</option>
+                </select>
+              </div>
+
+              <!-- Campo: Mensaje -->
+              <div class="col-12">
+                <label for="mensaje" class="form-label fw-bold">Mensaje</label>
+                <textarea class="form-control" id="mensaje" name="mensaje" rows="5" placeholder="Escriba su mensaje aquí..." required></textarea>
+              </div>
+
+              <!-- Botón de Enviar -->
+              <div class="col-12 text-center">
+                <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill shadow hover-scale">
+                  <i class="fas fa-paper-plane me-2"></i> Enviar Mensaje
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ======================= FIN SECCIÓN DE CONTACTO ======================= -->
+
+<!-- Contact CTA -->
+<section id="contacto-cta" class="section py-5 text-white position-relative overflow-hidden contact-cta" style="background-image: url(https://img.freepik.com/vector-gratis/advertencia-elegante-cuidado-fondo-atencion-proteccion_1017-54458.jpg); background-size: cover; background-position: center; background-repeat: no-repeat;">
+    <div class="container text-center position-relative z-1" data-aos="zoom-in">
+        <h2 class="text-white mb-4 display-5 fw-bold">¿Necesita una solución específica?</h2>
+        <p class="lead mb-5 text-white-50 container-md mx-auto" style="max-width: 700px;">Nuestro equipo de expertos en EDES está listo para brindarle el soporte que su operación necesita. Contáctenos hoy mismo.</p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <a href="{% url 'orden' %}" class="btn btn-primary btn-lg rounded-pill px-5 text-white shadow hover-scale">Solicitar Cotización</a>
+            {% if whatsapp_url %}
+            <a href="{{ whatsapp_url }}" target="_blank" class="btn btn-outline-light btn-lg rounded-pill px-5 hover-scale"><i class="fab fa-whatsapp me-2"></i> Chat WhatsApp</a>
+            {% else %}
+            <button class="btn btn-outline-secondary btn-lg rounded-pill px-5" disabled><i class="fab fa-whatsapp me-2"></i> WhatsApp no configurado</button>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- ======================= SCRIPT PARA ACTIVAR TOASTS ======================= -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QEBEKSPTDN"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    
+    gtag('config', 'G-QEBEKSPTDN');
+    document.addEventListener('DOMContentLoaded', function () {
+        const toastElements = document.querySelectorAll('.toast');
+        toastElements.forEach(function (toastEl) {
+            const toast = new bootstrap.Toast(toastEl, {
+                delay: 5000 // El toast se ocultará después de 5 segundos
+            });
+            toast.show();
+        });
+    });
+</script>
+
+{% endblock %}

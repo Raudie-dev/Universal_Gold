@@ -1,0 +1,9 @@
+{# Si tiene padre, llámate a ti mismo primero (recursividad hacia arriba) #}
+{% if cat.padre %}
+    {% include "includes/breadcrumb_items.html" with cat=cat.padre %}
+{% endif %}
+
+{# Luego imprime la categoría actual #}
+<li class="breadcrumb-item">
+    <a href="{% url 'tienda' %}?categoria={{ cat.id }}">{{ cat.nombre }}</a>
+</li>

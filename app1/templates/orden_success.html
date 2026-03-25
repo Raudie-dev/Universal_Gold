@@ -1,0 +1,13 @@
+{% extends 'base_index.html' %}
+
+{% block title %}Orden enviada{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="alert alert-success">
+        <h4 class="alert-heading">Orden enviada</h4>
+        <p>Gracias. Su orden (ID: {{ cotizacion.id }}) ha sido creada. Se ha generado un enlace para notificar a ventas por WhatsApp.</p>
+    </div>
+    <a href="{% url 'tienda' %}" class="btn btn-primary">Volver a la tienda</a>
+</div>
+{% endblock %}

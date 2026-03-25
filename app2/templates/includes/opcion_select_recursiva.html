@@ -1,0 +1,24 @@
+<!-- templates/includes/opcion_select_recursiva.html -->
+
+<option value="{{ cat.id }}" 
+    {# Lógica para marcar como seleccionado #}
+    {% if selection_mode == 'single' %}
+        {# Para el filtro del buscador (comparación simple de strings/ids) #}
+        {% if current_selected|stringformat:"s" == cat.id|stringformat:"s" %}selected{% endif %}
+    {% else %}
+        {# Para el modal de edición (verifica si la categoría está en la lista del producto) #}
+        {% if cat in current_selected %}selected{% endif %}
+    {% endif %}
+    >
+    
+    {# Generar indentación visual basada en el nivel #}
+    {% if level == 0 %}📁 {% endif %}
+    {% for i in "x"|rjust:level %}&nbsp;&nbsp;&nbsp;{% endfor %}
+    {% if level > 0 %}↳ {% endif %}
+    {{ cat.nombre }}
+</option>
+
+{# Llamada recursiva a los hijos #}
+{% for hijo in cat.subcategorias.all %}
+    {% include "includes/opcion_select_recursiva.html" with cat=hijo level=level|add:"1" selection_mode=selection_mode current_selected=current_selected %}
+{% endfor %}

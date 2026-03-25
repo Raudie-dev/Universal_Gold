@@ -1,0 +1,346 @@
+{% extends 'base.html' %}
+{% load static tz %}
+
+{% block title %}Solicitudes de Órdenes{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <h1 class="page-title">Solicitudes de Órdenes</h1>
+  </div>
+
+  <!-- BUSCADOR / FILTROS -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <form method="get" class="row g-3 align-items-center">
+
+        <div class="col-sm-6 col-md-5">
+          <input 
+            type="text" 
+            name="q" 
+            class="form-control"
+            placeholder="Buscar por cliente, teléfono o correo..."
+            value="{{ request.GET.q|default:'' }}"
+          >
+        </div>
+
+        <div class="col-sm-4 col-md-3">
+          <select name="estado" class="form-select">
+            <option value="" {% if not request.GET.estado %}selected{% endif %}>
+              Todos los estados
+            </option>
+
+            <option value="pendiente" {% if request.GET.estado == 'pendiente' %}selected{% endif %}>
+              Pendiente
+            </option>
+
+            <option value="procesado" {% if request.GET.estado == 'procesado' %}selected{% endif %}>
+              Procesado
+            </option>
+
+            <option value="venta_confirmada" {% if request.GET.estado == 'venta_confirmada' %}selected{% endif %}>
+              Venta confirmada
+            </option>
+
+            <option value="no_vendido" {% if request.GET.estado == 'no_vendido' %}selected{% endif %}>
+              No vendido
+            </option>
+
+          </select>
+        </div>
+
+        <div class="col-sm-2 col-md-4 d-flex gap-2">
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-search me-1"></i> Buscar
+          </button>
+          <a href="." class="btn btn-secondary">
+            <i class="fas fa-eraser me-1"></i> Limpiar
+          </a>
+        </div>
+
+        <div class="col-12 mt-2">
+          <a href="{% url 'clientes_registrados' %}" class="btn btn-info btn-sm">
+            <i class="fas fa-users me-1"></i> Clientes registrados
+          </a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- TABLA DE SOLICITUDES -->
+  <div class="card">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Cliente</th>
+              <th>Fecha</th>
+              {% if SHOW_PRICES %}
+              <th>Total Estimado</th>
+              {% endif %}
+              <th>Estado</th>
+              <th style="width:150px;">Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for s in solicitudes %}
+              {% with c=s.orden items=s.items subtotal=s.subtotal %}
+              <tr>
+                <td><strong>#{{ c.id }}</strong></td>
+
+                <td>
+                  <div class="d-flex flex-column">
+                    <span class="fw-bold">{{ c.cliente.nombre }}</span>
+                    <small class="text-muted">{{ c.cliente.telefono }}</small>
+                    <small class="text-muted">{{ c.cliente.correo }}</small>
+                  </div>
+                </td>
+
+                <td>
+                  <i class="far fa-calendar-alt text-muted me-1"></i>
+                  {{ c.creado|localtime|date:"d M Y" }}
+                </td>
+
+                {% if SHOW_PRICES %}
+                <td><strong>${{ subtotal|floatformat:2 }}</strong></td>
+                {% endif %}
+
+                <td>
+                  {% if c.es_venta %}
+                    <span class="badge bg-success">Venta confirmada</span>
+                  {% elif c.estado|lower in 'pendiente revison procesado procesando' %}
+                    <span class="badge bg-warning text-dark">{{ c.estado|capfirst }}</span>
+                  {% else %}
+                    <span class="badge bg-secondary">{{ c.estado|capfirst }}</span>
+                  {% endif %}
+                </td>
+
+                <td>
+                  <div class="d-flex gap-1">
+                    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalDetalle{{ c.id }}" title="Ver detalles">
+                      <i class="fas fa-eye me-1"></i> Ver
+                    </button>
+
+                    {% if c.estado|lower in 'pendiente nuevo en revisión' %}
+                      <a href="{% url 'procesar_orden' c.id %}" class="btn btn-sm btn-warning" title="Marcar como procesada">
+                        <i class="fas fa-cogs"></i> Procesar
+                      </a>
+                    {% endif %}
+
+                    {% if c.estado|lower == 'procesado' %}
+                      <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modalDetalle{{ c.id }}" title="Registrar venta">
+                        <i class="fas fa-check"></i> Venta/No Venta
+                      </button>
+                    {% endif %}
+
+                    {% if c.estado|lower == 'venta_confirmada' %}
+                      <span class="badge bg-success">Venta</span>
+                    {% elif c.estado|lower == 'no_vendido' %}
+                      <span class="badge bg-danger">No Venta</span>
+                    {% endif %}
+                  </div>
+                </td>
+              </tr>
+              {% endwith %}
+            {% empty %}
+              <tr>
+                <td colspan="6" class="text-center py-5">
+                  <i class="fas fa-file-invoice-dollar fa-3x text-muted mb-3"></i>
+                  <p class="text-muted">No se encontraron órdenes</p>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div> 
+{% endblock %}
+
+<!-- =========== MODALES =========== -->
+{% block modals %}
+{% for s in solicitudes %}
+  {% with c=s.orden items=s.items subtotal=s.subtotal %}
+  <div 
+    class="modal fade" 
+    id="modalDetalle{{ c.id }}" 
+    tabindex="-1" 
+    aria-labelledby="modalLabel{{ c.id }}" 
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+
+        <div class="modal-header bg-secondary text-white border-0">
+          <h5 class="modal-title" id="modalLabel{{ c.id }}">
+            <i class="fas fa-file-alt me-2"></i>
+            Detalle Orden #{{ c.id }}
+          </h5>
+          <button 
+            type="button" 
+            class="btn-close btn-close-white" 
+            data-bs-dismiss="modal"
+          ></button>
+        </div>
+
+        <div class="modal-body p-4">
+          <div class="row g-4">
+
+            <!-- IZQUIERDA -->
+            <div class="col-md-4">
+              <div class="card bg-light border-0 h-100">
+                <div class="card-body">
+                  <h6 class="card-title fw-bold text-primary mb-3">
+                    <i class="fas fa-user me-1"></i> Datos del Cliente
+                  </h6>
+
+                  <p class="mb-1"><strong>Nombre:</strong> {{ c.cliente.nombre }}</p>
+                  <p class="mb-1"><strong>Email:</strong> {{ c.cliente.correo }}</p>
+                  <p class="mb-1"><strong>Teléfono:</strong> {{ c.cliente.telefono }}</p>
+                  <p class="mb-3"><strong>Fecha:</strong> {{ c.creado|localtime|date:"d/m/Y H:i" }}</p>
+
+                  <hr>
+
+                  <h6 class="card-title fw-bold text-primary mb-2">
+                    <i class="fas fa-comment-alt me-1"></i> Mensaje
+                  </h6>
+
+                  <div class="p-2 bg-white rounded border">
+                    {{ c.mensaje|default:"Sin mensaje adjunto." }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- DERECHA -->
+            <div class="col-md-8">
+              <h6 class="fw-bold mb-3">
+                <i class="fas fa-box-open me-1 text-primary"></i> Productos Solicitados
+              </h6>
+
+              <div class="table-responsive border rounded">
+                <table class="table table-sm table-striped mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Producto</th>
+                      <th class="text-center">Cant.</th>
+                      <th class="text-end">Precio</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {% for it in items %}
+                    <tr>
+                      <td>{{ it.producto.nombre }}</td>
+                      <td class="text-center">{{ it.cantidad }}</td>
+                      <td class="text-end">
+                        ${% if it.precio_unitario %}
+                          {{ it.precio_unitario }}
+                        {% else %}
+                          {{ it.producto.precio }}
+                        {% endif %}
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+
+                  <tfoot class="table-light border-top">
+                    <tr>
+                      <td colspan="2" class="text-end py-3">
+                        <strong>Total Estimado:</strong>
+                      </td>
+                      <td class="text-end py-3">
+                        <h5 class="mb-0 text-success">
+                          ${{ subtotal|floatformat:2 }}
+                        </h5>
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- TEXTO OCULTO PARA WHATSAPP -->
+          <textarea id="texto-ws-{{ c.id }}" style="display:none;">
+Saludos cordiales {{ c.cliente.nombre }}, le escribimos desde EDES con respecto a su cotización de:
+{% for it in items %}
+- {{ it.producto.nombre }} (x{{ it.cantidad }}): ${% if it.precio_unitario %}{{ it.precio_unitario }}{% else %}{{ it.producto.precio }}{% endif %}
+{% endfor %}
+
+Total Estimado: ${{ subtotal|floatformat:2 }}
+          </textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cerrar
+          </button>
+
+          <button 
+            type="button" 
+            class="btn btn-info text-white"
+            onclick="copiarAlPortapapeles('{{ c.id }}', this)"
+          >
+            <i class="fas fa-copy me-1"></i> Copiar
+          </button>
+
+          {% if c.estado|lower in 'pendiente nuevo en revisión' %}
+            <a 
+              href="{% url 'procesar_orden' c.id %}" 
+              class="btn btn-warning"
+              onclick="setTimeout(function(){ location.reload(); }, 1000);"
+            >
+              <i class="fas fa-cogs me-1"></i>
+              Marcar como Procesada
+            </a>
+          {% endif %}
+
+          {% if c.estado|lower in 'procesado venta_confirmada no_vendido' %}
+            <a href="{% url 'marcar_orden_venta' c.id %}" class="btn btn-success">
+              <i class="fas fa-check"></i> Marcar Venta
+            </a>
+            <a href="{% url 'marcar_orden_no_venta' c.id %}" class="btn btn-danger">
+              <i class="fas fa-times"></i> Marcar No Venta
+            </a>
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+  </div>
+  {% endwith %}
+{% endfor %}
+
+<script>
+  function copiarAlPortapapeles(id, btn) {
+    var texto = document.getElementById('texto-ws-' + id).value;
+
+    navigator.clipboard.writeText(texto.trim()).then(function () {
+      var originalHTML = btn.innerHTML;
+      var originalClass = btn.className;
+
+      btn.innerHTML = '<i class="fas fa-check me-1"></i> Copiado';
+      btn.className = 'btn btn-dark text-white';
+
+      setTimeout(function () {
+        btn.innerHTML = originalHTML;
+        btn.className = originalClass;
+      }, 1500);
+    }, function (err) {
+      console.error('Error al copiar:', err);
+      alert('No se pudo copiar el texto');
+    });
+  }
+</script>
+{% endblock modals %}

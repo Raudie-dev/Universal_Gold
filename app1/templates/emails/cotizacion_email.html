@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Cotización - EDES Venezuela</title>
+    <!-- Importamos fuentes (funcionará en Apple Mail y algunos Android, Outlook usará Arial) -->
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos básicos para clientes que soportan <style> */
+        body { margin: 0; padding: 0; background-color: #f6f6f6; }
+        table { border-collapse: collapse; }
+        img { border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+        
+        /* Tipografía de respaldo */
+        h1, h2, h3 { font-family: 'Anton', Arial, sans-serif; }
+        p, td, th { font-family: 'Poppins', Helvetica, Arial, sans-serif; }
+
+        /* Media queries para móviles */
+        @media only screen and (max-width: 600px) {
+            .container { width: 100% !important; }
+            .content { padding: 20px !important; }
+            .product-row { display: block !important; margin-bottom: 20px !important; border-bottom: 1px solid #eee; }
+            .product-col { display: block !important; width: 100% !important; padding-bottom: 5px; }
+            .mobile-hide { display: none !important; }
+        }
+    </style>
+</head>
+<body style="background-color: #f6f6f6; margin: 0; padding: 0; font-family: 'Poppins', Helvetica, Arial, sans-serif; color: #333333;">
+
+    <!-- Contenedor Principal -->
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f6f6f6; padding: 40px 0;">
+        <tr>
+            <td align="center">
+                
+                <!-- Tarjeta Central (Card style) -->
+                <table border="0" cellpadding="0" cellspacing="0" width="600" class="container" style="background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); width: 600px; max-width: 600px;">
+                    
+                    <!-- Header: Verde Oscuro con Marca -->
+                    <tr>
+                        <td align="center" style="background-color: #004d25; padding: 30px 20px;">
+                            <!-- Aquí deberías poner la URL pública de tu logo. Si no tienes, usa texto -->
+                            <!-- <img src="https://tudominio.com/static/img/logo-white.png" alt="EDES Venezuela" width="150" style="display: block; margin-bottom: 15px;"> -->
+                            
+                            <h1 style="color: #ffffff; font-family: 'Anton', Arial, sans-serif; text-transform: uppercase; letter-spacing: 1px; margin: 0; font-size: 28px;">
+                                Solicitud de Cotización
+                            </h1>
+                            <p style="color: #8aba4c; margin: 5px 0 0 0; font-weight: 600;">EDES VENEZUELA</p>
+                        </td>
+                    </tr>
+
+                    <!-- Contenido Principal -->
+                    <tr>
+                        <td class="content" style="padding: 40px;">
+                            
+                            <!-- Información del Cliente -->
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td style="padding-bottom: 20px;">
+                                        <h2 style="color: #004d25; font-family: 'Anton', Arial, sans-serif; font-size: 20px; text-transform: uppercase; margin-top: 0;">
+                                            Datos del Cliente
+                                        </h2>
+                                        <p style="margin: 5px 0;"><strong>Nombre:</strong> {{ nombre }}</p>
+                                        <p style="margin: 5px 0;"><strong>Correo:</strong> <a href="mailto:{{ correo }}" style="color: #f6650f; text-decoration: none;">{{ correo }}</a></p>
+                                        <p style="margin: 5px 0;"><strong>Teléfono:</strong> {{ telefono }}</p>
+                                        {% if cotizacion_id %}
+                                        <p style="margin: 5px 0; color: #6c757d; font-size: 14px;">ID Cotización: #{{ cotizacion_id }}</p>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                
+                                {% if mensaje %}
+                                <tr>
+                                    <td style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #f6650f; border-radius: 4px;">
+                                        <strong style="color: #004d25;">Mensaje adicional:</strong><br>
+                                        <span style="color: #555; font-style: italic;">"{{ mensaje }}"</span>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            </table>
+
+                            <div style="height: 30px;"></div>
+
+                            <!-- Tabla de Productos -->
+                            <h3 style="color: #004d25; font-family: 'Anton', Arial, sans-serif; font-size: 18px; text-transform: uppercase; border-bottom: 2px solid #f6650f; padding-bottom: 10px; margin-bottom: 15px;">
+                                Detalle del Pedido
+                            </h3>
+
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;">
+                                <thead>
+                                    <tr style="background-color: #004d25; color: #ffffff;">
+                                        <th align="left" style="padding: 12px; font-family: 'Poppins', sans-serif; font-size: 14px; border-top-left-radius: 8px;">Producto</th>
+                                        <th align="center" style="padding: 12px; font-family: 'Poppins', sans-serif; font-size: 14px;">Cant.</th>
+                                        <th align="right" style="padding: 12px; font-family: 'Poppins', sans-serif; font-size: 14px;">Precio</th>
+                                        <th align="right" style="padding: 12px; font-family: 'Poppins', sans-serif; font-size: 14px; border-top-right-radius: 8px;">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in items %}
+                                    <tr style="border-bottom: 1px solid #eeeeee;">
+                                        <td style="padding: 15px 12px; color: #333;">
+                                            <strong style="color: #004d25;">{{ item.product.nombre }}</strong>
+                                            <!-- Si tienes una descripción corta o SKU, ponla aquí -->
+                                        </td>
+                                        <td align="center" style="padding: 15px 12px; color: #555;">{{ item.cantidad }}</td>
+                                        <td align="right" style="padding: 15px 12px; color: #555;">${{ item.product.precio|floatformat:2 }}</td>
+                                        <td align="right" style="padding: 15px 12px; color: #333; font-weight: 600;">${{ item.total|floatformat:2 }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+
+                            <!-- Totales -->
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-top: 20px;">
+                                <tr>
+                                    <td align="right">
+                                        <p style="font-size: 18px; margin: 0; color: #333;">Subtotal Estimado:</p>
+                                        <p style="font-size: 28px; font-weight: 700; color: #f6650f; margin: 5px 0 0 0; font-family: 'Anton', Arial, sans-serif; letter-spacing: 1px;">
+                                            ${{ subtotal|floatformat:2 }}
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Botón de Acción (Opcional, para ir al admin) -->
+                            {% comment %} 
+                            <div style="text-align: center; margin-top: 40px;">
+                                <a href="https://edesvenezuela.com/admin" style="background-color: #f6650f; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 50px; font-weight: 600; display: inline-block; font-family: 'Poppins', sans-serif; box-shadow: 0 4px 10px rgba(246, 101, 15, 0.3);">
+                                    Gestionar en Panel Admin
+                                </a>
+                            </div> 
+                            {% endcomment %}
+
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td style="background-color: #111111; padding: 30px; text-align: center; border-top: 5px solid #f6650f;">
+                            <p style="color: #aaaaaa; font-size: 12px; margin-bottom: 10px;">
+                                Este correo fue generado automáticamente por el sistema web de EDES Venezuela.
+                            </p>
+                            <p style="color: #8aba4c; font-size: 14px; font-weight: 600; margin: 0;">
+                                EDES VENEZUELA
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+                
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>

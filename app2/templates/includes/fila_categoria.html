@@ -1,0 +1,79 @@
+<!-- templates/includes/fila_categoria.html -->
+{% load static %}
+
+{# Definimos variables locales para este ciclo #}
+{% with subcategorias=cat.subcategorias.all %}
+
+<!-- LA FILA DE LA CATEGORÍA ACTUAL -->
+<tr class="{% if nivel > 0 %}collapse tree-{{ cat.padre.id }}{% endif %} bg-white border-bottom align-middle"
+    {% if nivel == 0 %}style="background-color: #f8f9fa;"{% endif %}>
+    
+    <!-- COLUMNA NOMBRE -->
+    <td class="text-dark" style="padding-left: calc(1rem + {{ nivel }} * 2.5rem);">
+        <div class="d-flex align-items-center">
+            {% if subcategorias %}
+                <!-- Botón para expandir si tiene hijos -->
+                <span class="cursor-pointer me-2 d-inline-block text-center" 
+                      style="width: 20px;"
+                      data-bs-toggle="collapse" 
+                      data-bs-target=".tree-{{ cat.id }}" 
+                      aria-expanded="false">
+                    <i class="fas fa-chevron-right rotate-icon small text-muted"></i>
+                </span>
+                <i class="fas fa-folder-open text-warning me-2"></i>
+            {% else %}
+                <!-- Espacio vacío si no tiene hijos -->
+                <span class="d-inline-block me-2" style="width: 20px;">
+                    <i class="fas fa-circle fa-xs text-muted opacity-25" style="font-size: 6px;"></i>
+                </span>
+                <i class="fas fa-folder text-secondary opacity-50 me-2"></i>
+            {% endif %}
+            
+            <span class="{% if nivel == 0 %}fw-bold text-uppercase{% endif %}">
+                {{ cat.nombre }}
+            </span>
+        </div>
+    </td>
+
+    <!-- COLUMNA TIPO -->
+    <td>
+        {% if nivel == 0 %}
+            <span class="badge bg-primary">Principal</span>
+        {% else %}
+            <span class="badge bg-light text-dark border">Nivel {{ nivel|add:"1" }}</span>
+        {% endif %}
+    </td>
+
+    <!-- COLUMNA ACCIONES -->
+    <td class="text-end">
+        <!-- BOTÓN EDITAR (MODIFICADO: Estilo limpio igual al eliminar) -->
+        <button type="button" 
+                class="btn btn-sm btn-outline-primary border-0" 
+                onclick="event.stopPropagation();"
+                data-bs-toggle="modal" 
+                data-bs-target="#modalEditarCategoria"
+                data-bs-id="{{ cat.id }}"
+                data-bs-nombre="{{ cat.nombre }}"
+                data-bs-padre="{{ cat.padre.id|default:'' }}">
+            <i class="fas fa-edit"></i>
+        </button>
+
+        <!-- BOTÓN ELIMINAR -->
+        <button type="button" class="btn btn-sm btn-outline-danger border-0" 
+                onclick="event.stopPropagation();"
+                data-bs-toggle="modal" data-bs-target="#modalEliminarCategoria"
+                data-bs-id="{{ cat.id }}" data-bs-nombre="{{ cat.nombre }}">
+            <i class="fas fa-trash"></i>
+        </button>
+    </td>
+</tr>
+
+<!-- RECURSIVIDAD: Si tiene hijos, llamamos a este mismo archivo -->
+{% if subcategorias %}
+    {% for hijo in subcategorias %}
+        <!-- Llamada recursiva aumentando el nivel -->
+        {% include "includes/fila_categoria.html" with cat=hijo nivel=nivel|add:"1" %}
+    {% endfor %}
+{% endif %}
+
+{% endwith %}
