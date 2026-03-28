@@ -1,185 +1,166 @@
 {% extends 'base_index.html' %}
 {% load static %}
 
-{% block title %}Productos y Servicios | EDES {% endblock %}
+{% block title %}Catálogo | Universal Gold — Joyas{% endblock %}
 
 {% block content %}
-<style>
-    /* 1. Forzamos que el header se vea oscuro (estado scrolled) */
-    #mainHeader {
-        background-color: var(--footer-color) !important;
-        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.25) !important;
-        padding: 0.5rem 0 !important;
-    }
-    
-    /* 2. Forzamos que los links se vean claros */
-    #mainHeader .nav-link {
-        color: var(--footer-text) !important;
-    }
 
-    /* 3. Empujamos el contenido hacia abajo para que el header no lo tape */
-    /* En escritorio */
-    body {
-        padding-top: 100px; 
-    }
-    
-    /* En móvil ajustamos el espacio */
-    @media (max-width: 768px) {
-        body {
-            padding-top: 90px;
-        }
-    }
-</style>
-<div class="container mb-5">
-    
-    <!-- Encabezado -->
-    <div class="bg-light py-4 mb-5 border-bottom">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-7">
-                    <h1 class="mb-0">Catálogo de Productos y Servicios</h1>
-                    <p class="text-muted mb-0 mt-2">Encuentra las piezas que necesitas para tu maquinaria.</p>
-                </div>
-                <div class="col-md-6 text-md-end mt-3 mt-md-0">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb justify-content-md-end mb-0">
-                            <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Tienda</li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <!-- Sidebar Filters (Mantenemos col-lg-3) -->
-        <div class="col-lg-3 mb-4">
-            <!-- Botón toggle móvil -->
-            <button class="btn btn-primary w-100 d-lg-none mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse">
-                <i class="fas fa-filter me-2"></i> Mostrar Filtros
-            </button>
-            
-            <div class="collapse d-lg-block" id="filterCollapse">
-                <div class="card shadow-sm border-0 rounded-3">
-                    <!-- Restaurado color de cabecera original -->
-                    <div class="card-header text-white py-3 rounded-top-3" style="background-color: var(--primary-color);">
-                        <h5 style="color: #fff;" class="mb-0"><i class="fas fa-filter me-2"></i>Filtros</h5>
-                    </div>
-                    <div class="card-body p-4">
-                        <form method="get">
-                            <!-- Buscador -->
-                            <div class="mb-4">
-                                <label class="form-label fw-bold text-uppercase small text-muted">Buscar</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0"><i class="fas fa-search text-muted"></i></span>
-                                    <input type="text" name="q" class="form-control border-start-0 bg-light" placeholder="Nombre o código..." value="{{ q|default:'' }}">
-                                </div>
-                            </div>
-                            
-                            <!-- Selector de Categoría -->
-                            <div class="mb-4">
-                                <label class="form-label fw-bold text-uppercase small text-muted">Categoría</label>
-                                <select name="categoria" class="form-select bg-light" onchange="this.form.submit()">
-                                    <option value="">Todas las categorías</option>
-                                    {% for cat in categorias %}
-                                        {% if not cat.padre %}
-                                            {% include "includes/opcion_categoria_publica.html" with cat=cat level=0 current_selected=categoria_id %}
-                                        {% endif %}
-                                    {% endfor %}
-                                </select>
-                            </div>
-
-                            <!-- Disponibilidad -->
-                            <div class="mb-4">
-                                <label class="form-label fw-bold text-uppercase small text-muted">Disponibilidad</label>
-                                <div class="d-flex flex-column gap-2">
-                                    <div class="form-check custom-radio">
-                                        <input class="form-check-input" type="radio" name="agotado" value="" id="all" {% if not agotado_filter %}checked{% endif %} onchange="this.form.submit()">
-                                        <label class="form-check-label" for="all">Todos</label>
-                                    </div>
-                                    <div class="form-check custom-radio">
-                                        <input class="form-check-input" type="radio" name="agotado" value="0" id="available" {% if agotado_filter == '0' %}checked{% endif %} onchange="this.form.submit()">
-                                        <label class="form-check-label" for="available">Solo Disponibles</label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Botones Acción -->
-                            <div class="d-grid gap-2">
-                                <button class="btn btn-primary rounded-pill" type="submit">Aplicar</button>
-                                <a href="{% url 'tienda' %}" class="btn btn-outline-secondary btn-sm rounded-pill">Limpiar Filtros</a>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Product Grid (Mantenemos col-lg-8 para el ancho que pediste) -->
-        <div class="col-lg-8">
-            <!-- Esta es la parte clave: row-cols-2 asegura 2 columnas en móviles en cualquier servidor -->
-            <div class="row row-cols-2 row-cols-md-2 row-cols-lg-3 g-2">
-                {% for producto in productos %}
-                <div class="col">
-                    <div class="card h-100 product-card border-0 shadow-sm position-relative">
-                        
-                        <!-- Imagen y Badges -->
-                        <div class="position-relative overflow-hidden rounded-top-3" style="aspect-ratio: 1/1;">
-                            <a href="{% url 'productos' producto.id %}">
-                                {% if producto.portada %}
-                                    <img src="{{ producto.portada.url }}" class="card-img-top h-100 w-100" alt="{{ producto.nombre }}" style="object-fit: cover;">
-                                {% elif producto.imagen %}
-                                    <img src="{{ producto.imagen.url }}" class="card-img-top h-100 w-100" alt="{{ producto.nombre }}" style="object-fit: cover;">
-                                {% else %}
-                                    <img src="{% static 'images/default_event.jpg' %}" class="card-img-top h-100 w-100" alt="Sin imagen" style="object-fit: cover;">
-                                {% endif %}
-                            </a>
-                            
-                            {% if producto.agotado %}
-                                <span class="position-absolute top-0 start-0 bg-danger text-white px-2 py-1 m-2 rounded-pill small fw-bold shadow-sm" style="font-size: 0.75rem;">AGOTADO</span>
-                            {% else %}
-                                <span class="position-absolute top-0 start-0 bg-success text-white px-2 py-1 m-2 rounded-pill small fw-bold shadow-sm" style="font-size: 0.75rem;">DISPONIBLE</span>
-                            {% endif %}
-                        </div>
-
-                        <!-- Cuerpo de la Tarjeta -->
-                        <div class="card-body d-flex flex-column p-3 p-md-4">
-                            <!-- Categoría Principal -->
-                            <div class="mb-2">
-                                {% with producto.categorias.all|first as first_cat %}
-                                    {% if first_cat %}
-                                        <span class="badge bg-light text-secondary border">{{ first_cat.nombre }}</span>
-                                    {% endif %}
-                                {% endwith %}
-                            </div>
-
-                            <h5 class="card-title mb-2 fw-bold" style="font-size: 1rem;">
-                                <a href="{% url 'productos' producto.id %}" class="text-decoration-none text-secondary stretched-link">{{ producto.nombre }}</a>
-                            </h5>
-                            
-                            <p class="card-text text-muted small flex-grow-1" style="white-space: pre-line;">
-                                {{ producto.descripcion|truncatechars:60 }}
-                            </p>
-                            
-                            <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top border-light">
-                                <span class="h5 mb-0 text-primary fw-bold">${{ producto.precio }}</span>
-                                <span class="text-muted small"><i class="fas fa-eye me-1"></i></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% empty %}
-                <div class="col-12">
-                    <div class="alert alert-info text-center py-5">
-                        <i class="fas fa-search fa-3x mb-3 text-muted"></i>
-                        <h4>No se encontraron productos</h4>
-                        <p>Intenta ajustar tus filtros de búsqueda.</p>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
+<!-- ─── PAGE HEADER ───────────────────────────────────────── -->
+<div class="page-header">
+  <div class="container">
+    <span class="eyebrow">Universal Gold</span>
+    <h1>Catálogo de <em>Joyas</em></h1>
+    <p>Colección completa de piezas artesanales en oro 18k. Cada diseño es único.</p>
+    <nav aria-label="breadcrumb" class="mt-3">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+        <li class="breadcrumb-item active">Catálogo</li>
+      </ol>
+    </nav>
+  </div>
 </div>
+
+<!-- ─── STORE BODY ─────────────────────────────────────────── -->
+<div class="store-body">
+  <div class="container">
+    <div class="row g-5">
+
+      <!-- SIDEBAR -->
+      <div class="col-lg-3">
+
+        <button class="btn btn-gold-outline w-100 d-lg-none mb-4"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#filterCollapse">
+          <i class="fas fa-sliders-h"></i>
+          <span>Filtros</span>
+        </button>
+
+        <div class="collapse d-lg-block" id="filterCollapse">
+          <div class="filter-panel">
+            <p class="filter-title">
+              <i class="fas fa-sliders-h"></i>Filtros
+            </p>
+
+            <form method="get">
+
+              <div class="filter-group">
+                <label class="group-label">Buscar</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-search"></i></span>
+                  <input type="text" name="q" class="form-control"
+                         placeholder="Nombre o código…"
+                         value="{{ q|default:'' }}">
+                </div>
+              </div>
+
+              <div class="filter-group">
+                <label class="group-label">Categoría</label>
+                <select name="categoria" class="form-select" onchange="this.form.submit()">
+                  <option value="">Todas las categorías</option>
+                  {% for cat in categorias %}
+                    {% if not cat.padre %}
+                      {% include "includes/opcion_categoria_publica.html" with cat=cat level=0 current_selected=categoria_id %}
+                    {% endif %}
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <label class="group-label">Disponibilidad</label>
+                <div class="d-flex flex-column gap-2">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="agotado"
+                           value="" id="filterAll"
+                           {% if not agotado_filter %}checked{% endif %}
+                           onchange="this.form.submit()">
+                    <label class="form-check-label" for="filterAll">Todas</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="agotado"
+                           value="0" id="filterAvail"
+                           {% if agotado_filter == '0' %}checked{% endif %}
+                           onchange="this.form.submit()">
+                    <label class="form-check-label" for="filterAvail">Solo Disponibles</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-grid gap-2 mt-3">
+                <button type="submit" class="btn btn-primary">
+                  <span>Aplicar</span>
+                  <i class="fas fa-search"></i>
+                </button>
+                <a href="{% url 'tienda' %}" class="btn btn-ghost">
+                  <span>Limpiar filtros</span>
+                </a>
+              </div>
+
+            </form>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- PRODUCT GRID -->
+      <div class="col-lg-9">
+
+        {% if productos %}
+        <p class="result-count">
+          {{ productos|length }} pieza{% if productos|length != 1 %}s{% endif %} encontrada{% if productos|length != 1 %}s{% endif %}
+        </p>
+        {% endif %}
+
+        <div class="product-grid">
+          {% for producto in productos %}
+          <div class="product-card reveal">
+            <div class="product-card-image">
+              <a href="{% url 'productos' producto.id %}">
+                {% if producto.portada %}
+                  <img src="{{ producto.portada.url }}" alt="{{ producto.nombre }}">
+                {% elif producto.imagen %}
+                  <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}">
+                {% else %}
+                  <img src="{% static 'images/default_event.jpg' %}" alt="{{ producto.nombre }}">
+                {% endif %}
+              </a>
+              <div class="product-card-status">
+                {% if producto.agotado %}
+                  <span class="badge-sold-out">Agotado</span>
+                {% else %}
+                  <span class="badge-available">Disponible</span>
+                {% endif %}
+              </div>
+            </div>
+            <div class="product-card-body">
+              {% with producto.categorias.all|first as cat %}
+                {% if cat %}<div class="product-card-cat">{{ cat.nombre }}</div>{% endif %}
+              {% endwith %}
+              <div class="product-card-name">
+                <a href="{% url 'productos' producto.id %}">{{ producto.nombre }}</a>
+              </div>
+              <div class="product-card-price">${{ producto.precio }}</div>
+            </div>
+          </div>
+
+          {% empty %}
+          <div class="empty-state">
+            <i class="fas fa-gem empty-state-icon"></i>
+            <h4>No se encontraron piezas</h4>
+            <p>Los términos de búsqueda no coinciden con nuestro catálogo. Intenta ajustar los filtros o explora toda la colección.</p>
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+              <a href="{% url 'tienda' %}" class="btn btn-primary">
+                <span>Ver Catálogo Completo</span>
+              </a>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
 {% endblock %}

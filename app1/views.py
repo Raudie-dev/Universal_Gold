@@ -57,14 +57,13 @@ def index(request):
     # .order_by('?') -> Mezcla los resultados aleatoriamente
     # [:4] -> Corta la lista y se queda solo con los primeros 4
     productos = productos.order_by('?')[:4]
-
     cart_count = _get_cart_count(request)
     whatsapp_url = get_whatsapp_url()
     whatsapp_number = get_whatsapp_empresa()
     
     return render(request, 'index.html', {
         'categorias': categorias,
-        'productos': productos, # Ahora esta variable solo lleva 4 items aleatorios
+        'productos': productos, 
         'categoria_id': categoria_id,
         'cart_count': cart_count,
         'whatsapp_url': whatsapp_url,

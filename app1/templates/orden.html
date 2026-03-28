@@ -1,357 +1,207 @@
 {% extends 'base_index.html' %}
 {% load static %}
 
-{% block title %}Orden de Compra | EDES Venezuela{% endblock %}
+{% block title %}Carrito | Universal Gold{% endblock %}
 
 {% block content %}
 
-<!-- Modal de Términos y Condiciones -->
-<div class="modal fade" id="terminosCondicionesModal" tabindex="-1" aria-labelledby="terminosCondicionesLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header" style="background-color: var(--primary-color);">
-                <h5 class="modal-title text-white" id="terminosCondicionesLabel">
-                    <i class="fas fa-file-contract me-2"></i>Términos y Condiciones
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
-                <h6 class="fw-bold mb-3">Términos y Condiciones de Solicitud de Cotización</h6>
+<!-- ─── TERMS MODAL ───────────────────────────────────────── -->
+<div class="modal fade" id="terminosCondicionesModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
 
-                <ol class="ps-3">
-                    <li>Toda compra será procesada única y exclusivamente cuando el pago total correspondiente sea recibido o esté disponible en la cuenta bancaria de la empresa.</li>
-                    <li>Por su seguridad, realice sus pagos exclusivamente a las cuentas oficiales de la empresa. No nos hacemos responsables por depósitos en cuentas de terceros o no autorizadas.</li>
-                    <li>El pago se puede efectuar mediante transferencia bancaria o efectivo, dependiendo de la forma de pago.</li>
-                    <li>Toda compra pagada antes de las 8:00AM será procesada el mismo día, luego de esa hora será procesada el siguiente día hábil, sin excepción.</li>
-                    <li>Productos, precios, stock y tiempos de entrega sujetos a cambios sin previo aviso.</li>
-                    <li>Algunos municipios no tienen cobertura de envíos por parte del proveedor logístico.</li>
-                    <li>Toda mercancía viaja por cuenta y riesgo del comprador. Nuestra responsabilidad cesa al momento de entregar el producto al transportista o empresa de encomiendas.</li>
-                    <li>Para equipos o repuestos de importación, los tiempos de entrega estarán sujetos a trámites aduanales y logística internacional.</li>
-                    <li>Importamos algunos de los productos, por lo que algunos procesos se realizan con proveedores internacionales. Por ende pueden haber variaciones de stock, precios y disponibilidad como parte de actualizaciones automáticas realizadas de forma diaria, en esos casos solo procedemos a la devolución del dinero.</li>
-                    <li>Todos nuestros productos y servicios cuentan con una garantía limitada, la cual puede variar de acuerdo al tipo de producto, y en todos los casos es únicamente contra defecto de fábrica. No cubre mal uso, abuso o negligencia. La empresa responderá por garantía, solo si el producto objeto de esta compra es utilizado en condiciones normales para lo cual ha sido diseñado según las especificaciones técnicas del fabricante. Para efectos de garantía otorgadas por nuestra empresa debe conservar la factura y el producto en buen estado físico. Caso contrario la garantía queda anulada automáticamente.</li>
-                    <li>Todos los gastos que se generen por devolución/reemplazo de artículos corren por cuenta del comprador.</li>
-                    <li>No se aceptan devoluciones y/o cancelaciones una vez confirmada y gestionada la compra.</li>
-                    <li>Algunas imágenes son de referencia y podría variar respecto al producto final.</li>
-                    <li>Al hacer “click” en COMPRAR usted ENTIENDE y ACEPTA todas las cláusulas anteriormente detalladas en esta sección.</li>
-                </ol>
-            </div>
-            <div class="modal-footer">
-                <button type="button" style="font-size: 0.8rem;" class="btn btn-primary rounded-pill" data-bs-dismiss="modal" id="aceptarTerminos">
-                    <i class="fas fa-check me-2"></i>Aceptar y Continuar
-                </button>
-            </div>
-        </div>
+      <div class="modal-header">
+        <h5 class="modal-title">Términos y Condiciones</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <p class="terms-intro">Antes de continuar, por favor lee nuestros términos.</p>
+        <ol class="terms-list">
+          <li>Toda compra será procesada una vez recibido el pago total en la cuenta bancaria de la empresa.</li>
+          <li>Por su seguridad, realice pagos exclusivamente a las cuentas oficiales. No nos responsabilizamos por depósitos en cuentas de terceros.</li>
+          <li>El pago puede efectuarse mediante transferencia bancaria o efectivo.</li>
+          <li>Compras pagadas antes de las 8:00AM serán procesadas el mismo día; después, el siguiente día hábil.</li>
+          <li>Productos, precios, stock y tiempos de entrega sujetos a cambios sin previo aviso.</li>
+          <li>Algunos municipios no tienen cobertura del proveedor logístico.</li>
+          <li>Toda mercancía viaja por cuenta y riesgo del comprador.</li>
+          <li>Para equipos o repuestos de importación, los tiempos dependen de trámites aduanales.</li>
+          <li>Algunos productos se importan; puede haber variaciones de stock, precios y disponibilidad con actualizaciones diarias.</li>
+          <li>Todos nuestros productos cuentan con garantía limitada contra defecto de fábrica, no cubre mal uso.</li>
+          <li>Gastos por devolución o reemplazo corren por cuenta del comprador.</li>
+          <li>No se aceptan devoluciones ni cancelaciones una vez confirmada la compra.</li>
+          <li>Algunas imágenes son de referencia y pueden variar respecto al producto final.</li>
+          <li>Al continuar, usted entiende y acepta todas las cláusulas anteriores.</li>
+        </ol>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="aceptarTerminos">
+          <span>Entendido, continuar</span>
+          <i class="fas fa-check"></i>
+        </button>
+      </div>
+
     </div>
+  </div>
 </div>
 
-<div class="container py-5">
-    
-    <div class="text-center mb-5">
-        <h1 class="mb-3" style="font-size: 2rem;">Carrito de Compras</h1>
-        <p class="text-muted" style="font-size: 0.95rem; max-width: 600px; margin-left: auto; margin-right: auto;">Revise los productos seleccionados y complete sus datos para enviar su pedido via WhatsApp.</p>
-    </div>
+
+<!-- ─── PAGE HEADER ───────────────────────────────────────── -->
+<div class="page-header">
+  <div class="container">
+    <span class="eyebrow">Tu selección</span>
+    <h1>Carrito de <em>Compras</em></h1>
+  </div>
+</div>
+
+
+<!-- ─── CART BODY ─────────────────────────────────────────── -->
+<div class="cart-body">
+  <div class="container">
 
     {% if items %}
-    <div class="cotizacion row g-4">
-        <!-- Order Summary (Sin cambios) -->
-        <div class="col-lg-8">
-            <div class="card shadow-lg border-0 rounded-3 overflow-hidden h-100 no-tilt" style="background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);">
-                <div class="card-header text-white py-3 px-4 px-md-4" style="background-color: var(--primary-color);">
-                    <h5 class="mb-0" style="font-size: 1.05rem;"><i class="fas fa-list-alt me-2"></i>Productos Seleccionados</h5>
-                </div>
-                
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0 align-middle">
-                            <thead class="bg-light border-bottom" style="background-color: #f0f0f0 !important;">
-                                <tr>
-                                    <th class="ps-4 py-2 text-secondary fw-bold" style="font-size: 0.85rem;">Producto</th>
-                                    <th class="text-center py-2 text-secondary fw-bold" style="font-size: 0.85rem;">Cantidad</th>
-                                    {% if SHOW_PRICES_CLIENTES %}
-                                    <th class="text-end py-2 text-secondary fw-bold" style="font-size: 0.85rem;">Precio Unit.</th>
-                                    <th class="text-end pe-4 py-2 text-secondary fw-bold" style="font-size: 0.85rem;">Total</th>
-                                    {% endif %}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for it in items %}
-                                <tr class="border-bottom" style="transition: background-color 0.3s ease;">
-                                    <td class="ps-4 py-3">
-                                        <div class="d-flex align-items-center gap-2">
-                                            <div class="bg-light rounded-2 p-2 d-none d-sm-block flex-shrink-0" style="background-color: rgba(140, 198, 63, 0.1) !important;">
-                                                <i class="fas fa-box text-accent" style="color: var(--accent-color);"></i>
-                                            </div>
-                                            <div class="flex-grow-1">
-                                                <div class="fw-bold text-dark" style="font-size: 0.9rem;">{{ it.product.nombre }}</div>
-                                                <small class="text-muted" style="font-size: 0.8rem;">Ref: #{{ it.product.id }}</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge rounded-pill px-2 py-1" style="background-color: rgba(140, 198, 63, 0.15); color: var(--secondary-color); border: 1px solid var(--accent-color); font-size: 0.8rem; font-weight: 700;">{{ it.cantidad }}</span>
-                                    </td>
-                                    {% if SHOW_PRICES_CLIENTES %}
-                                    <td class="text-end text-muted fw-bold" style="font-size: 0.9rem;">${{ it.product.precio }}</td>
-                                    <td class="text-end pe-4 fw-bold" style="color: var(--primary-color); font-size: 0.95rem;">${{ it.total }}</td>
-                                    {% endif %}
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                             {% if SHOW_PRICES_CLIENTES %}
-                            <tfoot style="background: linear-gradient(135deg, rgba(140, 198, 63, 0.08) 0%, rgba(140, 198, 63, 0.05) 100%); border-top: 2px solid var(--accent-color);">
-                                <tr>
-                                    <td colspan="3" class="text-end py-3 px-4 fw-bold text-secondary" style="font-size: 0.9rem; text-transform: uppercase;">Subtotal Estimado:</td>
-                                    <td class="text-end pe-4 py-3 fw-bold" style="color: var(--primary-color); font-size: 1.1rem;">${{ subtotal }}</td>
-                                </tr>
-                            </tfoot>
-                            {% endif %}
-                        </table>
+    <div class="row g-5">
+
+      <!-- Order summary -->
+      <div class="col-lg-8">
+
+        <span class="cart-section-label">Productos Seleccionados</span>
+
+        <div class="order-table">
+          <div class="table-responsive">
+            <table class="table mb-0">
+              <thead>
+                <tr>
+                  <th>Producto</th>
+                  <th class="text-center">Cant.</th>
+                  {% if SHOW_PRICES_CLIENTES %}
+                  <th class="text-end">Precio Unit.</th>
+                  <th class="text-end">Total</th>
+                  {% endif %}
+                </tr>
+              </thead>
+              <tbody>
+                {% for it in items %}
+                <tr>
+                  <td>
+                    <div class="cart-product-cell">
+                      <div class="cart-product-dot"></div>
+                      <div>
+                        <div class="cart-product-name">{{ it.product.nombre }}</div>
+                        <div class="cart-product-ref">Ref. #{{ it.product.id }}</div>
+                      </div>
                     </div>
-                </div>
-            </div>
+                  </td>
+                  <td class="text-center">
+                    <span class="cart-qty">{{ it.cantidad }}</span>
+                  </td>
+                  {% if SHOW_PRICES_CLIENTES %}
+                  <td class="text-end cart-price-unit">${{ it.product.precio }}</td>
+                  <td class="text-end cart-price-total">${{ it.total }}</td>
+                  {% endif %}
+                </tr>
+                {% endfor %}
+              </tbody>
+              {% if SHOW_PRICES_CLIENTES %}
+              <tfoot>
+                <tr>
+                  <td colspan="3" class="text-end cart-subtotal-label">Subtotal Estimado</td>
+                  <td class="text-end cart-subtotal-amount">${{ subtotal }}</td>
+                </tr>
+              </tfoot>
+              {% endif %}
+            </table>
+          </div>
         </div>
 
-        <!-- Contact Form -->
-        <div class="col-lg-4">
-            <div class="card shadow-lg border-0 text-white rounded-3 position-relative overflow-hidden h-100 no-tilt" style="background: linear-gradient(135deg, var(--primary-color) 0%, #e85a00 100%);">
-                <!-- Decorative elements -->
-                <div class="position-absolute top-0 end-0 rounded-circle opacity-10" style="width: 200px; height: 200px; background-color: white; transform: translate(50%, -50%);"></div>
-                <div class="position-absolute bottom-0 start-0 rounded-circle opacity-5" style="width: 150px; height: 150px; background-color: white; transform: translate(-30%, 30%);"></div>
-                
-                <div class="card-body p-4 p-md-4 position-relative z-3">
-                    <h4 class="mb-3 pb-3 fw-bold" style="border-bottom: 2px solid rgba(255,255,255,0.2); font-size: 1.05rem;">
-                        <i class="fas fa-user-edit me-2"></i>Datos de Contacto
-                    </h4>
-                    
-                    <!-- Agregamos ID 'cotizacionForm' -->
-                    <form method="post" class="row g-3" id="cotizacionForm">
-                        {% csrf_token %}
-                        <!-- Full Name -->
-                        <div class="col-12">
-                            <label class="form-label small text-uppercase fw-bold opacity-85" style="font-size: 0.75rem;">Nombre Completo*</label>
-                            <div class="input-group rounded-2 overflow-hidden">
-                                <span class="input-group-text border-0" style="background-color: rgba(255,255,255,0.2); color: white;"><i class="fas fa-user"></i></span>
-                                <!-- Agregamos ID 'inputNombre' -->
-                                <input type="text" id="inputNombre" name="nombre" class="form-control border-0" placeholder="Su nombre completo" required style="background-color: rgba(255,255,255,0.15); color: white; font-size: 0.9rem;">
-                            </div>
-                        </div>
-                        
-                        <!-- Email -->
-                        <div class="col-12">
-                            <label class="form-label small text-uppercase fw-bold opacity-85" style="font-size: 0.75rem;">Correo Electrónico*</label>
-                            <div class="input-group rounded-2 overflow-hidden">
-                                <span class="input-group-text border-0" style="background-color: rgba(255,255,255,0.2); color: white;"><i class="fas fa-envelope"></i></span>
-                                <!-- Agregamos ID 'inputCorreo' -->
-                                <input type="email" id="inputCorreo" name="correo" class="form-control border-0" placeholder="ejemplo@correo.com" required style="background-color: rgba(255,255,255,0.15); color: white; font-size: 0.9rem;">
-                            </div>
-                        </div>
-                        
-                        <!-- Phone VALIDACIÓN ESTRICTA -->
-                        <div class="col-12">
-                            <label class="form-label small text-uppercase fw-bold opacity-85" style="font-size: 0.75rem;">Teléfono*</label>
-                            <div class="input-group rounded-2 overflow-hidden position-relative">
-                                <span class="input-group-text border-0" style="background-color: rgba(255,255,255,0.2); color: white;"><i class="fas fa-phone"></i></span>
-                                <!-- Agregamos ID 'inputTelefono' y maxlength -->
-                                <input type="text" id="inputTelefono" name="telefono" class="form-control border-0" placeholder="+58 412 123 4567" required style="background-color: rgba(255,255,255,0.15); color: white; font-size: 0.9rem;">
-                            </div>
-                            <!-- Mensaje de error oculto por defecto -->
-                            <div id="phoneError" class="mt-1 ps-1" style="display: none; color: #ffcccc; font-size: 0.75rem; font-weight: bold;">
-                                <i class="fas fa-exclamation-circle me-1"></i> El número debe comenzar con +58, no puede iniciar con 0 después del prefijo y debe contener 10 dígitos.
-                            </div>
-                        </div>
-                        
-                        <!-- Message -->
-                        <div class="col-12">
-                            <label class="form-label small text-uppercase fw-bold opacity-85" style="font-size: 0.75rem;">Mensaje / Detalles</label>
-                            <textarea name="mensaje" class="form-control border-0 rounded-2" rows="3" placeholder="Información adicional..." style="background-color: rgba(255,255,255,0.15); color: white; font-size: 0.9rem;"></textarea>
-                        </div>
-                        
-                        <!-- Submit Button - DESHABILITADO POR DEFECTO -->
-                        <div class="col-12 mt-4">
-                            <button type="submit" id="btnSubmit" class="btn btn-light text-primary w-100 rounded-pill shadow fw-bold" style="font-size: 0.95rem;" disabled>
-                                Completar datos para enviar <i class="fas fa-lock ms-2"></i>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="mt-3 text-center">
-                <a href="{% url 'tienda' %}" class="text-muted text-decoration-none small" style="font-size: 0.85rem;">
-                    <i class="fas fa-arrow-left me-1"></i> Seguir agregando productos
-                </a>
-            </div>
+        <div class="mt-4">
+          <a href="{% url 'tienda' %}" class="cart-back-link">
+            ← Seguir comprando
+          </a>
         </div>
+
+      </div>
+
+      <!-- Contact form -->
+      <div class="col-lg-4">
+        <div class="contact-card">
+          <div class="contact-card-header">
+            <h4>Datos de <em>Contacto</em></h4>
+            <p class="card-subtitle">Completa tu información para enviar la solicitud por WhatsApp</p>
+          </div>
+          <div class="contact-card-body">
+          <form method="post" class="d-flex flex-column gap-3" id="cotizacionForm">
+            {% csrf_token %}
+
+            <div>
+              <label>Nombre Completo *</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                <input type="text" id="inputNombre" name="nombre"
+                       class="form-control" placeholder="Tu nombre completo" required>
+              </div>
+            </div>
+
+            <div>
+              <label>Correo Electrónico *</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                <input type="email" id="inputCorreo" name="correo"
+                       class="form-control" placeholder="tu@email.com" required>
+              </div>
+            </div>
+
+            <div>
+              <label>Teléfono (Venezuela) *</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fab fa-whatsapp"></i></span>
+                <input type="tel" id="inputTelefono" name="telefono"
+                       class="form-control" placeholder="+58XXXXXXXXXX" required>
+              </div>
+              <p class="phone-error" id="phoneError">
+                Formato: +58 seguido de 10 dígitos (sin 0 inicial)
+              </p>
+            </div>
+
+            <div>
+              <label>Notas adicionales</label>
+              <textarea name="notas" class="form-control" rows="3"
+                        placeholder="¿Alguna solicitud especial?"></textarea>
+            </div>
+
+            <button type="submit" id="btnSubmit" class="btn btn-primary w-100 mt-1" disabled>
+              <span>Completa los datos</span>
+              <i class="fas fa-lock"></i>
+            </button>
+
+            <p class="cart-terms-note">
+              Al enviar aceptas nuestros
+              <a href="#" data-bs-toggle="modal" data-bs-target="#terminosCondicionesModal">
+                términos y condiciones
+              </a>.
+            </p>
+          </form>
+          </div><!-- /.contact-card-body -->
+        </div>
+      </div>
+
     </div>
+
     {% else %}
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="d-flex align-items-center justify-content-center" style="min-height: 60vh;">
-                <div class="text-center px-4">
-                    <div class="mb-3">
-                        <i class="fas fa-shopping-basket fa-4x text-muted" style="opacity: 0.4;"></i>
-                    </div>
-                    <h4 class="text-secondary fw-bold mb-2" style="font-size: 1.1rem;">Su lista de cotización está vacía</h4>
-                    <p class="text-muted mb-4" style="font-size: 0.9rem;">Agregue productos desde nuestro catálogo para generar una cotización.</p>
-                    <a href="{% url 'tienda' %}" class="btn btn-primary rounded-pill px-4" style="font-size: 0.9rem;">
-                        <i class="fas fa-store me-2"></i>Ir a la Tienda
-                    </a>
-                </div>
-            </div>
-        </div>
+    <!-- Empty cart -->
+    <div class="empty-cart">
+      <i class="fas fa-shopping-bag empty-cart-icon"></i>
+      <h2>Tu carrito está <em>vacío</em></h2>
+      <p>Explora nuestro catálogo y agrega las piezas que te inspiren.</p>
+      <a href="{% url 'tienda' %}" class="btn btn-primary mt-4">
+        <span>Explorar Catálogo</span>
+        <i class="fas fa-arrow-right"></i>
+      </a>
     </div>
     {% endif %}
+
+  </div>
 </div>
-
-<style>
-    input::placeholder, textarea::placeholder {
-        color: rgba(255, 255, 255, 0.6) !important;
-    }
-    
-    /* Estilo para cuando el botón está deshabilitado */
-    button:disabled {
-        background-color: rgba(255, 255, 255, 0.3) !important;
-        color: rgba(255, 255, 255, 0.5) !important;
-        border: none !important;
-        cursor: not-allowed;
-    }
-    
-    /* Borde rojo suave si hay error */
-    .input-error {
-        box-shadow: inset 0 0 0 2px rgba(255, 150, 150, 0.5) !important;
-    }
-
-    @media (max-width: 768px) {
-        h1 { font-size: 1.7rem; }
-        table th, table td { font-size: 0.8rem !important; padding: 0.5rem !important; }
-    }
-</style>
-<style>
-    /* 1. Forzamos que el header se vea oscuro (estado scrolled) */
-    #mainHeader {
-        background-color: var(--footer-color) !important;
-        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.25) !important;
-        padding: 0.5rem 0 !important;
-    }
-    
-    /* 2. Forzamos que los links se vean claros */
-    #mainHeader .nav-link {
-        color: var(--footer-text) !important;
-    }
-
-    /* 3. Empujamos el contenido hacia abajo para que el header no lo tape */
-    /* En escritorio */
-    body {
-        padding-top: 100px; 
-    }
-    
-    /* En móvil ajustamos el espacio */
-    @media (max-width: 768px) {
-        body {
-            padding-top: 90px;
-        }
-    }
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Mostrar Modal de Términos y Condiciones en primera visita
-    const terminosKey = 'terminosCondicionesAceptados_cotizacion';
-    
-    if (!localStorage.getItem(terminosKey)) {
-        const terminosModal = new bootstrap.Modal(document.getElementById('terminosCondicionesModal'), {
-            backdrop: 'static',
-            keyboard: false
-        });
-        terminosModal.show();
-        
-        // Marcar como aceptados cuando el usuario hace clic en "Aceptar y Continuar"
-        document.getElementById('aceptarTerminos').addEventListener('click', function() {
-            localStorage.setItem(terminosKey, 'true');
-        });
-        
-        // También guardar si cierra el modal
-        document.getElementById('terminosCondicionesModal').addEventListener('hidden.bs.modal', function() {
-            localStorage.setItem(terminosKey, 'true');
-        });
-    }
-
-    const phoneInput = document.getElementById('inputTelefono');
-    const nameInput = document.getElementById('inputNombre');
-    const emailInput = document.getElementById('inputCorreo');
-    const submitBtn = document.getElementById('btnSubmit');
-    const errorMsg = document.getElementById('phoneError');
-
-    const prefix = "+58";
-
-    // Colocar automáticamente +58
-    phoneInput.value = prefix;
-
-    // Evitar borrar el +58
-    phoneInput.addEventListener("input", function () {
-        // Evitar eliminar prefijo
-        if (!phoneInput.value.startsWith(prefix)) {
-            phoneInput.value = prefix;
-        }
-
-        // Evitar que el primer número después del +58 sea 0
-        let rest = phoneInput.value.slice(prefix.length);
-
-        if (rest.length > 0 && rest[0] === "0") {
-            // Borra el 0 automáticamente
-            phoneInput.value = prefix;
-        }
-    });
-
-    // Evitar mover el cursor al inicio del prefijo
-    phoneInput.addEventListener("click", function () {
-        if (phoneInput.selectionStart < prefix.length) {
-            phoneInput.setSelectionRange(phoneInput.value.length, phoneInput.value.length);
-        }
-    });
-
-    // Permitir solo números después del prefijo
-    phoneInput.addEventListener('keypress', function(e) {
-        if (!/[0-9]/.test(e.key)) {
-            e.preventDefault();
-        }
-    });
-
-    // VALIDACIÓN FINAL
-    function validateForm() {
-        const phoneValue = phoneInput.value.trim();
-
-        // Formato exacto: +58 + (primer dígito 1–9, NO 0) + 9 dígitos más
-        const phoneRegex = /^\+58[1-9]\d{9}$/;
-
-        const isPhoneValid = phoneRegex.test(phoneValue);
-
-        if (!isPhoneValid) {
-            errorMsg.style.display = 'block';
-            phoneInput.classList.add('input-error');
-        } else {
-            errorMsg.style.display = 'none';
-            phoneInput.classList.remove('input-error');
-        }
-
-        const isNameValid = nameInput.value.trim().length > 2;
-        const isEmailValid = emailInput.value.includes('@') && emailInput.value.includes('.');
-
-        if (isPhoneValid && isNameValid && isEmailValid) {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = 'Enviar Solicitud <i class="fas fa-paper-plane ms-2"></i>';
-        } else {
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = 'Complete los datos correctamente <i class="fas fa-lock ms-2"></i>';
-        }
-    }
-
-    // Escuchar cambios
-    phoneInput.addEventListener('input', validateForm);
-    nameInput.addEventListener('input', validateForm);
-    emailInput.addEventListener('input', validateForm);
-
-});
-</script>
-
 
 {% endblock %}

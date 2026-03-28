@@ -1,319 +1,367 @@
-/* ==========================================
-   EDES VENEZUELA - Lógica de Interactividad
-   ========================================== */
+/* ═══════════════════════════════════════════════════════
+   UNIVERSAL GOLD — main.js
+   Constellation rendered INSIDE specific dark sections
+   (no fixed canvas, no white-gap issue)
+═══════════════════════════════════════════════════════ */
 
-document.addEventListener("DOMContentLoaded", () => {
-  const brandsTrackLTR = document.getElementById("brandsCarouselTrackLTR");
+document.addEventListener('DOMContentLoaded', () => {
 
-  // simple infinite auto-scroll for brands (continuous, no start/end pause)
-  function createInfiniteCarousel(track) {
-    if (!track) return;
-    if (track.dataset.infiniteReady === "true") return;
+  // ─── CONSTELLATION ENGINE ─────────────────────────────
+  // Renders a canvas constellation as an absolute background
+  // inside any given container element.
+  function createConstellation(container, opts = {}) {
+    const {
+      starCount    = 90,
+      connectDist  = 150,
+      withShooting = true,
+      intensity    = 1,
+    } = opts;
 
-    const originalItems = Array.from(track.children);
-    const itemCount = originalItems.length;
-    if (itemCount === 0) return;
+    const canvas = document.createElement('canvas');
+    canvas.className = 'constellation-canvas';
+    Object.assign(canvas.style, {
+      position:      'absolute',
+      inset:         '0',
+      width:         '100%',
+      height:        '100%',
+      pointerEvents: 'none',
+      zIndex:        '0',
+    });
+    // Make sure the host section clips the canvas properly
+    if (getComputedStyle(container).position === 'static') {
+      container.style.position = 'relative';
+    }
+    container.prepend(canvas);
 
-    // clone once to ensure seamless loop
-    originalItems.forEach(item => track.appendChild(item.cloneNode(true)));
+    const ctx  = canvas.getContext('2d');
+    const GOLD   = [184, 150, 46];
+    const SILVER = [220, 210, 190];
+    let W, H, frame = 0;
+    let stars = [], shooters = [], nebulae = [];
 
-    track.style.animation = "none";
-    let offset = 0;
-    const duration = 100000;
-    let lastTime = Date.now();
-    let paused = false;
-    const dir = track.classList.contains("brands-carousel-rtl") ? 1 : -1;
-    let singleSetWidth = 0;
-    let autoResumeTimeout = null;
-    let isDragging = false;
-    let dragStartX = 0;
-    let dragStartOffset = 0;
-    let dragMoved = false;
+    function rgba(rgb, a) {
+      return `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${Math.max(0, Math.min(1, a))})`;
+    }
 
-    const wrapper = track.closest(".brands-carousel-wrapper") || track.parentElement;
-    let lastCenterUpdate = 0;
-    const centerUpdateInterval = 90;
+    function buildAll() {
+      W = canvas.width  = container.offsetWidth  || 1;
+      H = canvas.height = container.offsetHeight || 1;
 
-    function updateCenteredItem() {
-      if (!wrapper) return;
-      const now = Date.now();
-      if (now - lastCenterUpdate < centerUpdateInterval) return;
-      lastCenterUpdate = now;
+      nebulae = [];
+      for (let i = 0; i < 4; i++) {
+        nebulae.push({
+          x:     Math.random() * W,
+          y:     Math.random() * H,
+          rx:    90 + Math.random() * 200,
+          ry:    60 + Math.random() * 130,
+          alpha: (0.014 + Math.random() * 0.020) * intensity,
+          hue:   Math.random() > 0.5 ? GOLD : SILVER,
+        });
+      }
 
-      const wrapperRect = wrapper.getBoundingClientRect();
-      const centerX = wrapperRect.left + wrapperRect.width / 2;
-      const items = Array.from(track.children);
+      stars = [];
+      const count = Math.round(starCount * intensity);
+      for (let i = 0; i < count; i++) {
+        const bright = Math.random() > 0.75;
+        stars.push({
+          x:     Math.random() * W,
+          y:     Math.random() * H,
+          r:     bright ? 1.0 + Math.random() * 1.4 : 0.3 + Math.random() * 0.8,
+          phase: Math.random() * Math.PI * 2,
+          speed: 0.006 + Math.random() * 0.011,
+          alpha: (bright ? 0.5 + Math.random() * 0.45 : 0.18 + Math.random() * 0.35) * intensity,
+          color: Math.random() > 0.28 ? GOLD : SILVER,
+          sparkle:     bright && Math.random() > 0.52,
+          sparkleSize: 1.6 + Math.random() * 2.6,
+          drift: {
+            x: (Math.random() - 0.5) * 0.03,
+            y: (Math.random() - 0.5) * 0.016,
+          },
+        });
+      }
+    }
 
-      let closestItem = null;
-      let closestDistance = Infinity;
+    function spawnShooter() {
+      if (!withShooting) return;
+      const fromLeft = Math.random() > 0.5;
+      const angle    = (12 + Math.random() * 22) * Math.PI / 180;
+      const speed    = 7 + Math.random() * 9;
+      shooters.push({
+        x: fromLeft ? -20 : W + 20,
+        y: Math.random() * H * 0.7,
+        vx: fromLeft ?  Math.cos(angle) * speed : -Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        len: 70 + Math.random() * 110,
+        alpha: 0, life: 0,
+        maxLife: 55 + Math.random() * 50,
+      });
+    }
 
-      items.forEach((item) => {
-        const rect = item.getBoundingClientRect();
-        const itemCenter = rect.left + rect.width / 2;
-        const distance = Math.abs(centerX - itemCenter);
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closestItem = item;
+    function drawSparkle(x, y, size, a, color) {
+      ctx.save();
+      ctx.strokeStyle = rgba(color, a);
+      ctx.lineWidth = 0.65;
+      ctx.beginPath();
+      ctx.moveTo(x, y - size);  ctx.lineTo(x, y + size);
+      ctx.moveTo(x - size, y);  ctx.lineTo(x + size, y);
+      const d = size * 0.48;
+      ctx.moveTo(x - d, y - d); ctx.lineTo(x + d, y + d);
+      ctx.moveTo(x + d, y - d); ctx.lineTo(x - d, y + d);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      frame++;
+
+      // Nebulae
+      nebulae.forEach(n => {
+        const r  = Math.max(n.rx, n.ry);
+        const sx = n.rx / r, sy = n.ry / r;
+        ctx.save();
+        ctx.scale(sx, sy);
+        const gx = n.x / sx, gy = n.y / sy;
+        const gr = ctx.createRadialGradient(gx, gy, 0, gx, gy, r);
+        gr.addColorStop(0,   rgba(n.hue, n.alpha));
+        gr.addColorStop(0.5, rgba(n.hue, n.alpha * 0.38));
+        gr.addColorStop(1,   rgba(n.hue, 0));
+        ctx.fillStyle = gr;
+        ctx.beginPath();
+        ctx.arc(gx, gy, r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+
+      // Constellation lines
+      for (let i = 0; i < stars.length; i++) {
+        for (let j = i + 1; j < stars.length; j++) {
+          const dx   = stars[i].x - stars[j].x;
+          const dy   = stars[i].y - stars[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < connectDist) {
+            const t  = 1 - dist / connectDist;
+            const la = t * t * 0.19 * intensity;
+            const gr = ctx.createLinearGradient(stars[i].x, stars[i].y, stars[j].x, stars[j].y);
+            gr.addColorStop(0,   rgba(stars[i].color, la));
+            gr.addColorStop(0.5, rgba(GOLD, la * 1.3));
+            gr.addColorStop(1,   rgba(stars[j].color, la));
+            ctx.beginPath();
+            ctx.strokeStyle = gr;
+            ctx.lineWidth   = 0.38 + t * 0.28;
+            ctx.moveTo(stars[i].x, stars[i].y);
+            ctx.lineTo(stars[j].x, stars[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Stars
+      stars.forEach(s => {
+        s.phase += s.speed;
+        s.x += s.drift.x;  s.y += s.drift.y;
+        if (s.x < -8) s.x = W + 8;
+        if (s.x > W + 8) s.x = -8;
+        if (s.y < -8) s.y = H + 8;
+        if (s.y > H + 8) s.y = -8;
+
+        const twinkle = 0.5 + 0.5 * Math.sin(s.phase);
+        const a = s.alpha * (0.35 + 0.65 * twinkle);
+
+        const halo = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 4.2);
+        halo.addColorStop(0, rgba(s.color, a * 0.4));
+        halo.addColorStop(1, rgba(s.color, 0));
+        ctx.fillStyle = halo;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r * 4.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = rgba(s.color, a);
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (s.sparkle && twinkle > 0.6) {
+          drawSparkle(s.x, s.y, s.sparkleSize * twinkle, a * 0.8, s.color);
         }
       });
 
-      items.forEach((item) => {
-        item.classList.toggle("is-centered", item === closestItem);
-      });
-    }
-    function normalizeOffset(value) {
-      if (!singleSetWidth) return value;
-      if (dir < 0) {
-        while (value <= -singleSetWidth) value += singleSetWidth;
-        while (value > 0) value -= singleSetWidth;
-      } else {
-        while (value >= singleSetWidth) value -= singleSetWidth;
-        while (value < 0) value += singleSetWidth;
-      }
-      return value;
-    }
+      // Shooting stars
+      if (frame % 300 === 0 && Math.random() > 0.3) spawnShooter();
+      shooters = shooters.filter(ss => ss.life < ss.maxLife);
+      shooters.forEach(ss => {
+        ss.life++;
+        ss.x += ss.vx;  ss.y += ss.vy;
+        const t = ss.life / ss.maxLife;
+        ss.alpha = t < 0.2 ? t / 0.2 : t > 0.72 ? 1 - (t - 0.72) / 0.28 : 1;
 
-    if (wrapper) {
-      // Mouse events - pause on hover, auto-resume after 1 seconds
-      wrapper.addEventListener("mouseenter", () => {
-        paused = true;
-        clearTimeout(autoResumeTimeout);
-      });
-      wrapper.addEventListener("mouseleave", () => {
-        // Auto-resume carousel after 1 seconds on desktop
-        autoResumeTimeout = setTimeout(() => {
-          paused = false;
-          lastTime = Date.now();
-        }, 500);
-      });
+        const hyp  = Math.hypot(ss.vx, ss.vy);
+        const tailX = ss.x - (ss.vx / hyp) * ss.len;
+        const tailY = ss.y - (ss.vy / hyp) * ss.len;
 
-      // Touch events - pause on touch, auto-resume after 3 seconds
-      wrapper.addEventListener("touchstart", () => {
-        paused = true;
-        clearTimeout(autoResumeTimeout);
-      }, { passive: true });
+        const gr = ctx.createLinearGradient(tailX, tailY, ss.x, ss.y);
+        gr.addColorStop(0,   rgba(GOLD, 0));
+        gr.addColorStop(0.6, rgba(GOLD, ss.alpha * 0.48));
+        gr.addColorStop(1,   rgba([255, 245, 200], ss.alpha));
 
-      wrapper.addEventListener("touchend", () => {
-        // Auto-resume carousel after 3 seconds on mobile
-        autoResumeTimeout = setTimeout(() => {
-          paused = false;
-          lastTime = Date.now();
-        }, 3000);
-      }, { passive: true });
+        ctx.save();
+        ctx.strokeStyle = gr;
+        ctx.lineWidth   = 1.4;
+        ctx.shadowColor = rgba(GOLD, ss.alpha * 0.5);
+        ctx.shadowBlur  = 5;
+        ctx.beginPath();
+        ctx.moveTo(tailX, tailY);
+        ctx.lineTo(ss.x, ss.y);
+        ctx.stroke();
 
-      // Pointer drag to control carousel
-      wrapper.addEventListener("pointerdown", (event) => {
-        if (event.button !== undefined && event.button !== 0) return;
-        if (!singleSetWidth) measure();
-        isDragging = true;
-        dragMoved = false;
-        dragStartX = event.clientX;
-        dragStartOffset = offset;
-        paused = true;
-        clearTimeout(autoResumeTimeout);
-        wrapper.classList.add("is-dragging");
-        if (wrapper.setPointerCapture) {
-          wrapper.setPointerCapture(event.pointerId);
-        }
+        const hg = ctx.createRadialGradient(ss.x, ss.y, 0, ss.x, ss.y, 4);
+        hg.addColorStop(0, rgba([255, 250, 215], ss.alpha));
+        hg.addColorStop(1, rgba(GOLD, 0));
+        ctx.fillStyle = hg;
+        ctx.beginPath();
+        ctx.arc(ss.x, ss.y, 4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
       });
 
-      wrapper.addEventListener("pointermove", (event) => {
-        if (!isDragging) return;
-        const delta = event.clientX - dragStartX;
-        if (Math.abs(delta) > 2) dragMoved = true;
-        offset = normalizeOffset(dragStartOffset + delta);
-        track.style.transform = `translateX(${offset}px)`;
-        updateCenteredItem();
-      });
-
-      function finishDrag(event) {
-        if (!isDragging) return;
-        isDragging = false;
-        wrapper.classList.remove("is-dragging");
-        if (event && wrapper.releasePointerCapture) {
-          wrapper.releasePointerCapture(event.pointerId);
-        }
-        autoResumeTimeout = setTimeout(() => {
-          paused = false;
-          lastTime = Date.now();
-        }, 800);
-      }
-
-      wrapper.addEventListener("pointerup", finishDrag);
-      wrapper.addEventListener("pointercancel", finishDrag);
-      wrapper.addEventListener("pointerleave", (event) => {
-        if (isDragging) finishDrag(event);
-      });
+      requestAnimationFrame(draw);
     }
 
-    function measure() {
-      const gap = parseInt(getComputedStyle(track).gap) || 48;
-      const totalWidth = track.scrollWidth;
-      if (totalWidth > 0) {
-        singleSetWidth = totalWidth / 2;
-        return;
-      }
+    // Keep canvas in sync when the section resizes
+    const ro = new ResizeObserver(() => buildAll());
+    ro.observe(container);
 
-      const items = Array.from(track.children).slice(0, itemCount);
-      const widths = items.map(item => item.getBoundingClientRect().width);
-      const maxWidth = Math.max(0, ...widths);
-      singleSetWidth = (maxWidth + gap) * itemCount;
-    }
+    buildAll();
+    draw();
 
-    function step() {
-      const now = Date.now();
-      const elapsed = now - lastTime;
-      lastTime = now;
-      if (paused) { requestAnimationFrame(step); return; }
-
-      if (!singleSetWidth) {
-        measure();
-        if (!singleSetWidth) { requestAnimationFrame(step); return; }
-      }
-
-      offset += dir * (singleSetWidth / duration) * elapsed;
-
-      offset = normalizeOffset(offset);
-
-      track.style.transform = `translateX(${offset}px)`;
-      updateCenteredItem();
-      requestAnimationFrame(step);
-    }
-
-    // start immediately, then re-measure when images load
-    measure();
-    track.dataset.infiniteReady = "true";
-    requestAnimationFrame(step);
-
-    const images = Array.from(track.querySelectorAll("img"));
-    images.forEach(img => {
-      if (!img.complete) {
-        img.addEventListener("load", () => measure(), { once: true });
-        img.addEventListener("error", () => measure(), { once: true });
-      }
-    });
-
-    window.addEventListener("resize", () => {
-      measure();
-      updateCenteredItem();
-    });
-  }
-
-  createInfiniteCarousel(brandsTrackLTR);
-
-  // 1. LÓGICA DEL CARRUSEL "ANTES Y DESPUÉS"
-  const track = document.getElementById("baCarouselTrack");
-  const prevBtn = document.getElementById("baPrev");
-  const nextBtn = document.getElementById("baNext");
-  const dots = document.querySelectorAll(".ba-dot");
-
-  if (track && prevBtn && nextBtn) {
-    const slides = Array.from(track.children);
-    let currentIndex = 0;
-
-    function updateCarousel(index) {
-      // Mover el track
-      track.style.transform = `translateX(-${index * 100}%)`;
-
-      // Actualizar puntos
-      dots.forEach((dot) => dot.classList.remove("active"));
-      if (dots[index]) dots[index].classList.add("active");
-
-      currentIndex = index;
-    }
-
-    // Eventos de botones
-    nextBtn.addEventListener("click", () => {
-      const index = (currentIndex + 1) % slides.length;
-      updateCarousel(index);
-      resetAuto();
-    });
-
-    prevBtn.addEventListener("click", () => {
-      const index = (currentIndex - 1 + slides.length) % slides.length;
-      updateCarousel(index);
-      resetAuto();
-    });
-
-    // Eventos de puntos
-    dots.forEach((dot, index) => {
-      dot.addEventListener("click", () => {
-        updateCarousel(index);
-        resetAuto();
-      });
-    });
-
-    // Autoplay controlado (permite pausa extra al reiniciar ciclo)
-    const autoDelay = 7000; // ms entre slides
-    const wrapPauseDelay = 2000; // ms extra cuando completa la vuelta
-    let autoTimer = null;
-
-    function scheduleAuto(delay = autoDelay) {
-      if (autoTimer) clearTimeout(autoTimer);
-      autoTimer = setTimeout(() => {
-        advance();
-      }, delay);
-    }
-
-    function advance() {
-      const nextIndex = (currentIndex + 1) % slides.length;
-      updateCarousel(nextIndex);
-      const nextDelay = nextIndex === 0 ? wrapPauseDelay : autoDelay;
-      scheduleAuto(nextDelay);
-    }
-
-    // Iniciar autoplay
-    scheduleAuto();
-
-    // Reiniciar autoplay después de interacción
-    function resetAuto() {
-      scheduleAuto(autoDelay);
+    if (withShooting) {
+      setTimeout(spawnShooter, 2600);
+      setTimeout(spawnShooter, 6200);
     }
   }
 
-  // 2. LÓGICA DEL HEADER (CAMBIO DE COLOR AL HACER SCROLL)
-  const header = document.getElementById("mainHeader");
 
+  // ─── ATTACH TO SPECIFIC DARK SECTIONS ─────────────────
+  // Only dark-background sections — no white/cream pages affected.
+  const constellationTargets = [
+    // Page header on inner pages (Catálogo, Carrito)
+    {
+      selector: '.page-header',
+      opts: { starCount: 70, intensity: 0.8, withShooting: true },
+    },
+    // Product breadcrumb bar
+    {
+      selector: '.product-breadcrumb-bar',
+      opts: { starCount: 40, intensity: 0.55, withShooting: false },
+    },
+    // Contact card (dark panel in cart)
+    {
+      selector: '.contact-card',
+      opts: { starCount: 38, connectDist: 110, intensity: 0.55, withShooting: false },
+    },
+    // Featured products band (dark ink)
+    {
+      selector: '#destacados',
+      opts: { starCount: 80, intensity: 0.9, withShooting: true },
+    },
+    // CTA full-bleed dark section
+    {
+      selector: '.cta-section',
+      opts: { starCount: 110, intensity: 1.15, withShooting: true },
+    },
+  ];
+
+  constellationTargets.forEach(({ selector, opts }) => {
+    const el = document.querySelector(selector);
+    if (el) createConstellation(el, opts);
+  });
+
+
+  // ─── HEADER SCROLL ───────────────────────────────────
+  const header = document.getElementById('mainHeader');
   if (header) {
-    function checkScroll() {
-      if (window.scrollY > 50) {
-        header.classList.add("scrolled");
-      } else {
-        header.classList.remove("scrolled");
-      }
-    }
-
-    // Ejecutar al cargar y al hacer scroll
-    window.addEventListener("scroll", checkScroll);
-    checkScroll();
+    const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 60);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
   }
 
-  // 3. INICIALIZACIÓN DE TOASTS (NOTIFICACIONES)
-  // Nota: Requiere Bootstrap para funcionar. Si no tienes Bootstrap cargado, este código no hará nada.
-  const toastElements = document.querySelectorAll(".toast");
-  const bootstrap = window.bootstrap; // Declare the bootstrap variable
+  // ─── HERO SLIDER ──────────────────────────────────────
+  const slides = document.querySelectorAll('.hero-slide');
+  const dots   = document.querySelectorAll('.hero-dot');
+  let current = 0, heroInterval;
 
-  if (toastElements.length > 0 && typeof bootstrap !== "undefined") {
-    toastElements.forEach((toastEl) => {
-      const toast = new bootstrap.Toast(toastEl, { delay: 5000 });
-      toast.show();
+  function goToSlide(idx) {
+    slides[current]?.classList.remove('active');
+    dots[current]?.classList.remove('active');
+    current = idx;
+    slides[current]?.classList.add('active');
+    dots[current]?.classList.add('active');
+  }
+
+  if (slides.length > 1) {
+    heroInterval = setInterval(() => goToSlide((current + 1) % slides.length), 5500);
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => {
+        clearInterval(heroInterval);
+        goToSlide(i);
+        heroInterval = setInterval(() => goToSlide((current + 1) % slides.length), 5500);
+      });
     });
   }
-});
 
-document.addEventListener(
-  "contextmenu",
-  function (e) {
-    if (e.target.nodeName === "IMG") {
-      e.preventDefault();
-    }
-  },
-  false
-);
-
-// Opcional: Evitar atajos de teclado como Ctrl+S o Ctrl+U (Ver código fuente)
-document.addEventListener("keydown", function (e) {
-  if (e.ctrlKey && (e.key === "s" || e.key === "u")) {
-    e.preventDefault();
+  // ─── SCROLL REVEAL ────────────────────────────────────
+  const revealEls = document.querySelectorAll('.reveal');
+  if (revealEls.length) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const siblings = Array.from(entry.target.parentElement?.children || []);
+          const delay = Math.min(siblings.indexOf(entry.target) * 80, 320);
+          setTimeout(() => entry.target.classList.add('visible'), delay);
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    revealEls.forEach(el => io.observe(el));
   }
+
+  // ─── CART FORM VALIDATION ────────────────────────────
+  const phoneInput  = document.getElementById('inputTelefono');
+  const phoneError  = document.getElementById('phoneError');
+  const nombreInput = document.getElementById('inputNombre');
+  const correoInput = document.getElementById('inputCorreo');
+  const submitBtn   = document.getElementById('btnSubmit');
+
+  function checkForm() {
+    if (!submitBtn) return;
+    const nombre  = nombreInput?.value.trim();
+    const correo  = correoInput?.value.trim();
+    const tel     = phoneInput?.value.trim();
+    const phoneOk = /^\+58\d{10}$/.test(tel);
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo);
+    const ready   = nombre && emailOk && phoneOk;
+    submitBtn.disabled = !ready;
+    submitBtn.querySelector('span').textContent = ready ? 'Enviar Solicitud' : 'Completa los datos';
+    submitBtn.querySelector('i').className = ready ? 'fas fa-arrow-right' : 'fas fa-lock';
+  }
+
+  phoneInput?.addEventListener('input', () => {
+    const ok = /^\+58\d{10}$/.test(phoneInput.value.trim());
+    phoneError.style.display = phoneInput.value && !ok ? 'block' : 'none';
+    checkForm();
+  });
+  nombreInput?.addEventListener('input', checkForm);
+  correoInput?.addEventListener('input', checkForm);
+
+  // ─── SMOOTH ANCHOR SCROLL ─────────────────────────────
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', e => {
+      const target = document.querySelector(anchor.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
 });

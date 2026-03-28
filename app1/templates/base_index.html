@@ -2,175 +2,225 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-QQNXLSXEZR"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <meta charset="UTF-8">
+  <title>{% block title %}Universal Gold — Joyas Artesanales{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Joyería artesanal en oro 18k. Anillos, brazaletes, cadenas, argollas y más. Compra segura por WhatsApp.">
 
-  gtag('config', 'G-QQNXLSXEZR');
-</script>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
 
-    <meta charset="UTF-8">
-    <title>{% block title %}EDES{% endblock %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'css/main.css' %}">
-    <!-- Added Animate.css for scroll animations -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
-    {% block extra_head %}{% endblock %}
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <!-- Design System -->
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+
+  <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}">
+
+  {% block extra_head %}{% endblock %}
 </head>
 <body class="d-flex flex-column min-vh-100">
-<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N55RN4TW"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
 
-<header class="header" id="mainHeader">
-    <div class="container d-flex justify-content-between align-items-center">
-        <a href="{% url 'index' %}" class="logo text-decoration-none">
-            <img src="{% static 'images/logo-edes.png' %}" alt="EDES logo">
-        </a>
-        <nav class="d-none d-md-block">
-            <ul class="nav mb-0 align-items-center">
-                <li class="nav-item"><a href="{% url 'index' %}" class="nav-link"><i class="fas fa-home me-1"></i> Inicio</a></li>
-                <li class="nav-item"><a href="{% url 'tienda' %}" class="nav-link"><i class="fas fa-store me-1"></i> Tienda</a></li>
-                <li class="nav-item ms-3">
-                    <a href="{% url 'orden' %}" class="btn btn-primary position-relative rounded-pill px-4 text-white">
-                        <i class="fas fa-file-invoice me-1"></i> Carrito
-                        {% if cart_count > 0 %}
-                        <span class="btn badge">
-                            {{ cart_count }}
-                        </span>
-                        {% endif %}
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        <!-- Mobile Menu Toggle -->
-        <button class="btn btn-outline-secondary d-md-none border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu">
-            <i class="fas fa-bars fa-lg"></i>
-        </button>
-    </div>
-    <!-- Texto centrado que aparece cuando el navbar está oscuro (header.scrolled) -->
-    <div class="header-center-title">El Poder De La Excelencia</div>
+<!-- GTM -->
+<noscript>
+  <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N55RN4TW"
+          height="0" width="0" style="display:none;visibility:hidden"></iframe>
+</noscript>
+
+<!-- ═══════════════════════════════════════════════════
+     HEADER
+════════════════════════════════════════════════════ -->
+<header class="header {% block header_class %}{% endblock %}" id="mainHeader">
+  <div class="header-inner">
+    <!-- Logo -->
+    <a href="{% url 'index' %}" class="header-logo">
+      <img src="{% static 'images/logo.png' %}" alt="Universal Gold">
+    </a>
+
+    <!-- Desktop Nav -->
+    <nav class="header-nav d-none d-md-flex">
+      <a href="{% url 'index' %}"
+         class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}">
+        Inicio
+      </a>
+      <a href="{% url 'tienda' %}"
+         class="nav-link {% if request.resolver_match.url_name == 'tienda' %}active{% endif %}">
+        Catálogo
+      </a>
+      <a href="{% url 'orden' %}" class="btn-cart-header ms-3">
+        <i class="fas fa-shopping-bag"></i>
+        <span>Carrito</span>
+        {% if cart_count > 0 %}
+          <span class="badge-cart">{{ cart_count }}</span>
+        {% endif %}
+      </a>
+    </nav>
+
+    <!-- Mobile toggle -->
+    <button class="btn-mobile-toggle d-md-none"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#mobileMenu"
+            aria-label="Menú">
+      <i class="fas fa-bars"></i>
+    </button>
+  </div>
 </header>
 
-<!-- Mobile Menu Offcanvas -->
-<div class="offcanvas offcanvas-end" tabindex="-1" id="mobileMenu">
-    <div class="offcanvas-header text-bg-dark text-white">
-        <h5 class="offcanvas-title font-heading text-white">MENÚ</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+<!-- ═══════════════════════════════════════════════════
+     MOBILE MENU
+════════════════════════════════════════════════════ -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
+  <div class="offcanvas-header">
+    <span class="offcanvas-title" id="mobileMenuLabel">Universal Gold</span>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Cerrar"></button>
+  </div>
+  <div class="offcanvas-body d-flex flex-column">
+    <nav class="flex-grow-1 pt-2">
+      <a href="{% url 'index' %}" class="mobile-nav-link">
+        <i class="fas fa-home me-3" style="color:var(--gold);width:16px;"></i>Inicio
+      </a>
+      <a href="{% url 'tienda' %}" class="mobile-nav-link">
+        <i class="fas fa-gem me-3" style="color:var(--gold);width:16px;"></i>Catálogo
+      </a>
+      <a href="{% url 'orden' %}" class="mobile-nav-link">
+        <i class="fas fa-shopping-bag me-3" style="color:var(--gold);width:16px;"></i>
+        Carrito {% if cart_count > 0 %}({{ cart_count }}){% endif %}
+      </a>
+    </nav>
+
+    <div class="p-4 border-top" style="border-color:var(--border)!important;">
+      <p class="eyebrow mb-3">Síguenos</p>
+      <div class="footer-social">
+        <a href="https://instagram.com/universalgold.ve" target="_blank" rel="noopener" title="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a href="https://www.tiktok.com/@universalgold" target="_blank" rel="noopener" title="TikTok">
+          <i class="fab fa-tiktok"></i>
+        </a>
+        {% if whatsapp_url %}
+        <a href="{{ whatsapp_url }}" target="_blank" rel="noopener" title="WhatsApp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+        {% endif %}
+      </div>
     </div>
-    <div class="offcanvas-body d-flex flex-column">
-        <ul class="nav flex-column gap-3 mb-auto">
-            <li class="nav-item"><a href="{% url 'index' %}" class="nav-link fs-5 border-bottom text-dark"><i class="fas fa-home me-2 text-primary"></i>Inicio</a></li>
-            <li class="nav-item"><a href="{% url 'tienda' %}" class="nav-link fs-5 border-bottom text-dark"><i class="fas fa-store me-2 text-primary"></i>Tienda</a></li>
-            <li class="nav-item mt-3"><a href="{% url 'orden' %}" class="btn btn-primary w-100 text-white shadow-sm">Solicitar Orden</a></li>
-        </ul>
-        <div class="mt-4 text-center text-muted small">
-            <p class="mb-1">Síguenos en redes</p>
-            <div class="d-flex justify-content-center gap-3 fs-4">
-                <a href="https://instagram.com/edes.ca" target="_blank" rel="noopener noreferrer" class="text-secondary"><i class="fab fa-instagram"></i></a>
-                <a href="https://www.tiktok.com/@edes.ca" target="_blank" rel="noopener noreferrer" class="text-secondary"><i class="fab fa-tiktok"></i></a>
-            </div>
-        </div>
-    </div>
+  </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════
+     ALERTS
+════════════════════════════════════════════════════ -->
+{% if messages %}
+<div class="container mt-4" style="padding-top:80px;">
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+    {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- ═══════════════════════════════════════════════════
+     MAIN
+════════════════════════════════════════════════════ -->
 <main class="flex-grow-1">
-    {% if messages %}
-    <div class="container mt-3">
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-    {% block content %}{% endblock %}
+  {% block content %}{% endblock %}
 </main>
 
-<!-- Added Floating WhatsApp Button -->
+<!-- ─── WHATSAPP FLOAT ──────────────────────────────── -->
 {% if whatsapp_url %}
-<a href="{{ whatsapp_url }}" class="whatsapp-float" target="_blank">
-    <i class="fab fa-whatsapp"></i>
+<a href="{{ whatsapp_url }}" class="whatsapp-float" target="_blank" rel="noopener" title="WhatsApp">
+  <i class="fab fa-whatsapp"></i>
 </a>
 {% endif %}
 
+<!-- ═══════════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════════ -->
 <footer class="footer">
-    <div class="container">
-        <div class="row gy-4">
-            <div class="col-md-4">
-                <img src="{% static 'images/logo-edes.png' %}" alt="EDES Venezuela" alt="EDES Logo" class="mb-3" style="height: 40px; filter: brightness(0) invert(1);">
-                <p class="text-white-50">Especialistas en repuestos y mecánica para montacargas. Calidad y servicio garantizado para mantener su flota en movimiento.</p>
-            </div>
-            <div class="col-md-4">
-                <h5 class="mb-3">Enlaces Rápidos</h5>
-                <ul class="list-unstyled">
-                    <li><a href="{% url 'index' %}" class="text-decoration-none mb-2 d-block">Inicio</a></li>
-                    <li><a href="{% url 'tienda' %}" class="text-decoration-none mb-2 d-block">Tienda de Repuestos</a></li>
-                    <li><a href="{% url 'orden' %}" class="text-decoration-none mb-2 d-block">Solicitar Orden</a></li>
-                </ul>
-            </div>
-            <div class="col-md-4">
-                <h5 class="mb-3">Contacto</h5>
-                <p class="mb-1">
-                    {% if whatsapp_url %}
-                        <a href="{{ whatsapp_url }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-white-50">
-                            <i class="fab fa-whatsapp me-2 text-success"></i>{{ whatsapp_number|default:'+58 (424) 121.7906' }}
-                        </a>
-                    {% else %}
-                        <span class="text-white-50"><i class="fab fa-whatsapp me-2 text-success"></i>WhatsApp no configurado</span>
-                    {% endif %}
-                </p>
-                <p class="mb-1">
-                    <a href="tel:+582125157807" class="text-decoration-none text-white-50">
-                        <i class="fas fa-phone me-2 text-primary"></i>+58 (212) 515.78.07
-                    </a>
-                </p>
-                <p class="mb-1">
-                    <a href="mailto:info@edesip.com" class="text-decoration-none text-white-50">
-                        <i class="fas fa-envelope me-2 text-primary"></i>info@edesip.com
-                    </a>
-                </p>
-                <p class="mb-1">
-                    <i class="fas fa-map-marker-alt me-2 text-primary"></i>Ubicación: Miranda, Venezuela
-                </p>
-                <p>
-                    <a href="https://instagram.com/edes.ca" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-white-50 me-3">
-                        <i class="fab fa-instagram me-2 text-primary"></i>Instagram
-                    </a>
-                    <a href="https://www.tiktok.com/@edes.ca" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-white-50">
-                        <i class="fab fa-tiktok me-2"></i>TikTok
-                    </a>
-                </p>
-            </div>
+  <div class="container">
+    <div class="row g-5 mb-4">
+
+      <!-- Brand -->
+      <div class="col-md-4">
+        <div class="footer-brand">
+          <img src="{% static 'images/logo-edes.png' %}" alt="Universal Gold">
         </div>
-        <hr class="border-secondary my-4 opacity-25">
-        <div class="text-center text-white-50">
-            <p class="mb-0">&copy; {{ now|date:"Y" }} EDES. Todos los derechos reservados.</p>
+        <p class="footer-desc">
+          Especialistas en joyería artesanal de oro 18k. Cada pieza refleja elegancia, precisión y carácter venezolano.
+        </p>
+        <div class="footer-social">
+          <a href="https://instagram.com/universalgold.ve" target="_blank" rel="noopener" title="Instagram">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="https://www.tiktok.com/@universalgold" target="_blank" rel="noopener" title="TikTok">
+            <i class="fab fa-tiktok"></i>
+          </a>
+          {% if whatsapp_url %}
+          <a href="{{ whatsapp_url }}" target="_blank" rel="noopener" title="WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+          </a>
+          {% endif %}
         </div>
-         <div class="footer-credits">
-            Designed by <a href="https://raudie.net" target="_blank" rel="noopener">Raudie
-                <img src="{% static 'images/raudie-logo.png' %}" class="raudie-logo" alt="">
-            </a>
+      </div>
+
+      <!-- Tienda -->
+      <div class="col-md-2 col-6">
+        <span class="footer-col-title">Tienda</span>
+        <a href="{% url 'tienda' %}" class="footer-link">Catálogo Completo</a>
+        <a href="{% url 'tienda' %}?categoria=anillos" class="footer-link">Anillos</a>
+        <a href="{% url 'tienda' %}?categoria=brazaletes" class="footer-link">Brazaletes</a>
+        <a href="{% url 'tienda' %}?categoria=cadenas" class="footer-link">Cadenas</a>
+        <a href="{% url 'tienda' %}?categoria=collares" class="footer-link">Collares</a>
+      </div>
+
+      <!-- Información -->
+      <div class="col-md-2 col-6">
+        <span class="footer-col-title">Información</span>
+        <a href="{% url 'index' %}" class="footer-link">Inicio</a>
+        <a href="{% url 'orden' %}" class="footer-link">Mi Carrito</a>
+      </div>
+
+      <!-- Contacto -->
+      <div class="col-md-4">
+        <span class="footer-col-title">Contacto</span>
+        {% if whatsapp_url %}
+        <a href="{{ whatsapp_url }}" target="_blank" rel="noopener" class="footer-contact-item">
+          <i class="fab fa-whatsapp"></i>
+          <span>{{ whatsapp_number|default:'+58 (424) 123.2838' }}</span>
+        </a>
+        {% endif %}
+        <a href="mailto:info@universalgold.net" class="footer-contact-item">
+          <i class="fas fa-envelope"></i>
+          <span>info@universalgold.net</span>
+        </a>
+        <div class="footer-contact-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>CC Tolón Fashion Mall, Piso 5, Local 5–05<br>Av. Principal Las Mercedes, Caracas</span>
         </div>
+      </div>
+
     </div>
+
+    <div class="footer-bottom">
+      <span class="footer-copy">&copy; {{ now|date:"Y" }} Universal Gold. Todos los derechos reservados.</span>
+      <span class="footer-credits">
+        Diseñado por <a href="https://raudie.net" target="_blank" rel="noopener">Raudie</a>
+      </span>
+    </div>
+  </div>
 </footer>
 
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="{% static 'js/main.js' %}"></script>
+
 {% block extra_scripts %}{% endblock %}
 </body>
 </html>

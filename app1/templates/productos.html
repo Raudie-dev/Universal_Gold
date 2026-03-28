@@ -1,195 +1,187 @@
 {% extends 'base_index.html' %}
 {% load static %}
 
-{% block title %}{{ producto.nombre }} | EDES Venezuela{% endblock %}
+{% block title %}{{ producto.nombre }} | Universal Gold{% endblock %}
 
 {% block content %}
-<style>
-    /* 1. Forzamos que el header se vea oscuro (estado scrolled) */
-    #mainHeader {
-        background-color: var(--footer-color) !important;
-        box-shadow: 0 2px 20px rgba(0, 0, 0, 0.25) !important;
-        padding: 0.5rem 0 !important;
-    }
-    
-    /* 2. Forzamos que los links se vean claros */
-    #mainHeader .nav-link {
-        color: var(--footer-text) !important;
-    }
 
-    /* 3. Empujamos el contenido hacia abajo para que el header no lo tape */
-    /* En escritorio */
-    body {
-        padding-top: 100px; 
-    }
-    
-    /* En móvil ajustamos el espacio */
-    @media (max-width: 768px) {
-        body {
-            padding-top: 90px;
-        }
-    }
-</style>
-<div class="container py-5">
-    
-    <!-- 1. BREADCRUMB CON JERARQUÍA (Corregido para usar hoja) -->
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb" style="font-size: 0.9rem;">
-            <li class="breadcrumb-item"><a href="{% url 'tienda' %}">Tienda</a></li>
-            
-            {# Tomamos la primera categoría "Hoja" (la más específica) para trazar la ruta hacia atrás #}
-            {% with cat_principal=producto.categorias_hoja|first %}
-                {% if cat_principal %}
-                    {# Llamamos al include recursivo para generar: Abuelo / Padre / Hijo #}
-                    {% include "includes/breadcrumb_items.html" with cat=cat_principal %}
-                {% endif %}
-            {% endwith %}
-            
-            <li class="breadcrumb-item active" aria-current="page">{{ producto.nombre }}</li>
-        </ol>
+<!-- ─── BREADCRUMB ─────────────────────────────────────────── -->
+<div class="product-breadcrumb-bar">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="{% url 'tienda' %}">Catálogo</a>
+        </li>
+        {% with cat_principal=producto.categorias_hoja|first %}
+          {% if cat_principal %}
+            {% include "includes/breadcrumb_items.html" with cat=cat_principal %}
+          {% endif %}
+        {% endwith %}
+        <li class="breadcrumb-item active">{{ producto.nombre }}</li>
+      </ol>
     </nav>
-
-    <!-- Main product card -->
-    <div class="card shadow-lg border-0 overflow-hidden mb-5 rounded-3" style="background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);">
-        <div class="row g-0">
-            
-            <!-- COLUMNA IZQUIERDA: CARRUSEL DE IMÁGENES -->
-            <div class="col-md-6 d-flex align-items-center justify-content-center p-4 p-md-5 position-relative" style="background: linear-gradient(135deg, rgba(140, 198, 63, 0.08) 0%, rgba(140, 198, 63, 0.03) 100%);">
-                <div id="carouselProducto" class="carousel slide w-100 position-relative" data-bs-ride="carousel">
-                    <div class="carousel-inner rounded-2 shadow bg-white p-3">
-                        {% if imagenes %}
-                            {% for img in imagenes %}
-                            <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                                {% if img.imagen %}
-                                <img src="{{ img.imagen.url }}" class="d-block w-100" alt="{{ producto.nombre }}" style="max-height: 350px; object-fit: contain; background: white;">
-                            {% else %}
-                                <img src="{{ img.url }}" class="d-block w-100" alt="{{ producto.nombre }}" style="max-height: 350px; object-fit: contain; background: white;">
-                            {% endif %}
-                            </div>
-                            {% endfor %}
-                        {% else %}
-                            <div class="carousel-item active">
-                                <img src="{% static 'images/default_event.jpg' %}" class="d-block w-100" alt="Sin imagen" style="max-height: 350px; object-fit: contain; background: white;">
-                            </div>
-                        {% endif %}
-                    </div>
-                    {% if imagenes|length > 1 %}
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselProducto" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" style="background-color: rgba(0,0,0,0.3); border-radius: 50%; padding: 10px;"></span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselProducto" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" style="background-color: rgba(0,0,0,0.3); border-radius: 50%; padding: 10px;"></span>
-                    </button>
-                    {% endif %}
-                </div>
-            </div>
-            
-            <!-- COLUMNA DERECHA: INFORMACIÓN -->
-            <div class="col-md-6">
-                <div class="card-body p-4 p-lg-4 h-100 d-flex flex-column">
-                    
-                    <!-- 2. BUCLE DE CATEGORÍAS (Usando categorias_hoja) -->
-                    <div class="mb-3 d-flex flex-wrap align-items-center gap-2">
-                        
-                        {# Iteramos SOLO sobre las hojas para evitar duplicados visuales #}
-                        {% for cat in producto.categorias_hoja %}
-                            <span class="badge rounded-pill px-3 py-1 d-inline-flex align-items-center" 
-                                style="background-color: rgba(0, 77, 37, 0.1); color: var(--secondary-color); border: 1px solid var(--secondary-color); font-size: 0.8rem;">
-                                
-                                {# Include recursivo: Pinta "Padre > Hijo" dentro del badge #}
-                                {% include "includes/texto_jerarquia.html" with cat=cat %}
-                                
-                            </span>
-                        {% endfor %}
-
-                        <!-- ESTADO -->
-                        {% if producto.agotado %}
-                            <span class="badge rounded-pill px-3 py-1" style="background-color: rgba(220, 53, 69, 0.1); color: #dc3545; border: 1px solid #dc3545; font-size: 0.8rem;">Agotado</span>
-                        {% else %}
-                            <span class="badge rounded-pill px-3 py-1" style="background-color: rgba(40, 167, 69, 0.1); color: #28a745; border: 1px solid #28a745; font-size: 0.8rem;">Disponible</span>
-                        {% endif %}
-                    </div>
-                    
-                    <h1 class="fw-bold mb-2 text-secondary" style="font-size: 1.6rem;">{{ producto.nombre }}</h1>
-                    
-                    <div class="d-flex align-items-center mb-4">
-                        <h2 class="text-primary mb-0 fw-bold me-3" style="font-size: 1.8rem;">${{ producto.precio }}</h2>
-                        <span class="text-muted small" style="font-size: 0.85rem;">Precio unitario</span>
-                    </div>
-                    
-                    <!-- Descripción -->
-                    <div class="mb-4 p-3 rounded-2" style="background-color: rgba(140, 198, 63, 0.08); border-left: 4px solid var(--accent-color);">
-                        <h5 class="text-secondary mb-2 fw-bold" style="font-size: 0.95rem;">Descripción del Producto</h5>
-                        <p class="mb-0 text-muted" style="font-size: 0.9rem;">
-                            {{ producto.descripcion|linebreaksbr }}
-                        </p>
-                    </div>
-
-                    <!-- Botones de Acción -->
-                    <div class="mt-auto pt-3 border-top">
-                        <form method="post" action="{% url 'orden_add' %}" class="row g-2 align-items-end justify-content-around">
-                            {% csrf_token %}
-                            <input type="hidden" name="product_id" value="{{ producto.id }}">
-                            
-                            <div class="col-sm-5">
-                                <label class="form-label fw-bold small text-uppercase text-muted" style="font-size: 0.8rem;">Cantidad</label>
-                                <div class="input-group">
-                                    <button class="btn btn-outline-secondary" type="button" style="font-size: 0.75rem;" onclick="this.parentNode.querySelector('input[type=number]').stepDown()">-</button>
-                                    <input type="number" min="1" name="cantidad" value="1" class="form-control text-center border-secondary" style="font-size: 0.75rem;">
-                                    <button class="btn btn-outline-secondary" type="button" style="font-size: 0.75rem;" onclick="this.parentNode.querySelector('input[type=number]').stepUp()">+</button>
-                                </div>
-                            </div>
-                            
-                            <div class="col-sm-5">
-                                <button type="submit" class="btn btn-primary w-100 rounded-pill shadow" style="font-size: 0.85rem; padding: 0.6rem;" {% if producto.agotado %}disabled{% endif %}>
-                                    <i class="fas fa-cart-plus me-2"></i> Agregar Producto
-                                </button>
-                            </div>
-                        </form>
-                        <div class="mt-2 text-center">
-                            <a href="{% url 'orden' %}" class="text-decoration-none text-muted small" style="font-size: 0.85rem;">
-                                <i class="fas fa-clipboard-list me-1"></i> Ver mi orden actual
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Productos Relacionados -->
-    {% if sugeridos %}
-    <div class="mt-5">
-        <h3 class="section-title text-start" style="font-size: 1.4rem;">Productos Relacionados</h3>
-        <div class="row g-3">
-            {% for sugerido in sugeridos %}
-            <div class="col-md-3 col-sm-6">
-                <div class="card h-100 shadow-sm border-0 rounded-2 overflow-hidden" style="background: white; transition: all 0.3s ease;">
-                    <a href="{% url 'productos' sugerido.id %}" class="text-decoration-none">
-                        <div class="position-relative overflow-hidden" style="height: 100%; background-color: #f9f9f9;">
-                            {% if sugerido.imagen %}
-                            <img src="{{ sugerido.imagen.url }}" class="w-100 h-100" alt="{{ sugerido.nombre }}" style="object-fit: cover; transition: transform 0.3s ease;">
-                            {% else %}
-                            <img src="{% static 'images/default_event.jpg' %}" class="w-100 h-100" alt="Sin imagen" style="object-fit: cover;">
-                            {% endif %}
-                        </div>
-                        <div class="card-body p-2 p-md-3">
-                            <h6 class="card-title text-dark mb-2" style="font-size: 0.9rem; font-weight: 700;">{{ sugerido.nombre }}</h6>
-                            <span class="text-primary fw-bold" style="font-size: 0.95rem;">${{ sugerido.precio }}</span>
-                        </div>
-                    </a>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% endif %}
+  </div>
 </div>
 
-<style>
-    @media (max-width: 768px) {
-        h1 { font-size: 1.3rem; }
-        .card-body { padding: 1.2rem !important; }
-    }
-</style>
+
+<!-- ─── PRODUCT DETAIL ────────────────────────────────────── -->
+<section class="product-detail-section">
+  <div class="product-detail-wrap">
+
+    <!-- Gallery -->
+    <div class="product-detail-gallery">
+      <div id="carouselProducto" class="carousel slide h-100" data-bs-ride="carousel">
+        <div class="carousel-inner h-100">
+          {% if imagenes %}
+            {% for img in imagenes %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %} h-100">
+              {% if img.imagen %}
+                <img src="{{ img.imagen.url }}" alt="{{ producto.nombre }}">
+              {% else %}
+                <img src="{{ img.url }}" alt="{{ producto.nombre }}">
+              {% endif %}
+            </div>
+            {% endfor %}
+          {% else %}
+            <div class="carousel-item active h-100">
+              <img src="{% static 'images/default_event.jpg' %}" alt="{{ producto.nombre }}">
+            </div>
+          {% endif %}
+        </div>
+
+        {% if imagenes|length > 1 %}
+        <button class="carousel-btn carousel-btn-prev"
+                type="button"
+                data-bs-target="#carouselProducto"
+                data-bs-slide="prev">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="carousel-btn carousel-btn-next"
+                type="button"
+                data-bs-target="#carouselProducto"
+                data-bs-slide="next">
+          <i class="fas fa-chevron-right"></i>
+        </button>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div class="product-detail-info">
+
+      <div class="product-badges">
+        {% for cat in producto.categorias_hoja %}
+          <span class="badge-gold">{{ cat.nombre }}</span>
+        {% endfor %}
+        {% if producto.agotado %}
+          <span class="badge-sold-out">Agotado</span>
+        {% else %}
+          <span class="badge-available">Disponible</span>
+        {% endif %}
+      </div>
+
+      <h1 class="product-name">{{ producto.nombre }}</h1>
+      <div class="gold-rule"></div>
+
+      <div class="product-price-wrap">
+        <span class="product-price">${{ producto.precio }}</span>
+        <span class="product-price-label">Precio unitario · Oro 18k</span>
+      </div>
+
+      {% if producto.descripcion %}
+      <div class="product-description">
+        <p>{{ producto.descripcion|linebreaksbr }}</p>
+      </div>
+      {% endif %}
+
+      <!-- Add to cart -->
+      <form method="post" action="{% url 'orden_add' %}">
+        {% csrf_token %}
+        <input type="hidden" name="product_id" value="{{ producto.id }}">
+
+        <div class="qty-wrap">
+          <label class="qty-label">Cantidad</label>
+          <div class="qty-stepper">
+            <button type="button" onclick="this.parentNode.querySelector('input').stepDown()">−</button>
+            <input type="number" min="1" name="cantidad" value="1">
+            <button type="button" onclick="this.parentNode.querySelector('input').stepUp()">+</button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 mt-3"
+                {% if producto.agotado %}disabled style="opacity:0.5;cursor:not-allowed;"{% endif %}>
+          <i class="fas fa-shopping-bag"></i>
+          <span>{% if producto.agotado %}Producto Agotado{% else %}Agregar al Carrito{% endif %}</span>
+        </button>
+      </form>
+
+      <div class="text-center mt-3">
+        <a href="{% url 'orden' %}" class="cart-link">Ver mi carrito actual →</a>
+      </div>
+
+      <!-- Trust signals -->
+      <div class="trust-signals">
+        <div class="trust-item">
+          <i class="fas fa-certificate"></i>
+          <span>Oro 18k Certificado</span>
+        </div>
+        <div class="trust-item">
+          <i class="fas fa-shield-alt"></i>
+          <span>Compra 100% Segura</span>
+        </div>
+        <div class="trust-item">
+          <i class="fas fa-truck"></i>
+          <span>Envío Asegurado a Venezuela</span>
+        </div>
+        <div class="trust-item">
+          <i class="fab fa-whatsapp"></i>
+          <span>Soporte por WhatsApp</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ─── RELATED PRODUCTS ──────────────────────────────────── -->
+{% if sugeridos %}
+<section class="related-section">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-3">
+      <div>
+        <span class="eyebrow">También te puede gustar</span>
+        <h3 class="related-title">Productos Relacionados</h3>
+      </div>
+      <a href="{% url 'tienda' %}" class="btn btn-ghost" style="font-size:0.6rem;">
+        <span>Ver todo</span>
+        <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+    <div class="product-grid">
+      {% for sugerido in sugeridos %}
+      <div class="product-card reveal">
+        <div class="product-card-image">
+          <a href="{% url 'productos' sugerido.id %}">
+            {% if sugerido.imagen %}
+              <img src="{{ sugerido.imagen.url }}" alt="{{ sugerido.nombre }}">
+            {% else %}
+              <img src="{% static 'images/default_event.jpg' %}" alt="{{ sugerido.nombre }}">
+            {% endif %}
+          </a>
+        </div>
+        <div class="product-card-body">
+          <div class="product-card-name">
+            <a href="{% url 'productos' sugerido.id %}">{{ sugerido.nombre }}</a>
+          </div>
+          <div class="product-card-price">${{ sugerido.precio }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
 {% endblock %}
