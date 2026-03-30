@@ -51,82 +51,6 @@
 
 </section>
 
-
-<!-- ═══════════════════════════════════════════════════
-     CATEGORIES
-════════════════════════════════════════════════════ -->
-<section class="cat-section" id="categorias">
-  <div class="container">
-    <div class="cat-header reveal">
-      <span class="eyebrow">Universal Gold</span>
-      <h2>Explora nuestras <em>Categorías</em></h2>
-      <div class="gold-rule centered wide"></div>
-    </div>
-  </div>
-
-  <div class="container-fluid px-3 px-lg-4">
-    <div class="cat-mosaic">
-
-      {% for cat in categorias %}
-      <a href="{% url 'tienda' %}?categoria={{ cat.id }}" class="cat-card reveal">
-        <div class="cat-card-line"></div>
-
-        {% if cat.imagen %}
-          <img class="cat-card-img" src="{{ cat.imagen.url }}" alt="{{ cat.nombre }}">
-        {% elif cat.primer_producto_imagen %}
-          <img class="cat-card-img" src="{{ cat.primer_producto_imagen }}" alt="{{ cat.nombre }}">
-        {% else %}
-          <div class="cat-placeholder">
-            <svg width="80" height="80" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="60" cy="60" r="55" stroke="#C9A84C" stroke-width="1" opacity="0.4"/>
-              <circle cx="60" cy="60" r="38" stroke="#C9A84C" stroke-width="0.5" opacity="0.3"/>
-              <path d="M32 47 L88 80" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
-              <circle cx="35" cy="52" r="4" fill="#C9A84C" opacity="0.5"/>
-              <circle cx="85" cy="70" r="4" fill="#C9A84C" opacity="0.5"/>
-            </svg>
-          </div>
-        {% endif %}
-
-        <div class="cat-card-overlay"></div>
-
-        <div class="cat-card-body">
-          <span class="cat-card-tag">Colección</span>
-          <h3 class="cat-card-name">{{ cat.nombre }}</h3>
-          <p class="cat-card-count">
-            {% if cat.total_productos == 1 %}1 pieza disponible
-            {% elif cat.total_productos > 1 %}{{ cat.total_productos }} piezas
-            {% else %}Ver colección{% endif %}
-          </p>
-        </div>
-      </a>
-
-      {% empty %}
-      {# Static fallback #}
-      {% for src, nombre in fallback_cats %}
-      <a href="{% url 'tienda' %}" class="cat-card">
-        <div class="cat-card-line"></div>
-        <img class="cat-card-img"
-             src="{{ src }}"
-             alt="{{ nombre }}"
-             style="width:100%;height:100%;object-fit:cover;">
-        <div class="cat-card-overlay"></div>
-        <div class="cat-card-body">
-          <span class="cat-card-tag">Colección</span>
-          <h3 class="cat-card-name">{{ nombre }}</h3>
-        </div>
-      </a>
-      {% endfor %}
-      {% endfor %}
-
-    </div>
-
-    <div class="cat-more reveal">
-      <a href="{% url 'tienda' %}">Ver catálogo completo &nbsp;→</a>
-    </div>
-  </div>
-</section>
-
-
 <!-- ═══════════════════════════════════════════════════
      FEATURED PRODUCTS
 ════════════════════════════════════════════════════ -->
@@ -145,51 +69,45 @@
       </a>
     </div>
 
-    <div class="product-grid">
-      {% for producto in productos %}
-      <div class="product-card reveal">
-        <div class="product-card-image">
-          <a href="{% url 'productos' producto.id %}">
-            {% if producto.portada %}
-              <img src="{{ producto.portada.url }}" alt="{{ producto.nombre }}">
-            {% elif producto.imagen %}
-              <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}">
-            {% else %}
-              <img src="{% static 'images/default_event.jpg' %}" alt="{{ producto.nombre }}">
-            {% endif %}
-          </a>
-          <div class="product-card-status">
-            {% if producto.agotado %}
-              <span class="badge-sold-out">Agotado</span>
-            {% else %}
-              <span class="badge-available">Disponible</span>
-            {% endif %}
+    <div class="product-grid" style="display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center;">
+      {% if productos %}
+        {% for producto in productos %}
+          <div class="product-card reveal" style="flex: 1 1 300px; max-width: 340px; min-width: 260px;">
+            <div class="product-card-image">
+              <a href="{% url 'productos' producto.id %}">
+                {% if producto.portada %}
+                  <img src="{{ producto.portada.url }}" alt="{{ producto.nombre }}">
+                {% elif producto.imagen %}
+                  <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}">
+                {% else %}
+                  <img src="{% static 'images/default_event.jpg' %}" alt="{{ producto.nombre }}">
+                {% endif %}
+              </a>
+              <div class="product-card-status">
+                {% if producto.agotado %}
+                  <span class="badge-sold-out">Agotado</span>
+                {% else %}
+                  <span class="badge-available">Disponible</span>
+                {% endif %}
+              </div>
+            </div>
+            <div class="product-card-body">
+              {% with producto.categorias.all|first as cat %}
+                {% if cat %}<div class="product-card-cat">{{ cat.nombre }}</div>{% endif %}
+              {% endwith %}
+              <div class="product-card-name">
+                <a href="{% url 'productos' producto.id %}">{{ producto.nombre }}</a>
+              </div>
+              <div class="product-card-price">${{ producto.precio }}</div>
+            </div>
           </div>
+        {% endfor %}
+      {% else %}
+        <div style="text-align:center; color:#fff; width:100%;">
+          <p style="font-size:1.2rem; margin-bottom:1rem;">No hay productos destacados disponibles en este momento.</p>
+          <a href="{% url 'tienda' %}" class="btn btn-gold-outline">Ver catálogo completo</a>
         </div>
-        <div class="product-card-body">
-          {% with producto.categorias.all|first as cat %}
-            {% if cat %}<div class="product-card-cat">{{ cat.nombre }}</div>{% endif %}
-          {% endwith %}
-          <div class="product-card-name">
-            <a href="{% url 'productos' producto.id %}">{{ producto.nombre }}</a>
-          </div>
-          <div class="product-card-price">${{ producto.precio }}</div>
-        </div>
-      </div>
-
-      {% empty %}
-      <div class="product-card reveal">
-        <div class="product-card-image">
-          <a href="{% url 'tienda' %}">
-            <img src="https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=500&q=80" alt="Joya">
-          </a>
-        </div>
-        <div class="product-card-body">
-          <div class="product-card-cat">Colección</div>
-          <div class="product-card-name"><a href="{% url 'tienda' %}">Ver catálogo completo</a></div>
-        </div>
-      </div>
-      {% endfor %}
+      {% endif %}
     </div>
 
   </div>

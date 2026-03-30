@@ -2,6 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from app1.models import Product, Category, ProductImage
 from django.contrib.auth.hashers import make_password
 from .models import User_admin # Importa el modelo
+from django.utils import timezone
 
 def crear_categoria(nombre, padre_id=None):
     """
@@ -65,7 +66,8 @@ def crear_producto(nombre, precio, descripcion='', categoria_ids=None, imagen=No
                 product=producto, 
                 imagen=img, 
                 orden=idx, 
-                is_portada=(idx == 0)
+                is_portada=(idx == 0),
+                creado=timezone.now()
             )
 
     return producto
@@ -104,7 +106,7 @@ def actualizar_producto(producto_id, **kwargs):
     if 'imagenes' in kwargs and kwargs['imagenes']:
         # Agregar nuevas imágenes extras
         for img in kwargs['imagenes']:
-            ProductImage.objects.create(product=p, imagen=img, is_portada=False)
+            ProductImage.objects.create(product=p, imagen=img, is_portada=False, creado=timezone.now())
 
     # Cambiar portada si se solicita
     if 'portada_imagen_id' in kwargs and kwargs['portada_imagen_id']:

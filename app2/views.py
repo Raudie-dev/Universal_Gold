@@ -242,7 +242,7 @@ def control_productos(request):
                     for i, img_file in enumerate(imagenes_files):
                         orden = max_orden + 1 + i
                         is_portada = (orden == 0 and not existing_images.exists())
-                        ProductImage.objects.create(product=producto, imagen=img_file, orden=orden, is_portada=is_portada)
+                        ProductImage.objects.create(product=producto, imagen=img_file, orden=orden, is_portada=is_portada, creado=timezone.now())
                 
                 # Delete marked images
                 if eliminar_ids:
@@ -614,7 +614,8 @@ def dashboard(request):
         return redirect('login')
 
     # 2. Estadísticas generales
-    hoy = timezone.localtime(timezone.now()).date()
+    # Usar timezone.now() directamente, que es aware si USE_TZ=True
+    hoy = timezone.now().date()
     mes_actual = hoy.month
     año_actual = hoy.year
 

@@ -37,14 +37,19 @@ def _get_cart_count(request):
     except Exception:
         return 0
 
-# Vista de inicio mejorada con 4 productos aleatorios
+from django.db.models import Sum
+
+# Vista de inicio mejorada con productos más vendidos
 def index(request):
     categoria_id = request.GET.get('categoria')
     categorias = Category.objects.all()
     
-    # 1. Obtenemos todos los productos (Recomendación: Solo los no agotados)
-    # Si quieres mostrar agotados también, usa Product.objects.all()
-    productos = Product.objects.filter(agotado=False) 
+    # 1. Obtenemos los productos más vendidos (máximo 3, incluyendo agotados si son top)
+    productos = Product.objects.filter(
+        ordenitem__orden__es_venta=True
+    ).annotate(
+        total_vendido=Sum('ordenitem__cantidad')
+    ).order_by('-total_vendido')[:3]
 
     # 2. Aplicamos el filtro de categoría si existe
     if categoria_id:
@@ -53,10 +58,6 @@ def index(request):
         except (ValueError, TypeError):
             pass
 
-    # 3. AQUÍ APLICAMOS LA LÓGICA DE "4 ALEATORIOS"
-    # .order_by('?') -> Mezcla los resultados aleatoriamente
-    # [:4] -> Corta la lista y se queda solo con los primeros 4
-    productos = productos.order_by('?')[:4]
     cart_count = _get_cart_count(request)
     whatsapp_url = get_whatsapp_url()
     whatsapp_number = get_whatsapp_empresa()
