@@ -31,11 +31,11 @@
 
     <!-- Gallery -->
     <div class="product-detail-gallery">
-      <div id="carouselProducto" class="carousel slide h-100" data-bs-ride="carousel">
-        <div class="carousel-inner h-100">
+      <div id="carouselProducto" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
           {% if imagenes %}
             {% for img in imagenes %}
-            <div class="carousel-item {% if forloop.first %}active{% endif %} h-100">
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
               {% if img.imagen %}
                 <img src="{{ img.imagen.url }}" alt="{{ producto.nombre }}">
               {% else %}
@@ -44,7 +44,7 @@
             </div>
             {% endfor %}
           {% else %}
-            <div class="carousel-item active h-100">
+            <div class="carousel-item active">
               <img src="{% static 'images/default_event.jpg' %}" alt="{{ producto.nombre }}">
             </div>
           {% endif %}

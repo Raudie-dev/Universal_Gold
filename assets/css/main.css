@@ -12,9 +12,23 @@
   --gold-pale:    rgba(184,150,46,0.10);
   --gold-glow:    rgba(184,150,46,0.18);
 
+  /* Verde oliva — complementa el dorado cálido y la tinta */
+  --green:        #4A7C59;
+  --green-light:  #6B9E7A;
+  --green-dim:    #5E8F6A;
+  --green-pale:   rgba(74,124,89,0.10);
+  --green-glow:   rgba(74,124,89,0.18);
+
+  /* Morado ciruela — profundidad luxury sobre crema */
+  --purple:       #6B4D7A;
+  --purple-light: #8C6B9E;
+  --purple-dim:   #7D5C8C;
+  --purple-pale:  rgba(107,77,122,0.10);
+  --purple-glow:  rgba(107,77,122,0.18);
+
   --ink:          #1C1810;
   --ink-soft:     #4A4030;
-  --ink-muted:    rgba(28,24,16,0.52);
+  --ink-muted:    rgba(28, 24, 16, 0.755);
 
   --cream:        #FAF7F0;
   --cream-1:      #F5F0E8;
@@ -97,7 +111,7 @@ em { font-style: italic; color: var(--gold); }
 .eyebrow {
   font-family: var(--font-body);
   font-size: 0.62rem;
-  font-weight: 500;
+  font-weight: 700;
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--gold);
@@ -223,7 +237,7 @@ em { font-style: italic; color: var(--gold); }
 .btn-gold-outline::before { background: var(--gold-pale); }
 .btn-gold-outline:hover { color: var(--gold); }
 
-.btn-ghost { background: transparent; color: var(--ink-soft); border: 1px solid var(--border-dark); }
+.btn-ghost { background: transparent; color: var(--ink-soft); border: 1px solid rgb(28 24 16 / 50%); }
 .btn-ghost::before { background: var(--cream-2); }
 .btn-ghost:hover { color: var(--ink); }
 
@@ -239,7 +253,7 @@ em { font-style: italic; color: var(--gold); }
 .hero-slide.active { opacity: 1; }
 .hero-slide::after {
   content: ''; position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(250,247,240,0.9) 0%, rgba(250,247,240,0.52) 45%, rgba(250,247,240,0.1) 100%);
+  background:#ffffffad;
 }
 
 .hero-content {
@@ -250,12 +264,13 @@ em { font-style: italic; color: var(--gold); }
 
 .hero-content h1 {
   color: var(--ink); margin-bottom: 1.5rem;
+  font-weight: 500;
   opacity: 0; transform: translateY(30px);
   animation: fadeUp 1s 0.4s var(--ease-out) forwards;
 }
 .hero-content p {
   font-size: 0.88rem; color: var(--ink-muted); margin-bottom: 2.5rem;
-  max-width: 400px; line-height: 1.95;
+  max-width: 400px; line-height: 1.95; font-weight: 500 ;
   opacity: 0; transform: translateY(20px);
   animation: fadeUp 1s 0.65s var(--ease-out) forwards;
 }
@@ -266,9 +281,9 @@ em { font-style: italic; color: var(--gold); }
   animation: fadeUp 1s 0.85s var(--ease-out) forwards;
 }
 
-.hero-dots { position: absolute; bottom: 2.5rem; right: 2.5rem; z-index: 3; display: flex; flex-direction: column; gap: 0.5rem; }
+.hero-dots { position: absolute; bottom: 2.5rem; right: 2.5rem; z-index: 3; display: flex; flex-direction: row; gap: 0.5rem; }
 .hero-dot {
-  width: 2px; height: 24px;
+  width: 30px; height: 3px;
   background: rgba(28,24,16,0.12);
   border: none; cursor: pointer; transition: all 0.3s; position: relative;
 }
@@ -284,8 +299,8 @@ em { font-style: italic; color: var(--gold); }
   z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
   opacity: 0; animation: fadeIn 1s 1.5s ease forwards;
 }
-.hero-scroll-indicator span { font-size: 0.52rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold); }
-.hero-scroll-line { width: 1px; height: 48px; background: linear-gradient(to bottom, var(--gold), transparent); animation: scrollLine 2.2s 1.6s ease infinite; }
+.hero-scroll-indicator span { font-size: 0.52rem; letter-spacing: 0.28em; text-transform: uppercase; color:#000; }
+.hero-scroll-line { width: 1px; height: 48px; background: linear-gradient(to bottom,#000, transparent); animation: scrollLine 2.2s 1.6s ease infinite; }
 
 /* ─── CATEGORIES ─────────────────────────────────────── */
 .cat-section { padding: 9rem 0; background: var(--cream-1); }
@@ -354,13 +369,23 @@ em { font-style: italic; color: var(--gold); }
 
 .product-card { background: var(--white); position: relative; overflow: hidden; border: 1px solid var(--border-soft); }
 
-.product-card-image { aspect-ratio: 4/5; overflow: hidden; position: relative; }
+/* Relación 4:5 — equivalente a 1080×1350 px (Instagram portrait) */
+.product-card-image {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  position: relative;
+  background: var(--cream-1);       /* fondo neutro visible si la imagen no llena el marco */
+}
+
 .product-card-image img {
-  width: 100%; height: 100%; object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;              /* imagen completa, sin recorte */
+  object-position: center;
   transition: transform 0.8s var(--ease-gold), filter 0.5s;
   filter: brightness(0.97) saturate(0.9);
 }
-.product-card:hover .product-card-image img { transform: scale(1.05); filter: brightness(0.85) saturate(0.78); }
+.product-card:hover .product-card-image img { transform: scale(1.03); filter: brightness(0.90) saturate(0.82); }
 
 .product-card-status { position: absolute; top: 1rem; left: 1rem; }
 
@@ -523,9 +548,9 @@ em { font-style: italic; color: var(--gold); }
 .empty-state p { font-size: 0.84rem; color: var(--ink-muted); max-width: 360px; margin: 0 auto 2rem; line-height: 1.88; }
 
 /* ─── PRODUCT DETAIL ─────────────────────────────────── */
-.product-detail-section { padding-bottom: 8rem; background: var(--cream); }
+.product-detail-section { background: var(--cream); }
 .product-detail-wrap { display: grid; grid-template-columns: 55% 45%; min-height: 80vh; }
-.product-detail-gallery { background: var(--cream-2); position: sticky; top: 72px; height: calc(100vh - 72px); overflow: hidden; }
+.product-detail-gallery { background: var(--cream-2); position: sticky; top: 72px; height: calc(100% - 72px); overflow: hidden; }
 .product-detail-gallery .carousel, .product-detail-gallery .carousel-inner, .product-detail-gallery .carousel-item { height: 100%; }
 .product-detail-gallery img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -1035,7 +1060,7 @@ a.contact-info-item:hover .contact-info-icon {
 }
 
 /* ─── WHATSAPP ───────────────────────────────────────── */
-.whatsapp-float { position: fixed; bottom: 2.5rem; right: 2.5rem; z-index: 999; width: 52px; height: 52px; background: var(--gold); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; transition: all 0.3s var(--ease-gold); box-shadow: 0 6px 24px rgba(184,150,46,0.3); }
+.whatsapp-float { position: fixed; bottom: 3.5rem; right: 2.5rem; z-index: 999; width: 42px; height: 42px; border-radius:50px; background: var(--gold); color: var(--white); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; transition: all 0.3s var(--ease-gold); box-shadow: 0 6px 24px rgba(184,150,46,0.3); }
 .whatsapp-float:hover { background: var(--ink); transform: translateY(-3px); box-shadow: 0 12px 36px rgba(28,24,16,0.18); color: var(--gold-dim); }
 
 /* ─── FOOTER ─────────────────────────────────────────── */
@@ -1067,6 +1092,110 @@ a.contact-info-item:hover .contact-info-icon {
 
 .reveal { opacity: 0; transform: translateY(36px); transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out); }
 .reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ─── PALETA EXTENDIDA — Verde & Morado ──────────────── */
+
+/* Badge disponible — verde */
+.badge-available {
+  font-size: 0.5rem; letter-spacing: 0.18em; text-transform: uppercase;
+  font-family: var(--font-body); font-weight: 500; padding: 0.3rem 0.8rem;
+  background: rgba(250,247,240,0.92); border: 1px solid var(--green); color: var(--green); border-radius: 0;
+}
+
+/* Badge categoría premium — morado */
+.badge-premium {
+  font-size: 0.5rem; letter-spacing: 0.18em; text-transform: uppercase;
+  font-family: var(--font-body); font-weight: 500; padding: 0.3rem 0.8rem;
+  background: rgba(250,247,240,0.92); border: 1px solid var(--purple); color: var(--purple); border-radius: 0;
+}
+
+/* Botón verde (acción secundaria positiva) */
+.btn-green {
+  background: var(--green);
+  color: var(--white);
+  border: 1px solid var(--green);
+}
+.btn-green::before { background: var(--ink); }
+.btn-green:hover { color: var(--white); }
+
+/* Botón morado (acción especial / colección) */
+.btn-purple {
+  background: var(--purple);
+  color: var(--white);
+  border: 1px solid var(--purple);
+}
+.btn-purple::before { background: var(--ink); }
+.btn-purple:hover { color: var(--white); }
+
+/* Outline verde */
+.btn-green-outline {
+  background: transparent;
+  color: var(--green);
+  border: 1px solid var(--green);
+}
+.btn-green-outline::before { background: var(--green-pale); }
+.btn-green-outline:hover { color: var(--green); }
+
+/* Outline morado */
+.btn-purple-outline {
+  background: transparent;
+  color: var(--purple);
+  border: 1px solid var(--purple);
+}
+.btn-purple-outline::before { background: var(--purple-pale); }
+.btn-purple-outline:hover { color: var(--purple); }
+
+/* Gold rule verde */
+.green-rule {
+  width: 60px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--green), transparent);
+  margin: 1.5rem 0;
+}
+
+/* Gold rule morado */
+.purple-rule {
+  width: 60px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--purple), transparent);
+  margin: 1.5rem 0;
+}
+
+/* Dot accent — verde (hero, indicadores) */
+.dot-green {
+  display: inline-block; width: 6px; height: 6px;
+  border-radius: 50%; background: var(--green);
+}
+
+/* Dot accent — morado */
+.dot-purple {
+  display: inline-block; width: 6px; height: 6px;
+  border-radius: 50%; background: var(--purple);
+}
+
+/* Eyebrow verde */
+.eyebrow-green {
+  font-family: var(--font-body);
+  font-size: 0.62rem; font-weight: 500;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--green); display: block; margin-bottom: 1.2rem;
+}
+
+/* Eyebrow morado */
+.eyebrow-purple {
+  font-family: var(--font-body);
+  font-size: 0.62rem; font-weight: 500;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--purple); display: block; margin-bottom: 1.2rem;
+}
+
+/* Highlight em verde en titulares */
+em.green { font-style: italic; color: var(--green); }
+
+/* Highlight em morado en titulares */
+em.purple { font-style: italic; color: var(--purple); }
+
+/* Product card: imagen de fondo verde suave cuando no hay foto */
+.product-card-image--green { background: rgba(74,124,89,0.06); }
+.product-card-image--purple { background: rgba(107,77,122,0.06); }
 
 /* ─── RESPONSIVE ─────────────────────────────────────── */
 @media (max-width: 1199px) {
