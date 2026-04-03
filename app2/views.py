@@ -6,7 +6,7 @@ from urllib.parse import quote
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password, make_password
-from django.db.models import Q, Count, Sum, Max
+from django.db.models import Q, Count, Sum, Max, Avg, F
 from datetime import timedelta
 from django.utils import timezone
 from .models import User_admin
@@ -444,7 +444,7 @@ def marcar_orden_venta(request, orden_id):
     orden = get_object_or_404(Orden, id=orden_id)
     orden.es_venta = True
     orden.estado = 'venta_confirmada'
-    orden.fecha_venta = datetime.now()
+    orden.fecha_venta = timezone.now()
     orden.save()
 
     messages.success(request, f"Orden #{orden.id} marcada como VENTA confirmada.")
@@ -608,146 +608,102 @@ def dashboard(request):
         return redirect('login')
 
     try:
-        User_admin.objects.get(id=user_id)
+        user = User_admin.objects.get(id=user_id)
     except User_admin.DoesNotExist:
         messages.error(request, 'Usuario no encontrado')
         return redirect('login')
 
     # 2. Estadísticas generales
-    # Usar timezone.now() directamente, que es aware si USE_TZ=True
     hoy = timezone.now().date()
-    mes_actual = hoy.month
-    año_actual = hoy.year
+    fecha_inicio_mes = hoy.replace(day=1)
+    fecha_fin_mes = hoy
 
-    # 2a. Filtros de rango de fecha desde interfaz (GET)
+    # Filtros de rango de fecha desde interfaz (GET)
     desde_str = request.GET.get('desde', '').strip()
     hasta_str = request.GET.get('hasta', '').strip()
-    fecha_desde = None
-    fecha_hasta = None
 
     def parse_date(value):
         try:
-            return datetime.strptime(value, '%Y-%m-%d').date()
-        except Exception:
+            return timezone.datetime.strptime(value, '%Y-%m-%d').date()
+        except (ValueError, TypeError):
             return None
 
-    if desde_str:
-        fecha_desde = parse_date(desde_str)
-    if hasta_str:
-        fecha_hasta = parse_date(hasta_str)
+    fecha_desde = parse_date(desde_str) or fecha_inicio_mes
+    fecha_hasta = parse_date(hasta_str) or fecha_fin_mes
 
-    if not fecha_desde:
-        fecha_desde = hoy.replace(day=1)
-    if not fecha_hasta:
-        fecha_hasta = hoy
+    # Ajustar fecha_hasta para incluir todo el día
+    fecha_hasta = fecha_hasta + timedelta(days=1)
 
-    # Incluyo el final de dia en timestamp con filter created__date
-    ordenes_filtradas = Orden.objects.filter(
-        creado__date__gte=fecha_desde,
-        creado__date__lte=fecha_hasta
-    )
+    # Consultar ventas confirmadas dentro del rango de fechas
+    ventas_confirmadas = Orden.objects.filter(es_venta=True, fecha_venta__range=[fecha_desde, fecha_hasta])
+    total_ventas_confirmadas = ventas_confirmadas.aggregate(total=Sum('total'))['total'] or 0
 
-    total_ordenes_mes = ordenes_filtradas.count()
+    # Total de órdenes dentro del rango de fechas
+    ordenes_rango = Orden.objects.filter(creado__date__range=[fecha_desde, fecha_hasta])
+    total_ordenes_mes = ordenes_rango.count()
 
-    # Estadísticas generales
-    total_clientes = Cliente.objects.count()
+    # Calcular ingresos, ticket promedio y tasa de conversión
+    ingresos_mes = total_ventas_confirmadas
+    ticket_promedio = ingresos_mes / ventas_confirmadas.count() if ventas_confirmadas.count() > 0 else 0
+
+    # Asegurarse de que total_ordenes_mes no sea cero antes de calcular la tasa de conversión
+    if total_ordenes_mes > 0:
+        tasa_conversion = (ventas_confirmadas.count() / total_ordenes_mes) * 100
+    else:
+        tasa_conversion = 0
+
+    # Validar valores para evitar errores en el contexto
+    ingresos_mes = round(ingresos_mes, 2)
+    ticket_promedio = round(ticket_promedio, 2)
+    tasa_conversion = round(tasa_conversion, 1)  # Ajustar a un decimal
+
+    # Órdenes por estado dentro del rango de fechas
+    ordenes_por_estado = ordenes_rango.values('estado').annotate(count=Count('id')).order_by('-count')
+
     total_productos = Product.objects.count()
-    total_ordenes = Orden.objects.count()
-
-    # Ventas confirmadas (ordenes marcadas como venta)
-    ventas_confirmadas_qs = Orden.objects.filter(es_venta=True, fecha_venta__range=[fecha_desde, fecha_hasta])
-    total_ventas_confirmadas = ventas_confirmadas_qs.count()
-    ingresos_confirmados = sum(float(orden.total) for orden in ventas_confirmadas_qs)
-
-    # Ingresos del periodo filtrado (solo de ventas confirmadas)
-    ingresos_mes = sum(float(orden.total) for orden in ventas_confirmadas_qs)
-
-    total_ordenes_procesadas = Orden.objects.filter(estado__in=['procesado', 'venta_confirmada', 'no_vendido'], creado__date__gte=fecha_desde, creado__date__lte=fecha_hasta).count()
-    total_ordenes_pagadas = total_ventas_confirmadas
-    total_ordenes_no_pagadas = Orden.objects.filter(es_venta=False, creado__date__gte=fecha_desde, creado__date__lte=fecha_hasta).count()
-
-    # Tickets y tasas
-    ticket_promedio = (ingresos_mes / total_ordenes_mes) if total_ordenes_mes > 0 else 0
-    tasa_conversion = (total_ventas_confirmadas / total_ordenes_mes * 100) if total_ordenes_mes > 0 else 0
-
-    # Clientes recientes por última orden (hasta 5)
-    clientes_recientes_qs = Cliente.objects.filter(ordenes__isnull=False, ordenes__es_venta=True).annotate(
-        fecha_ultima_orden=Max('ordenes__creado'),
-        num_ordenes=Count('ordenes', filter=Q(ordenes__es_venta=True), distinct=True),
-        total_gastado=Sum('ordenes__total', filter=Q(ordenes__es_venta=True))
-    ).order_by('-fecha_ultima_orden').distinct()[:5]
-
-    clientes_recientes = []
-    for cliente in clientes_recientes_qs:
-        ultima_orden = cliente.ordenes.filter(es_venta=True).order_by('-creado').first()
-        clientes_recientes.append({
-            'nombre': cliente.nombre,
-            'num_ordenes': cliente.num_ordenes,
-            'total_gastado': cliente.total_gastado or 0,
-            'ultimo_estado': ultima_orden.estado if ultima_orden else None,
-            'fecha_ultima_orden': cliente.fecha_ultima_orden,
-        })
-
-    # Productos más vendidos (top 20 para mostrar más información)
-    productos_mas_vendidos = []
-    if OrdenItem.objects.exists():
-        productos_mas_vendidos = OrdenItem.objects.filter(orden__es_venta=True).values('producto__nombre').annotate(
-            total_vendido=Sum('cantidad')
-        ).order_by('-total_vendido')[:20]
-
-    # Órdenes por estado (rango de fechas)
-    ordenes_por_estado_qs = ordenes_filtradas.values('estado').annotate(
-        count=Count('id')
-    ).order_by('-count')
-    ordenes_por_estado = list(ordenes_por_estado_qs)
-
-    # Órdenes de los últimos 12 meses para gráfico (sin filtro de fechas, para tendencia)
-    ultimos_12_meses = []
-    for i in range(11, -1, -1):
-        # Calcular fecha del mes (primer día del mes)
-        fecha_mes = hoy.replace(day=1) - timedelta(days=i*30)
-        mes = fecha_mes.month
-        año = fecha_mes.year
-        count = Orden.objects.filter(
-            creado__year=año,
-            creado__month=mes
-        ).count()
-        ultimos_12_meses.append({
-            'mes': fecha_mes.strftime('%b %Y'),  # Formato más corto: "Mar 2026"
-            'count': count
-        })
-
-    # Productos agotados vs disponibles
     productos_agotados = Product.objects.filter(agotado=True).count()
-    productos_disponibles = Product.objects.filter(agotado=False).count()
+    productos_disponibles = total_productos - productos_agotados
 
-    # Porcentajes
     porcentaje_agotados = (productos_agotados / total_productos * 100) if total_productos > 0 else 0
-    porcentaje_disponibles = (productos_disponibles / total_productos * 100) if total_productos > 0 else 0
+    porcentaje_disponibles = 100 - porcentaje_agotados
+
+    clientes_recientes = Cliente.objects.annotate(
+        ultima_orden=Max('ordenes__creado'),
+        total_gastado=Sum('ordenes__total', filter=Q(ordenes__es_venta=True)),
+        num_ordenes=Count('ordenes', filter=Q(ordenes__es_venta=True))
+    ).order_by('-ultima_orden')[:5]
+
+    productos_mas_vendidos = OrdenItem.objects.filter(orden__es_venta=True).values(
+        producto__nombre=F('producto__nombre')
+    ).annotate(total_vendido=Sum('cantidad')).order_by('-total_vendido')[:10]
+
+    ultimos_12_meses = [
+        {
+            'mes': (hoy.replace(day=1) - timedelta(days=i * 30)).strftime('%b %Y'),
+            'count': Orden.objects.filter(
+                creado__year=(hoy - timedelta(days=i * 30)).year,
+                creado__month=(hoy - timedelta(days=i * 30)).month
+            ).count()
+        }
+        for i in range(12)
+    ]
 
     context = {
         'fecha_desde': fecha_desde,
-        'fecha_hasta': fecha_hasta,
+        'fecha_hasta': fecha_hasta - timedelta(days=1),  # Mostrar la fecha original en el contexto
         'total_ordenes_mes': total_ordenes_mes,
         'ingresos_mes': ingresos_mes,
-        'total_clientes': total_clientes,
-        'total_productos': total_productos,
-        'total_ordenes': total_ordenes,
         'ticket_promedio': ticket_promedio,
-        'tasa_cumplimiento': tasa_conversion,
-        'clientes_recientes': clientes_recientes,
-        'productos_mas_vendidos': productos_mas_vendidos,
-        'ordenes_por_estado': ordenes_por_estado,
-        'ultimos_12_meses': ultimos_12_meses,
+        'tasa_conversion': tasa_conversion,
+        'total_productos': total_productos,
         'productos_agotados': productos_agotados,
         'productos_disponibles': productos_disponibles,
-        'total_ventas_confirmadas': total_ventas_confirmadas,
-        'ingresos_confirmados': ingresos_confirmados,
-        'total_ordenes_procesadas': total_ordenes_procesadas,
-        'total_ordenes_pagadas': total_ordenes_pagadas,
-        'total_ordenes_no_pagadas': total_ordenes_no_pagadas,
         'porcentaje_agotados': round(porcentaje_agotados, 1),
         'porcentaje_disponibles': round(porcentaje_disponibles, 1),
+        'clientes_recientes': clientes_recientes,
+        'productos_mas_vendidos': productos_mas_vendidos,
+        'ordenes_por_estado': list(ordenes_por_estado),
+        'ultimos_12_meses': ultimos_12_meses,
     }
 
     return render(request, 'dashboard.html', context)

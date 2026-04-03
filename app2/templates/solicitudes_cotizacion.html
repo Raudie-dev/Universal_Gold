@@ -273,7 +273,7 @@
 
           <!-- TEXTO OCULTO PARA WHATSAPP -->
           <textarea id="texto-ws-{{ c.id }}" style="display:none;">
-Saludos cordiales {{ c.cliente.nombre }}, le escribimos desde EDES con respecto a su cotización de:
+Saludos cordiales {{ c.cliente.nombre }}, le escribimos con respecto a su cotización de:
 {% for it in items %}
 - {{ it.producto.nombre }} (x{{ it.cantidad }}): ${% if it.precio_unitario %}{{ it.precio_unitario }}{% else %}{{ it.producto.precio }}{% endif %}
 {% endfor %}

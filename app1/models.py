@@ -66,7 +66,7 @@ class Cliente(models.Model):
     nombre = models.CharField(max_length=200)
     correo = models.EmailField()
     telefono = models.CharField(max_length=40, blank=True)
-    creado = models.DateTimeField(null=True, blank=True)
+    creado = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = 'Cliente'

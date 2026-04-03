@@ -234,7 +234,10 @@ def orden(request):
                 detalle_items.append(f"{p.nombre} x{c} (${p.precio} c/u) = ${subtotal_item:.2f}")
 
             productos_str = "\n".join(detalle_items)
-            fecha_str = timezone.localtime(timezone.now()).strftime('%d/%m/%Y %H:%M')
+            fecha_actual = timezone.now()
+            if timezone.is_naive(fecha_actual):
+                fecha_actual = timezone.make_aware(fecha_actual)
+            fecha_str = timezone.localtime(fecha_actual).strftime('%d/%m/%Y %H:%M')
 
             # El cuerpo fijo del mensaje no puede cambiarlo el cliente
             saludo = AppConfig.get_valor('WHATSAPP_SALUDO', 'Hola, buenos días. Me interesa solicitar una cotización.')

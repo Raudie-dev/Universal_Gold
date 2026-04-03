@@ -102,11 +102,9 @@ body {
 
 /* Logo placeholder con icono */
 .logo-placeholder {
-  width: 150px;
-  height: 60px;
-  border-radius: 25px;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  border-radius: 50px;
   display: flex;
+  padding: 3px;
   align-items: center;
   justify-content: center;
   color: white;

@@ -3,11 +3,11 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <title>{% block title %}Panel de Administración - EDES{% endblock %}</title>
+    <title>{% block title %}Panel de Administración {% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Sistema de administración EDES - Gestión de productos y cotizaciones"
+      content="Sistema de administración - Gestión de productos y cotizaciones"
     />
 
     <!-- Fuentes + Bootstrap + Iconos -->
@@ -56,7 +56,7 @@
             <i class="fas fa-bars"></i>
           </button>
           <a href="{% url 'registro' %}" class="brand">
-          <img src="{% static 'images/logo-edes.png' %}" alt="EDES logo" style="height: 50px;">
+          <img src="{% static 'images/logo.png' %}" alt="logo" style="height: 50px;">
         </div>
           <!-- Reloj y fecha en el centro del navbar -->
           <div class="header-center text-center flex-grow-1 d-flex justify-content-center align-items-center">
@@ -190,7 +190,7 @@
                 href="{% url 'index' %}"
                 class="footer-logo text-decoration-none text-muted fw-bold"
               >
-                <i class="fas fa-flask-vial me-1"></i> EDES
+                <i class="fas fa-flask-vial me-1"></i> 
               </a>
               <span class="text-muted small"
                 >&copy; {{ now|date:"Y" }} Todos los derechos reservados.</span
