@@ -152,3 +152,5 @@ CORREO_VENTAS = 'xdarkvaderxx@gmail.com'
 # Número de WhatsApp de ventas (sin espacios; puede usar + prefijo de código)
 # Ejemplo: '+584121234567' o '584121234567'
 WHATSAPP_EMPRESA = '+584121234567'
+
+CSRF_TRUSTED_ORIGINS = ["https://869e-63-141-49-159.ngrok-free.app/"]

@@ -116,13 +116,21 @@
           <div class="product-card reveal">
             <div class="product-card-image">
               <a href="{% url 'productos' producto.id %}">
-                {% if producto.portada %}
-                  <img src="{{ producto.portada.url }}" alt="{{ producto.nombre }}">
-                {% elif producto.imagen %}
-                  <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}">
-                {% else %}
-                  <img src="{% static 'images/default_event.jpg' %}" alt="{{ producto.nombre }}">
-                {% endif %}
+                <div class="image-container">
+                  {% if producto.portada %}
+                    <img class="main-image" src="{{ producto.portada.url }}" alt="{{ producto.nombre }}">
+                  {% elif producto.imagen %}
+                    <img class="main-image" src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}">
+                  {% else %}
+                    <img class="main-image" src="{% static 'images/default_event.jpg' %}" alt="{{ producto.nombre }}">
+                  {% endif %}
+
+                  {% with producto.imagenes.all|slice:"1:2" as second_image %}
+                    {% if second_image %}
+                      <img class="hover-image" src="{{ second_image.0.imagen.url }}" alt="{{ producto.nombre }}">
+                    {% endif %}
+                  {% endwith %}
+                </div>
               </a>
               <div class="product-card-status">
                 {% if producto.agotado %}

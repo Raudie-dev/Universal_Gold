@@ -51,6 +51,7 @@ def crear_producto(nombre, precio, descripcion='', categoria_ids=None, imagen=No
         nombre=nombre,
         precio=precio_val,
         descripcion=descripcion or '',
+        creado=timezone.now()  # Set the current timestamp for 'creado'
     )
 
     # Asociar categorías si se entregaron ids

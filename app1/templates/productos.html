@@ -123,10 +123,6 @@
       <!-- Trust signals -->
       <div class="trust-signals">
         <div class="trust-item">
-          <i class="fas fa-certificate"></i>
-          <span>Oro 18k Certificado</span>
-        </div>
-        <div class="trust-item">
           <i class="fas fa-shield-alt"></i>
           <span>Compra 100% Segura</span>
         </div>
@@ -164,14 +160,34 @@
       <div class="product-card reveal">
         <div class="product-card-image">
           <a href="{% url 'productos' sugerido.id %}">
-            {% if sugerido.imagen %}
-              <img src="{{ sugerido.imagen.url }}" alt="{{ sugerido.nombre }}">
-            {% else %}
-              <img src="{% static 'images/default_event.jpg' %}" alt="{{ sugerido.nombre }}">
-            {% endif %}
+            <div class="image-container">
+              {% if sugerido.portada %}
+                <img class="main-image" src="{{ sugerido.portada.url }}" alt="{{ sugerido.nombre }}">
+              {% elif sugerido.imagen %}
+                <img class="main-image" src="{{ sugerido.imagen.url }}" alt="{{ sugerido.nombre }}">
+              {% else %}
+                <img class="main-image" src="{% static 'images/default_event.jpg' %}" alt="{{ sugerido.nombre }}">
+              {% endif %}
+
+              {% with sugerido.imagenes.all|slice:"1:2" as second_image %}
+                {% if second_image %}
+                  <img class="hover-image" src="{{ second_image.0.imagen.url }}" alt="{{ sugerido.nombre }}">
+                {% endif %}
+              {% endwith %}
+            </div>
           </a>
+          <div class="product-card-status">
+            {% if sugerido.agotado %}
+              <span class="badge-sold-out">Agotado</span>
+            {% else %}
+              <span class="badge-available">Disponible</span>
+            {% endif %}
+          </div>
         </div>
         <div class="product-card-body">
+          {% with sugerido.categorias.all|first as cat %}
+            {% if cat %}<div class="product-card-cat">{{ cat.nombre }}</div>{% endif %}
+          {% endwith %}
           <div class="product-card-name">
             <a href="{% url 'productos' sugerido.id %}">{{ sugerido.nombre }}</a>
           </div>

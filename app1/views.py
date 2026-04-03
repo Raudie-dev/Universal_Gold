@@ -133,12 +133,12 @@ def tienda(request):
 # Vista de detalle de producto
 def productos(request, producto_id):
     producto = get_object_or_404(Product, id=producto_id)
-    # Prioridad 1: imágenes del nuevo modelo ProductImage.
+    # Obtener imágenes del producto actual
     imagenes = list(producto.imagenes.order_by('orden'))
     if not imagenes and producto.imagen:
-        # Compatibilidad con el campo antiguo
         imagenes = [producto.imagen]
 
+    # Obtener productos sugeridos
     sugeridos = Product.objects.exclude(id=producto.id)
     first_cat = producto.categorias.first()
     if first_cat:

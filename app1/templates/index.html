@@ -60,7 +60,7 @@
     <div class="d-flex justify-content-between align-items-end mb-5 flex-wrap gap-3 reveal">
       <div>
         <span class="eyebrow">Selección</span>
-        <h2  style="color:white;">Nuestro Catalogo<em> de Joyas</em></h2>
+        <h2 style="color:white;">Nuestro Catálogo<em> de Joyas</em></h2>
         <div class="gold-rule"></div>
       </div>
       <a href="{% url 'tienda' %}" class="btn btn-gold-outline">
@@ -75,13 +75,21 @@
           <div class="product-card reveal" style="flex: 1 1 300px; max-width: 340px; min-width: 260px;">
             <div class="product-card-image">
               <a href="{% url 'productos' producto.id %}">
-                {% if producto.portada %}
-                  <img src="{{ producto.portada.url }}" alt="{{ producto.nombre }}">
-                {% elif producto.imagen %}
-                  <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}">
-                {% else %}
-                  <img src="{% static 'images/default_event.jpg' %}" alt="{{ producto.nombre }}">
-                {% endif %}
+                <div class="image-container">
+                  {% if producto.portada %}
+                    <img class="main-image" src="{{ producto.portada.url }}" alt="{{ producto.nombre }}">
+                  {% elif producto.imagen %}
+                    <img class="main-image" src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}">
+                  {% else %}
+                    <img class="main-image" src="{% static 'images/default_event.jpg' %}" alt="{{ producto.nombre }}">
+                  {% endif %}
+
+                  {% with producto.imagenes.all|slice:"1:2" as second_image %}
+                    {% if second_image %}
+                      <img class="hover-image" src="{{ second_image.0.imagen.url }}" alt="{{ producto.nombre }}">
+                    {% endif %}
+                  {% endwith %}
+                </div>
               </a>
               <div class="product-card-status">
                 {% if producto.agotado %}
