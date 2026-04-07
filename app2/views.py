@@ -9,7 +9,8 @@ from django.contrib.auth.hashers import check_password, make_password
 from django.db.models import Q, Count, Sum, Max, Avg, F
 from datetime import timedelta
 from django.utils import timezone
-from .models import User_admin
+from django.conf import settings
+from .models import User_admin, AppConfig
 from .crud import (
     crear_categoria,
     obtener_categorias,
@@ -164,6 +165,40 @@ def registro(request):
         'productos': productos,
         'categorias': categorias,
     })
+
+
+def get_whatsapp_empresa():
+    telefono_ventas = AppConfig.get_valor('WHATSAPP_EMPRESA')
+    if not telefono_ventas:
+        telefono_ventas = getattr(settings, 'WHATSAPP_EMPRESA', '')
+    return (telefono_ventas or '').strip()
+
+
+def get_whatsapp_url():
+    telefono_ventas = get_whatsapp_empresa()
+    if not telefono_ventas:
+        return None
+    cleaned = ''.join(ch for ch in telefono_ventas if ch.isdigit())
+    if cleaned.startswith('0'):
+        cleaned = '58' + cleaned.lstrip('0')
+    return f'https://wa.me/{cleaned}'
+
+
+def personalizada(request):
+    return render(request, 'personalizada.html', {
+        'whatsapp_url': get_whatsapp_url(),
+        'whatsapp_number': get_whatsapp_empresa(),
+        'cart_count': 0,
+    })
+
+
+def vip(request):
+    return render(request, 'vip.html', {
+        'whatsapp_url': get_whatsapp_url(),
+        'whatsapp_number': get_whatsapp_empresa(),
+        'cart_count': 0,
+    })
+
 
 def control_productos(request):
     user_id = request.session.get('user_admin_id')

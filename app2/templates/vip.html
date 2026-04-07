@@ -1,0 +1,326 @@
+{% extends 'base_index.html' %}
+{% load static %}
+
+{% block title %}Club VIP | Universal Gold{% endblock %}
+
+{% block content %}
+
+<!-- ─── VIP HERO ───────────────────────────────────────────── -->
+<div class="vip-hero">
+  <div class="vip-hero-bg-pattern"></div>
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="vip-hero-inner">
+      <div class="vip-crown-lg">
+        <i class="fas fa-crown"></i>
+      </div>
+      <span class="eyebrow" style="color:var(--gold-light);">Membresía Exclusiva</span>
+      <h1 style="color:var(--white);">Club <em>VIP</em><br>Universal Gold</h1>
+      <div class="gold-rule centered"></div>
+      <p class="vip-hero-subtitle">Únete a nuestra comunidad de clientes privilegiados. Beneficios exclusivos, atención personalizada y acceso anticipado a nuevas colecciones.</p>
+      <div class="vip-hero-actions">
+        {% if whatsapp_url %}
+        <a href="{{ whatsapp_url }}" target="_blank" rel="noopener" class="btn btn-primary">
+          <i class="fab fa-whatsapp"></i>
+          <span>Solicitar membresía VIP</span>
+        </a>
+        {% endif %}
+        <a href="#beneficios" class="btn btn-gold-outline">
+          <span>Ver beneficios</span>
+          <i class="fas fa-chevron-down"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ─── BENEFICIOS ────────────────────────────────────────── -->
+<section class="vip-benefits-section section" id="beneficios">
+  <div class="container">
+
+    <div class="text-center mb-6 reveal">
+      <span class="eyebrow">¿Qué incluye?</span>
+      <h2>Beneficios <em>exclusivos</em></h2>
+      <div class="gold-rule centered"></div>
+      <p style="font-size:0.88rem;color:var(--ink-muted);max-width:520px;margin:1rem auto 0;line-height:1.9;">
+        Como miembro VIP accedes a un nivel de servicio y ventajas que no están disponibles para el público general.
+      </p>
+    </div>
+
+    <div class="vip-benefits-full reveal">
+
+      <div class="vip-benefit-full">
+        <div class="vip-benefit-full-icon"><i class="fas fa-tag"></i></div>
+        <div class="vip-benefit-full-body">
+          <h4>Precios Preferenciales</h4>
+          <p>Descuentos exclusivos en toda la colección disponible. Como VIP accedes a precios especiales que no están publicados y que solo tu asesor puede ofrecerte.</p>
+        </div>
+        <div class="vip-benefit-full-badge">Descuentos exclusivos</div>
+      </div>
+
+      <div class="vip-benefit-full">
+        <div class="vip-benefit-full-icon"><i class="fas fa-history"></i></div>
+        <div class="vip-benefit-full-body">
+          <h4>Historial de Compras</h4>
+          <p>Accede en cualquier momento a tu historial completo de compras, facturas detalladas y certificados de garantía de cada pieza adquirida. Todo en un solo lugar.</p>
+        </div>
+        <div class="vip-benefit-full-badge">Registro completo</div>
+      </div>
+
+      <div class="vip-benefit-full">
+        <div class="vip-benefit-full-icon"><i class="fas fa-bell"></i></div>
+        <div class="vip-benefit-full-body">
+          <h4>Acceso Anticipado a Nuevas Piezas</h4>
+          <p>Sé el primero en ver y reservar las nuevas colecciones antes de su lanzamiento oficial. Las piezas más exclusivas siempre van a nuestros miembros VIP primero.</p>
+        </div>
+        <div class="vip-benefit-full-badge">Preventa VIP</div>
+      </div>
+
+      <div class="vip-benefit-full">
+        <div class="vip-benefit-full-icon"><i class="fas fa-gift"></i></div>
+        <div class="vip-benefit-full-body">
+          <h4>Regalos & Sorpresas Especiales</h4>
+          <p>Recibe obsequios exclusivos en tu cumpleaños y en fechas especiales. Nuestro equipo cuida cada detalle para hacerte sentir verdaderamente especial.</p>
+        </div>
+        <div class="vip-benefit-full-badge">Detalles únicos</div>
+      </div>
+
+      <div class="vip-benefit-full">
+        <div class="vip-benefit-full-icon"><i class="fas fa-user-tie"></i></div>
+        <div class="vip-benefit-full-body">
+          <h4>Asesor Joyero Dedicado</h4>
+          <p>Un experto joyero te atiende de forma prioritaria. Para compras, reparaciones, diseños personalizados o cualquier consulta — tu asesor responde siempre primero.</p>
+        </div>
+        <div class="vip-benefit-full-badge">Prioridad máxima</div>
+      </div>
+
+      <div class="vip-benefit-full">
+        <div class="vip-benefit-full-icon"><i class="fas fa-truck"></i></div>
+        <div class="vip-benefit-full-body">
+          <h4>Envío Prioritario & Asegurado</h4>
+          <p>Tu pedido sale primero. Envío con seguro completo, rastreo en tiempo real y entrega garantizada a cualquier punto de Venezuela sin costo adicional.</p>
+        </div>
+        <div class="vip-benefit-full-badge">Sin costo extra</div>
+      </div>
+
+      <div class="vip-benefit-full">
+        <div class="vip-benefit-full-icon"><i class="fas fa-gem"></i></div>
+        <div class="vip-benefit-full-body">
+          <h4>Piezas de Edición Limitada</h4>
+          <p>Acceso exclusivo a colecciones de tiraje limitado que solo están disponibles para miembros VIP. Piezas únicas que nunca estarán en el catálogo público.</p>
+        </div>
+        <div class="vip-benefit-full-badge">Solo para VIP</div>
+      </div>
+
+      <div class="vip-benefit-full">
+        <div class="vip-benefit-full-icon"><i class="fas fa-shield-alt"></i></div>
+        <div class="vip-benefit-full-body">
+          <h4>Garantía Extendida</h4>
+          <p>Tus piezas adquiridas como VIP tienen garantía extendida de por vida en defectos de fabricación. Reparaciones prioritarias sin costo en ajustes menores.</p>
+        </div>
+        <div class="vip-benefit-full-badge">Garantía de por vida</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ─── MIS COMPRAS — Panel visual ───────────────────────── -->
+<section class="vip-dashboard-section" style="background:var(--cream-1);padding:7rem 0;">
+  <div class="container">
+
+    <div class="vip-dashboard-wrap reveal">
+
+      <div class="vip-dashboard-content">
+        <span class="eyebrow">Tu panel VIP</span>
+        <h2>Tus compras y<br><em>beneficios en un clic</em></h2>
+        <div class="gold-rule"></div>
+        <p>Como miembro VIP tendrás acceso a tu panel personal donde podrás ver todo tu historial, descargar facturas, ver el estado de tus pedidos y gestionar tus preferencias.</p>
+
+        <div class="vip-dashboard-features">
+          <div class="vip-dashboard-feature">
+            <i class="fas fa-shopping-bag"></i>
+            <div>
+              <strong>Historial completo</strong>
+              <span>Todas tus compras con fecha, precio y certificado.</span>
+            </div>
+          </div>
+          <div class="vip-dashboard-feature">
+            <i class="fas fa-file-invoice"></i>
+            <div>
+              <strong>Facturas descargables</strong>
+              <span>Descarga tus comprobantes en cualquier momento.</span>
+            </div>
+          </div>
+          <div class="vip-dashboard-feature">
+            <i class="fas fa-map-marker-alt"></i>
+            <div>
+              <strong>Estado de pedidos</strong>
+              <span>Rastreo en tiempo real de tu envío actual.</span>
+            </div>
+          </div>
+          <div class="vip-dashboard-feature">
+            <i class="fas fa-star"></i>
+            <div>
+              <strong>Puntos & beneficios</strong>
+              <span>Ve cuántos puntos tienes y qué beneficios activos.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          {% if whatsapp_url %}
+          <a href="{{ whatsapp_url }}" target="_blank" rel="noopener" class="btn btn-primary">
+            <i class="fab fa-whatsapp"></i>
+            <span>Activar mi membresía</span>
+          </a>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="vip-dashboard-mockup">
+        <div class="vip-mockup-card">
+          <div class="vip-mockup-header">
+            <div class="vip-mockup-avatar"><i class="fas fa-crown"></i></div>
+            <div>
+              <div class="vip-mockup-name">Cliente VIP</div>
+              <div class="vip-mockup-tier">
+                <i class="fas fa-circle vip-dot-gold"></i> Miembro Activo
+              </div>
+            </div>
+          </div>
+          <div class="vip-mockup-stats">
+            <div class="vip-mockup-stat">
+              <span class="vip-mockup-stat-val">—</span>
+              <span class="vip-mockup-stat-label">Compras</span>
+            </div>
+            <div class="vip-mockup-stat">
+              <span class="vip-mockup-stat-val">—</span>
+              <span class="vip-mockup-stat-label">Puntos VIP</span>
+            </div>
+            <div class="vip-mockup-stat">
+              <span class="vip-mockup-stat-val">—</span>
+              <span class="vip-mockup-stat-label">Piezas</span>
+            </div>
+          </div>
+          <div class="vip-mockup-section-label">Últimas adquisiciones</div>
+          <div class="vip-mockup-items">
+            <div class="vip-mockup-item">
+              <div class="vip-mockup-item-dot"></div>
+              <div class="vip-mockup-item-info">
+                <span class="vip-mockup-item-name">Tu primera joya</span>
+                <span class="vip-mockup-item-meta">Pendiente de registro</span>
+              </div>
+              <div class="vip-mockup-item-price">— $</div>
+            </div>
+            <div class="vip-mockup-item vip-mockup-item--muted">
+              <div class="vip-mockup-item-dot"></div>
+              <div class="vip-mockup-item-info">
+                <span class="vip-mockup-item-name">Afíliate para ver tu historial</span>
+                <span class="vip-mockup-item-meta">Disponible al activar membresía</span>
+              </div>
+              <div class="vip-mockup-item-price">VIP</div>
+            </div>
+          </div>
+          <div class="vip-mockup-footer">
+            <i class="fas fa-shield-alt"></i>
+            <span>Datos protegidos · Universal Gold VIP</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ─── CÓMO AFILIARSE ────────────────────────────────────── -->
+<section class="vip-how-section section">
+  <div class="container">
+
+    <div class="text-center mb-5 reveal">
+      <span class="eyebrow">Simple y gratuito</span>
+      <h2>¿Cómo <em>unirme</em>?</h2>
+      <div class="gold-rule centered"></div>
+    </div>
+
+    <div class="vip-how-steps reveal">
+
+      <div class="vip-how-step">
+        <div class="vip-how-num">01</div>
+        <div class="vip-how-icon"><i class="fab fa-whatsapp"></i></div>
+        <h5>Escríbenos</h5>
+        <p>Contáctanos por WhatsApp o completa el formulario de contacto indicando que deseas activar tu membresía VIP.</p>
+      </div>
+
+      <div class="vip-how-connector"><i class="fas fa-chevron-right"></i></div>
+
+      <div class="vip-how-step">
+        <div class="vip-how-num">02</div>
+        <div class="vip-how-icon"><i class="fas fa-user-check"></i></div>
+        <h5>Verificación</h5>
+        <p>Nuestro equipo verifica tu perfil. La membresía es gratuita para clientes con historial de compras o por invitación.</p>
+      </div>
+
+      <div class="vip-how-connector"><i class="fas fa-chevron-right"></i></div>
+
+      <div class="vip-how-step">
+        <div class="vip-how-num">03</div>
+        <div class="vip-how-icon"><i class="fas fa-crown"></i></div>
+        <h5>Activación</h5>
+        <p>Recibes tu acceso VIP y comienzas a disfrutar todos los beneficios desde el primer momento.</p>
+      </div>
+
+      <div class="vip-how-connector"><i class="fas fa-chevron-right"></i></div>
+
+      <div class="vip-how-step">
+        <div class="vip-how-num">04</div>
+        <div class="vip-how-icon"><i class="fas fa-gem"></i></div>
+        <h5>Disfruta</h5>
+        <p>Accede a precios exclusivos, tu panel de compras, asesor dedicado y todos los beneficios VIP.</p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ─── JOIN CTA ──────────────────────────────────────────── -->
+<section class="vip-join-section">
+  <div class="vip-join-bg"></div>
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="vip-join-inner reveal">
+      <div class="vip-join-left-col">
+        <div class="vip-join-perks-grid">
+          <div class="vip-perk-item"><i class="fas fa-check-circle"></i><span>Registro 100% gratuito</span></div>
+          <div class="vip-perk-item"><i class="fas fa-check-circle"></i><span>Beneficios desde el primer día</span></div>
+          <div class="vip-perk-item"><i class="fas fa-check-circle"></i><span>Historial de compras en línea</span></div>
+          <div class="vip-perk-item"><i class="fas fa-check-circle"></i><span>Asesor joyero dedicado</span></div>
+          <div class="vip-perk-item"><i class="fas fa-check-circle"></i><span>Descuentos y precios especiales</span></div>
+          <div class="vip-perk-item"><i class="fas fa-check-circle"></i><span>Acceso a ediciones limitadas</span></div>
+        </div>
+      </div>
+      <div class="vip-join-right-col">
+        <div class="vip-crown"><i class="fas fa-crown"></i></div>
+        <span class="eyebrow" style="color:var(--gold-light);">Únete ahora</span>
+        <h2 style="color:var(--white);">Hazte miembro <em>VIP hoy</em></h2>
+        <p class="vip-join-desc">La membresía es completamente gratuita. Solicítala ahora y comienza a disfrutar de una experiencia de joyería verdaderamente exclusiva.</p>
+        <div class="vip-join-btns">
+          {% if whatsapp_url %}
+          <a href="{{ whatsapp_url }}" target="_blank" rel="noopener" class="btn btn-primary">
+            <i class="fab fa-whatsapp"></i>
+            <span>Solicitar membresía VIP</span>
+          </a>
+          {% endif %}
+          <a href="{% url 'index' %}#contacto" class="btn btn-gold-outline">
+            <span>Formulario de contacto</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

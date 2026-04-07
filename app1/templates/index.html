@@ -69,10 +69,10 @@
       </a>
     </div>
 
-    <div class="product-grid" style="display: flex; flex-wrap: wrap; gap: 2rem;">
+    <div class="product-grid">
       {% if productos %}
         {% for producto in productos %}
-          <div class="product-card reveal" style="flex: 1 1 300px; max-width: 340px; min-width: 260px;">
+          <div class="product-card reveal">
             <div class="product-card-image">
               <a href="{% url 'productos' producto.id %}">
                 <div class="image-container">
@@ -171,40 +171,90 @@
 
 
 <!-- ═══════════════════════════════════════════════════
-     PILLARS / WHY US
+     SERVICES
 ════════════════════════════════════════════════════ -->
 <section class="pillars-section">
   <div class="container">
     <div class="text-center mb-5 reveal">
-      <span class="eyebrow">Nuestro Compromiso</span>
-      <h2>Por qué elegir <em>Universal Gold</em></h2>
+      <span class="eyebrow">Lo que hacemos</span>
+      <h2>Nuestros <em>Servicios</em></h2>
       <div class="gold-rule centered"></div>
     </div>
     <div class="pillar-grid reveal">
       <div class="pillar">
-        <span class="pillar-icon"><i class="fas fa-gem"></i></span>
-        <h5>Oro 18k Puro</h5>
-        <p>Cada pieza es 100% oro 18k con certificación de pureza garantizada en toda nuestra colección artesanal.</p>
+        <span class="pillar-icon"><i class="fas fa-tools"></i></span>
+        <h5>Reparación de Joyas</h5>
+        <p>Restauramos tus piezas favoritas con la misma precisión artesanal con que fueron creadas. Soldaduras, ajustes y reparaciones completas.</p>
       </div>
       <div class="pillar">
-        <span class="pillar-icon"><i class="fas fa-hammer"></i></span>
-        <h5>Artesanía Real</h5>
-        <p>Diseñadas y elaboradas a mano por nuestros maestros joyeros con décadas de experiencia acumulada.</p>
+        <span class="pillar-icon"><i class="fas fa-balance-scale"></i></span>
+        <h5>Análisis y Avalúo de Prendas</h5>
+        <p>Evaluamos tus joyas con instrumentos profesionales para determinar su pureza, peso y valor real de mercado con total transparencia.</p>
       </div>
       <div class="pillar">
-        <span class="pillar-icon"><i class="fas fa-shield-alt"></i></span>
-        <h5>Compra Segura</h5>
-        <p>Transacciones verificadas por WhatsApp. Tu inversión protegida hasta recibir tu joya en perfecto estado.</p>
+        <span class="pillar-icon"><i class="fas fa-coins"></i></span>
+        <h5>Compra de Oro</h5>
+        <p>Compramos oro en cualquier presentación: joyas, monedas o lingotes. Ofrecemos el mejor precio del mercado de forma inmediata y segura.</p>
       </div>
       <div class="pillar">
-        <span class="pillar-icon"><i class="fas fa-truck"></i></span>
-        <h5>Envío Asegurado</h5>
-        <p>Empaque premium y envío asegurado a cualquier parte de Venezuela con seguimiento en tiempo real.</p>
+        <span class="pillar-icon"><i class="fas fa-pencil-ruler"></i></span>
+        <h5>Personalización de Joyas</h5>
+        <p>Diseñamos y fabricamos piezas únicas según tu visión. Desde el boceto hasta la joya terminada, creamos la prenda de tus sueños en oro 18k.</p>
+      </div>
+      <div class="pillar">
+        <span class="pillar-icon"><i class="fas fa-star"></i></span>
+        <h5>Pulido Profesional</h5>
+        <p>Devolvemos el brillo original a tus joyas con técnicas de pulido profesional, eliminando rayones y devolviéndoles su lustre de siempre.</p>
       </div>
     </div>
   </div>
 </section>
 
+
+<!-- ═══════════════════════════════════════════════════
+     VENTAS AL MAYOR
+════════════════════════════════════════════════════ -->
+<section class="wholesale-section reveal">
+  <div class="wholesale-inner">
+
+    <!-- Left: Media (imagen o video) -->
+    <div class="wholesale-media">
+      <video src="{% static 'video/mayorista.mp4' %}" autoplay loop muted playsinline></video>
+      <div class="wholesale-media-overlay"></div>
+    </div>
+
+    <!-- Right: Content -->
+    <div class="wholesale-content">
+      <span class="eyebrow wholesale-eyebrow">Programa Exclusivo</span>
+      <h2 class="wholesale-title">Ventas al <em>Mayor</em></h2>
+      <div class="gold-rule"></div>
+
+      <p class="wholesale-desc">
+        Ofrecemos condiciones especiales para joyerías, revendedores y distribuidores. Accede a nuestra colección completa en oro con precios mayoristas, volúmenes flexibles y atención personalizada para tu negocio.
+      </p>
+
+      <!-- CTA -->
+      <div class="wholesale-cta">
+        {% if whatsapp_url %}
+        <a href="{{ whatsapp_url }}" target="_blank" rel="noopener" class="btn-wholesale-wa">
+          <i class="fab fa-whatsapp"></i>
+          <span>Consultar Condiciones Mayoristas</span>
+        </a>
+        {% else %}
+        <a href="https://wa.me/584241232838?text=Hola%2C%20me%20interesa%20información%20sobre%20ventas%20al%20mayor." target="_blank" rel="noopener" class="btn-wholesale-wa">
+          <i class="fab fa-whatsapp"></i>
+          <span>Consultar Condiciones Mayoristas</span>
+        </a>
+        {% endif %}
+        <p class="wholesale-note">
+          <i class="fas fa-lock"></i>
+          Información 100% confidencial · Respuesta en menos de 2 horas
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>
 
 <!-- ═══════════════════════════════════════════════════
      CONTACT & LOCATION
