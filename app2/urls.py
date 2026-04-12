@@ -14,8 +14,8 @@ urlpatterns = [
     path('clientes/', views.clientes_registrados, name='clientes_registrados'),
     path('configuracion/whatsapp/', views.configuracion_whatsapp, name='configuracion_whatsapp'),
     path('usuarios/', views.gestion_usuarios, name='usuarios'),
+    path('afiliados/', views.afiliados, name='afiliados'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
-    
 
 ]

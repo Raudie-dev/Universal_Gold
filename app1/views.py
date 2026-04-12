@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
 from django.urls import reverse
 from django.contrib import messages
 from .models import Category, Product
@@ -6,7 +7,8 @@ from . import crud
 import random
 from django.conf import settings
 from urllib.parse import quote
-from app2.models import AppConfig
+from decimal import Decimal
+from app2.models import AppConfig, Afiliado
 from django.utils import timezone
 
 
@@ -207,21 +209,88 @@ def orden(request):
         items.append({'product': prod, 'cantidad': cantidad, 'total': total})
         subtotal += total
 
+    codigo_descuento = request.session.get('codigo_descuento', '') or ''
+    afiliado_valido = None
+    descuento_porcentaje = 0
+    descuento_monto = 0
+    total_con_descuento = subtotal
+    codigo_error = ''
+
+    if codigo_descuento:
+        afiliado_valido = Afiliado.objects.filter(codigo__iexact=codigo_descuento, activo=True).first()
+        if afiliado_valido:
+            descuento_porcentaje = Decimal(str(afiliado_valido.descuento))
+            descuento_monto = (subtotal * descuento_porcentaje / Decimal('100')).quantize(Decimal('0.01')) if subtotal else Decimal('0.00')
+            total_con_descuento = (subtotal - descuento_monto).quantize(Decimal('0.01'))
+        else:
+            codigo_error = 'Código de descuento inválido o inactivo.'
+            total_con_descuento = subtotal
+
     if request.method == 'POST':
         nombre = request.POST.get('nombre', '').strip()
         correo = request.POST.get('correo', '').strip()
         telefono = request.POST.get('telefono', '').strip()
         mensaje = request.POST.get('mensaje', '').strip()
+        codigo_descuento = request.POST.get('codigo_descuento', '').strip().upper()
+        request.session['codigo_descuento'] = codigo_descuento
+        request.session.modified = True
+
+        afiliado_valido = None
+        descuento_porcentaje = Decimal('0.00')
+        descuento_monto = Decimal('0.00')
+        total_con_descuento = subtotal
+        codigo_error = ''
+
+        if codigo_descuento:
+            afiliado_valido = Afiliado.objects.filter(codigo__iexact=codigo_descuento, activo=True).first()
+            if afiliado_valido:
+                descuento_porcentaje = Decimal(str(afiliado_valido.descuento))
+                descuento_monto = (subtotal * descuento_porcentaje / Decimal('100')).quantize(Decimal('0.01')) if subtotal else Decimal('0.00')
+                total_con_descuento = (subtotal - descuento_monto).quantize(Decimal('0.01'))
+            else:
+                codigo_error = 'Código de descuento inválido o inactivo.'
 
         if not nombre or not correo:
             messages.error(request, 'Nombre y correo son obligatorios para enviar la orden.')
-            return render(request, 'cotizacion.html', {'items': items, 'subtotal': subtotal, 'cart_count': _get_cart_count(request)})
+            return render(request, 'orden.html', {
+                'items': items,
+                'subtotal': subtotal,
+                'total_con_descuento': total_con_descuento,
+                'descuento_porcentaje': descuento_porcentaje,
+                'descuento_monto': descuento_monto,
+                'codigo_descuento': codigo_descuento,
+                'codigo_error': codigo_error,
+                'cart_count': _get_cart_count(request),
+                'whatsapp_url': get_whatsapp_url(),
+                'whatsapp_number': get_whatsapp_empresa(),
+            })
+
+        if codigo_descuento and not afiliado_valido:
+            messages.error(request, codigo_error)
+            return render(request, 'orden.html', {
+                'items': items,
+                'subtotal': subtotal,
+                'total_con_descuento': total_con_descuento,
+                'descuento_porcentaje': descuento_porcentaje,
+                'descuento_monto': descuento_monto,
+                'codigo_descuento': codigo_descuento,
+                'codigo_error': codigo_error,
+                'cart_count': _get_cart_count(request),
+                'whatsapp_url': get_whatsapp_url(),
+                'whatsapp_number': get_whatsapp_empresa(),
+            })
 
         try:
             # 1. Crear cliente y orden en BD
             cliente = crud.crear_cliente(nombre, correo, telefono)
             items_payload = [{'product_id': p['product'].id, 'cantidad': p['cantidad']} for p in items]
-            orden = crud.crear_orden_desde_carrito(cliente, items_payload, mensaje=mensaje)
+            orden = crud.crear_orden_desde_carrito(
+                cliente,
+                items_payload,
+                mensaje=mensaje,
+                codigo_afiliado=codigo_descuento,
+                descuento_afiliado=descuento_porcentaje,
+            )
 
             # 2. Montar mensaje de WhatsApp (cliente -> ventas)
             detalle_items = []
@@ -239,9 +308,8 @@ def orden(request):
                 fecha_actual = timezone.make_aware(fecha_actual)
             fecha_str = timezone.localtime(fecha_actual).strftime('%d/%m/%Y %H:%M')
 
-            # El cuerpo fijo del mensaje no puede cambiarlo el cliente
             saludo = AppConfig.get_valor('WHATSAPP_SALUDO', 'Hola, buenos días. Me interesa solicitar una cotización.')
-
+            total_mensaje = total_con_descuento if afiliado_valido else total_orden
             texto_orden = (
                 f"{saludo}\n\n"
                 f"Orden #: {orden.id}\n"
@@ -249,11 +317,12 @@ def orden(request):
                 f"Teléfono: {telefono if telefono else 'N/A'}\n"
                 f"Fecha: {fecha_str}\n\n"
                 f"Productos:\n{productos_str}\n\n"
-                f"Total: ${total_orden:.2f}\n\n"
+                f"Subtotal: ${total_orden:.2f}\n"
+                + (f"Código afiliado: {codigo_descuento} (-{descuento_porcentaje}% )\n" if afiliado_valido else "")
+                + f"Total: ${total_mensaje:.2f}\n\n"
                 f"Mensaje adicional: {mensaje if mensaje else '-'}"
             )
 
-            # 3. Definir número de ventas (configurable en settings o DB)
             telefono_ventas = AppConfig.get_valor('WHATSAPP_EMPRESA') or getattr(settings, 'WHATSAPP_EMPRESA', '')
             telefono_ventas = (telefono_ventas or '').strip()
 
@@ -272,35 +341,56 @@ def orden(request):
             ventas_phone = _clean_phone(telefono_ventas)
             whatsapp_url = f"https://wa.me/{ventas_phone}?text={quote(texto_orden)}"
 
-            # 4. Limpiar carrito en sesión
             request.session['orden'] = {}
             request.session.modified = True
 
-            # 5. Redirigir a WhatsApp para que el cliente envíe la orden al equipo
             return redirect(whatsapp_url)
 
         except Exception as e:
             print(f"Error procesando orden/WhatsApp: {e}")
             messages.error(request, f'Error al crear la orden: {e}')
-            whatsapp_url = get_whatsapp_url()
-            whatsapp_number = get_whatsapp_empresa()
             return render(request, 'orden.html', {
                 'items': items,
                 'subtotal': subtotal,
+                'total_con_descuento': total_con_descuento,
+                'descuento_porcentaje': descuento_porcentaje,
+                'descuento_monto': descuento_monto,
+                'codigo_descuento': codigo_descuento,
+                'codigo_error': codigo_error,
                 'cart_count': _get_cart_count(request),
-                'whatsapp_url': whatsapp_url,
-                'whatsapp_number': whatsapp_number,
+                'whatsapp_url': get_whatsapp_url(),
+                'whatsapp_number': get_whatsapp_empresa(),
             })
 
-    whatsapp_url = get_whatsapp_url()
-    whatsapp_number = get_whatsapp_empresa()
     return render(request, 'orden.html', {
         'items': items,
         'subtotal': subtotal,
+        'total_con_descuento': total_con_descuento,
+        'descuento_porcentaje': descuento_porcentaje,
+        'descuento_monto': descuento_monto,
+        'codigo_descuento': codigo_descuento,
+        'codigo_error': codigo_error,
         'cart_count': _get_cart_count(request),
-        'whatsapp_url': whatsapp_url,
-        'whatsapp_number': whatsapp_number,
+        'whatsapp_url': get_whatsapp_url(),
+        'whatsapp_number': get_whatsapp_empresa(),
     })
+
+
+def validar_codigo_afiliado(request):
+    codigo = (request.GET.get('codigo') or '').strip().upper()
+    if not codigo:
+        return JsonResponse({'valid': False, 'error': 'Ingresa un código de descuento.'})
+
+    afiliado = Afiliado.objects.filter(codigo__iexact=codigo, activo=True).first()
+    if not afiliado:
+        return JsonResponse({'valid': False, 'error': 'Código inválido o inactivo.'})
+
+    return JsonResponse({
+        'valid': True,
+        'codigo': afiliado.codigo,
+        'descuento': float(afiliado.descuento),
+    })
+
 
 def guardar_contacto(request):
     if request.method == "POST":

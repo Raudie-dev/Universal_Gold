@@ -144,6 +144,15 @@
             <span>Usuarios</span>
           </a>
         </li>
+        <li class="nav-item">
+          <a
+            class="nav-link {% if request.resolver_match.url_name == 'afiliados' %}active{% endif %}"
+            href="{% url 'afiliados' %}"
+          >
+            <i class="fas fa-user-tag"></i>
+            <span>Afiliados</span>
+          </a>
+        </li>
       </ul>
     </aside>
 

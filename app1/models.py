@@ -82,6 +82,8 @@ class Orden(models.Model):
     estado = models.CharField(max_length=30, default='pendiente')  # pendiente, procesado, finalizado, etc.
     es_venta = models.BooleanField(default=False)
     fecha_venta = models.DateTimeField(null=True, blank=True)
+    codigo_afiliado = models.CharField(max_length=64, blank=True, null=True)
+    descuento_afiliado = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # Nuevo campo para el monto total
 
     class Meta:

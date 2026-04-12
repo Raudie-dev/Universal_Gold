@@ -32,3 +32,29 @@ class AppConfig(models.Model):
         obj, _ = AppConfig.objects.update_or_create(llave=llave, defaults={'valor': valor})
         return obj
 
+
+class Afiliado(models.Model):
+    nombre = models.CharField(max_length=150)
+    codigo = models.CharField(max_length=64, unique=True)
+    descuento = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    comision = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    activo = models.BooleanField(default=True)
+    creado = models.DateTimeField(auto_now_add=True)
+    actualizado = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Afiliado'
+        verbose_name_plural = 'Afiliados'
+        ordering = ['-creado']
+
+    def __str__(self):
+        return f"{self.nombre} ({self.codigo})"
+
+    @property
+    def descuento_porcentaje(self):
+        return f"{self.descuento}%"
+
+    @property
+    def comision_porcentaje(self):
+        return f"{self.comision}%"
+

@@ -1,4 +1,5 @@
 import datetime
+import io
 
 from django.db import models
 from django.shortcuts import render, redirect, get_object_or_404
@@ -7,10 +8,19 @@ from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password, make_password
 from django.db.models import Q, Count, Sum, Max, Avg, F
+from django.http import HttpResponse
 from datetime import timedelta
 from django.utils import timezone
 from django.conf import settings
-from .models import User_admin, AppConfig
+from .models import User_admin, AppConfig, Afiliado
+
+import os
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table, TableStyle
+from reportlab.graphics.shapes import Drawing
+from reportlab.graphics.charts.barcharts import VerticalBarChart
 from .crud import (
     crear_categoria,
     obtener_categorias,
@@ -22,7 +32,12 @@ from .crud import (
     obtener_usuarios_admin, 
     crear_usuario_admin, 
     actualizar_usuario_admin, 
-    eliminar_usuario_admin
+    eliminar_usuario_admin,
+    obtener_afiliados,
+    crear_afiliado,
+    actualizar_afiliado,
+    eliminar_afiliado,
+    convert_uploaded_image_to_webp,
 )
 from app1.models import Product, Orden, OrdenItem, Cliente, Category, ProductImage
 
@@ -238,7 +253,7 @@ def control_productos(request):
 
                 # 5. Manejar la imagen principal (solo si se sube una nueva)
                 if 'imagen' in request.FILES:
-                    producto.imagen = request.FILES['imagen']
+                    producto.imagen = convert_uploaded_image_to_webp(request.FILES['imagen'])
 
                 # 6. Guardar el objeto principal
                 producto.save()
@@ -277,6 +292,7 @@ def control_productos(request):
                     for i, img_file in enumerate(imagenes_files):
                         orden = max_orden + 1 + i
                         is_portada = (orden == 0 and not existing_images.exists())
+                        img_file = convert_uploaded_image_to_webp(img_file)
                         ProductImage.objects.create(product=producto, imagen=img_file, orden=orden, is_portada=is_portada, creado=timezone.now())
                 
                 # Delete marked images
@@ -635,6 +651,65 @@ def gestion_usuarios(request):
     })
 
 
+def afiliados(request):
+    user_id_sesion = request.session.get('user_admin_id')
+    if not user_id_sesion:
+        messages.error(request, 'Debe iniciar sesión primero')
+        return redirect('login')
+
+    if request.method == 'POST':
+        if 'crear_afiliado' in request.POST:
+            nombre = request.POST.get('nombre', '').strip()
+            codigo = request.POST.get('codigo', '').strip().upper()
+            descuento = request.POST.get('descuento', '0').strip()
+            comision = request.POST.get('comision', '0').strip()
+            try:
+                crear_afiliado(nombre, codigo=codigo, descuento=descuento, comision=comision)
+                messages.success(request, f'Afiliado "{nombre}" creado con éxito.')
+            except ValueError as e:
+                messages.error(request, str(e))
+            except Exception as e:
+                messages.error(request, f'Error inesperado al crear afiliado: {e}')
+
+        elif 'editar_afiliado' in request.POST:
+            afiliado_id = request.POST.get('afiliado_id')
+            nombre = request.POST.get('nombre', '').strip()
+            codigo = request.POST.get('codigo', '').strip().upper()
+            descuento = request.POST.get('descuento', '0').strip()
+            comision = request.POST.get('comision', '0').strip()
+            activo = 'activo' in request.POST
+            try:
+                actualizar_afiliado(
+                    afiliado_id,
+                    nombre=nombre,
+                    codigo=codigo,
+                    descuento=descuento,
+                    comision=comision,
+                    activo=activo
+                )
+                messages.success(request, f'Afiliado "{nombre}" actualizado correctamente.')
+            except ValueError as e:
+                messages.error(request, str(e))
+            except Exception as e:
+                messages.error(request, f'Error inesperado al actualizar afiliado: {e}')
+
+        elif 'eliminar_afiliado' in request.POST:
+            afiliado_id = request.POST.get('eliminar_afiliado')
+            try:
+                eliminar_afiliado(afiliado_id)
+                messages.success(request, 'Afiliado eliminado correctamente.')
+            except Exception as e:
+                messages.error(request, f'No se pudo eliminar el afiliado: {e}')
+
+        return redirect('afiliados')
+
+    afiliados = obtener_afiliados()
+    return render(request, 'afiliados.html', {
+        'afiliados': afiliados,
+        'user_id_sesion': user_id_sesion,
+    })
+
+
 def dashboard(request):
     # 1. Verificación de autenticación
     user_id = request.session.get('user_admin_id')
@@ -665,6 +740,235 @@ def dashboard(request):
 
     fecha_desde = parse_date(desde_str) or fecha_inicio_mes
     fecha_hasta = parse_date(hasta_str) or fecha_fin_mes
+    fecha_hasta_original = fecha_hasta
+
+    if request.method == 'POST' and request.POST.get('generar_pdf'):
+        fecha_desde = parse_date(request.POST.get('desde', '').strip()) or fecha_inicio_mes
+        fecha_hasta_original = parse_date(request.POST.get('hasta', '').strip()) or fecha_fin_mes
+        fecha_hasta = fecha_hasta_original + timedelta(days=1)
+
+        ventas_confirmadas_pdf = Orden.objects.filter(
+            es_venta=True,
+            fecha_venta__gte=fecha_desde,
+            fecha_venta__lt=fecha_hasta,
+        )
+        total_ventas_pdf = ventas_confirmadas_pdf.aggregate(total=Sum('total'))['total'] or 0
+        total_ordenes_pdf = ventas_confirmadas_pdf.count()
+        ticket_promedio_pdf = total_ventas_pdf / total_ordenes_pdf if total_ordenes_pdf > 0 else 0
+
+        productos_mas_vendidos_pdf = OrdenItem.objects.filter(
+            orden__es_venta=True,
+            orden__fecha_venta__gte=fecha_desde,
+            orden__fecha_venta__lt=fecha_hasta,
+        ).values(
+            producto__nombre=F('producto__nombre')
+        ).annotate(total_vendido=Sum('cantidad')).order_by('-total_vendido')[:10]
+
+        afiliado_ventas_qs = ventas_confirmadas_pdf.exclude(codigo_afiliado__isnull=True).exclude(codigo_afiliado='')
+        afiliados_por_codigo_pdf = afiliado_ventas_qs.values('codigo_afiliado').annotate(
+            total_ventas=Sum('total'),
+            ordenes=Count('id'),
+            descuento_aplicado=Max('descuento_afiliado')
+        ).order_by('-total_ventas')
+
+        codigos_pdf = [item['codigo_afiliado'] for item in afiliados_por_codigo_pdf]
+        afiliados_info_pdf = {
+            afiliado['codigo']: {
+                'nombre': afiliado['nombre'],
+                'comision': float(afiliado['comision'] or 0),
+            }
+            for afiliado in Afiliado.objects.filter(codigo__in=codigos_pdf).values('codigo', 'nombre', 'comision')
+        }
+
+        afiliados_por_codigo_pdf = [
+            {
+                'codigo': item['codigo_afiliado'],
+                'nombre': afiliados_info_pdf.get(item['codigo_afiliado'], {}).get('nombre', 'Sin nombre'),
+                'comision_porcentaje': afiliados_info_pdf.get(item['codigo_afiliado'], {}).get('comision', 0),
+                'ordenes': item['ordenes'],
+                'total_ventas': float(item['total_ventas']),
+                'total_comision': float(item['total_ventas']) * (afiliados_info_pdf.get(item['codigo_afiliado'], {}).get('comision', 0) / 100),
+                'descuento_aplicado': item['descuento_aplicado'] or 0,
+            }
+            for item in afiliados_por_codigo_pdf
+        ]
+
+        total_comisiones_pdf = sum(item['total_comision'] for item in afiliados_por_codigo_pdf)
+
+        buffer = io.BytesIO()
+        doc = SimpleDocTemplate(
+            buffer,
+            pagesize=letter,
+            leftMargin=40,
+            rightMargin=40,
+            topMargin=60,
+            bottomMargin=40,
+        )
+
+        styles = getSampleStyleSheet()
+        styles.add(ParagraphStyle(name='ReportSubtitle', fontName='Helvetica', fontSize=10, leading=12, textColor=colors.HexColor('#6b7280')))
+        styles.add(ParagraphStyle(name='ReportSection', fontName='Helvetica-Bold', fontSize=14, spaceAfter=10))
+        styles.add(ParagraphStyle(name='ReportSmall', fontName='Helvetica', fontSize=9, leading=11))
+
+        elements = []
+
+        logo_path = os.path.join(settings.BASE_DIR, 'assets', 'images', 'logo.png')
+        if os.path.exists(logo_path):
+            logo = Image(logo_path, width=64, height=64)
+            header_table = Table(
+                [
+                    [
+                        logo,
+                        Paragraph(
+                            '<b>Informe de Ventas</b><br/>Resumen del periodo seleccionado con ventas, productos top y resultados por afiliado.',
+                            styles['ReportSubtitle'],
+                        ),
+                    ]
+                ],
+                colWidths=[70, 430],
+            )
+            header_table.setStyle(
+                TableStyle([
+                    ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+                    ('LEFTPADDING', (0, 0), (-1, -1), 0),
+                    ('RIGHTPADDING', (0, 0), (-1, -1), 0),
+                ])
+            )
+            elements.append(header_table)
+        else:
+            elements.append(Paragraph('Informe de Ventas', styles['Title']))
+            elements.append(Paragraph('Resumen del periodo seleccionado con ventas, productos top y resultados por afiliado.', styles['ReportSubtitle']))
+
+        elements.append(Spacer(1, 14))
+        elements.append(Paragraph('Resumen general', styles['ReportSection']))
+
+        summary_data = [
+            ['Métrica', 'Valor', 'Métrica', 'Valor'],
+            ['Total ventas', f'${total_ventas_pdf:,.2f}', 'Órdenes vendidas', str(total_ordenes_pdf)],
+            ['Ticket promedio', f'${ticket_promedio_pdf:,.2f}', 'Comisión total', f'${total_comisiones_pdf:,.2f}'],
+        ]
+        summary_table = Table(summary_data, colWidths=[120, 120, 120, 120])
+        summary_table.setStyle(
+            TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#111827')),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#d1d5db')),
+                ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#f8fafc')),
+            ])
+        )
+        elements.append(summary_table)
+        elements.append(Spacer(1, 18))
+
+        if productos_mas_vendidos_pdf:
+            elements.append(Paragraph('Productos más vendidos', styles['ReportSection']))
+            chart_data = [[float(item['total_vendido']) for item in productos_mas_vendidos_pdf[:6]]]
+            chart_labels = [item['producto__nombre'][:18] for item in productos_mas_vendidos_pdf[:6]]
+            drawing = Drawing(450, 200)
+            chart = VerticalBarChart()
+            chart.x = 40
+            chart.y = 20
+            chart.height = 140
+            chart.width = 360
+            chart.data = chart_data
+            chart.strokeColor = colors.HexColor('#111827')
+            chart.valueAxis.valueMin = 0
+            max_value = float(max(chart_data[0])) if chart_data[0] else 0
+            chart.valueAxis.valueMax = max_value * 1.2 if max_value > 0 else 10
+            chart.valueAxis.valueStep = max(int(chart.valueAxis.valueMax / 5), 1)
+            chart.categoryAxis.categoryNames = chart_labels
+            chart.categoryAxis.labels.angle = 45
+            chart.categoryAxis.labels.boxAnchor = 'ne'
+            chart.categoryAxis.labels.fontName = 'Helvetica'
+            chart.categoryAxis.labels.fontSize = 8
+            chart.bars[0].fillColor = colors.HexColor('#4f46e5')
+            drawing.add(chart)
+            elements.append(drawing)
+            elements.append(Spacer(1, 12))
+
+            productos_table_data = [['#', 'Producto', 'Cantidad vendida']]
+            for idx, producto in enumerate(productos_mas_vendidos_pdf[:10], start=1):
+                productos_table_data.append([str(idx), producto['producto__nombre'], str(producto['total_vendido'])])
+            producto_table = Table(productos_table_data, colWidths=[30, 330, 90])
+            producto_table.setStyle(
+                TableStyle([
+                    ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#111827')),
+                    ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+                    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                    ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                    ('ALIGN', (-1, 1), (-1, -1), 'RIGHT'),
+                    ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#d1d5db')),
+                    ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+                ])
+            )
+            elements.append(producto_table)
+            elements.append(Spacer(1, 18))
+        else:
+            elements.append(Paragraph('No hay productos vendidos en este rango.', styles['ReportSmall']))
+            elements.append(Spacer(1, 18))
+
+        elements.append(Paragraph('Ventas por afiliado', styles['ReportSection']))
+        if afiliados_por_codigo_pdf:
+            affiliate_chart_data = [[float(item['total_ventas']) for item in afiliados_por_codigo_pdf[:6]]]
+            affiliate_labels = [item['nombre'][:18] for item in afiliados_por_codigo_pdf[:6]]
+            affiliate_drawing = Drawing(450, 200)
+            affiliate_chart = VerticalBarChart()
+            affiliate_chart.x = 40
+            affiliate_chart.y = 20
+            affiliate_chart.height = 140
+            affiliate_chart.width = 360
+            affiliate_chart.data = affiliate_chart_data
+            affiliate_chart.strokeColor = colors.HexColor('#111827')
+            affiliate_chart.valueAxis.valueMin = 0
+            max_aff = float(max(affiliate_chart_data[0])) if affiliate_chart_data[0] else 0
+            affiliate_chart.valueAxis.valueMax = max_aff * 1.2 if max_aff > 0 else 10
+            affiliate_chart.valueAxis.valueStep = max(int(affiliate_chart.valueAxis.valueMax / 5), 1)
+            affiliate_chart.categoryAxis.categoryNames = affiliate_labels
+            affiliate_chart.categoryAxis.labels.angle = 45
+            affiliate_chart.categoryAxis.labels.boxAnchor = 'ne'
+            affiliate_chart.categoryAxis.labels.fontName = 'Helvetica'
+            affiliate_chart.categoryAxis.labels.fontSize = 8
+            affiliate_chart.bars[0].fillColor = colors.HexColor('#0ea5e9')
+            affiliate_drawing.add(affiliate_chart)
+            elements.append(affiliate_drawing)
+            elements.append(Spacer(1, 12))
+
+            afiliado_table_data = [['Afiliado', 'Código', 'Comisión %', 'Total vendido', 'Pagar comisión']]
+            for item in afiliados_por_codigo_pdf:
+                afiliado_table_data.append([
+                    item['nombre'],
+                    item['codigo'],
+                    f'{item["comision_porcentaje"]:.2f}%',
+                    f'${item["total_ventas"]:.2f}',
+                    f'${item["total_comision"]:.2f}',
+                ])
+            afiliado_table = Table(afiliado_table_data, colWidths=[180, 80, 80, 90, 120])
+            afiliado_table.setStyle(
+                TableStyle([
+                    ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#111827')),
+                    ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+                    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                    ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                    ('ALIGN', (2, 1), (4, -1), 'RIGHT'),
+                    ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#d1d5db')),
+                    ('BACKGROUND', (0, 1), (-1, -1), colors.white),
+                ])
+            )
+            elements.append(afiliado_table)
+        else:
+            elements.append(Paragraph('No se registraron ventas por afiliado en este rango.', styles['ReportSmall']))
+
+        def add_page_number(canvas_obj, doc_obj):
+            canvas_obj.setFont('Helvetica', 8)
+            canvas_obj.drawRightString(letter[0] - 40, 20, f'Página {doc_obj.page}')
+
+        doc.build(elements, onFirstPage=add_page_number, onLaterPages=add_page_number)
+        buffer.seek(0)
+
+        response = HttpResponse(buffer.getvalue(), content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="informe_ventas.pdf"'
+        return response
 
     # Ajustar fecha_hasta para incluir todo el día
     fecha_hasta = fecha_hasta + timedelta(days=1)
@@ -712,6 +1016,9 @@ def dashboard(request):
         producto__nombre=F('producto__nombre')
     ).annotate(total_vendido=Sum('cantidad')).order_by('-total_vendido')[:10]
 
+    total_clientes = Cliente.objects.count()
+    total_ordenes_procesadas = Orden.objects.filter(estado__iexact='procesado').count()
+
     ultimos_12_meses = [
         {
             'mes': (hoy.replace(day=1) - timedelta(days=i * 30)).strftime('%b %Y'),
@@ -729,12 +1036,13 @@ def dashboard(request):
         'total_ordenes_mes': total_ordenes_mes,
         'ingresos_mes': ingresos_mes,
         'ticket_promedio': ticket_promedio,
-        'tasa_conversion': tasa_conversion,
         'total_productos': total_productos,
         'productos_agotados': productos_agotados,
         'productos_disponibles': productos_disponibles,
         'porcentaje_agotados': round(porcentaje_agotados, 1),
         'porcentaje_disponibles': round(porcentaje_disponibles, 1),
+        'total_clientes': total_clientes,
+        'total_ordenes_procesadas': total_ordenes_procesadas,
         'clientes_recientes': clientes_recientes,
         'productos_mas_vendidos': productos_mas_vendidos,
         'ordenes_por_estado': list(ordenes_por_estado),
@@ -742,3 +1050,5 @@ def dashboard(request):
     }
 
     return render(request, 'dashboard.html', context)
+
+

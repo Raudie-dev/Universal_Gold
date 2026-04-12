@@ -6,6 +6,38 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  .fade-in {
+    animation: none !important;
+    transform: none !important;
+  }
+  .modal-backdrop {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 1100 !important;
+  }
+  .modal {
+    position: fixed !important;
+    z-index: 1110 !important;
+  }
+  .modal-dialog {
+    max-width: 900px;
+  }
+  .modal-dialog-centered {
+    min-height: calc(100% - 3rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .report-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: -10px;
+    margin-bottom: 18px;
+  }
+</style>
+
 {% endblock %}
 
 {% block content %}
@@ -27,6 +59,7 @@
       <input type="date" name="hasta" class="form-control" value="{{ fecha_hasta }}">
       <button type="submit" class="btn btn-sm btn-primary">Filtrar</button>
       <a href="{% url 'dashboard' %}" class="btn btn-sm btn-outline-secondary">Borrar</a>
+      <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#pdfReportModal">Generar PDF</button>
     </form>
     <span class="badge-live">
       <i class="fas fa-circle"></i> En vivo
@@ -62,12 +95,6 @@
         <div class="kpi-card__icon"><i class="fas fa-box-open"></i></div>
         <div class="kpi-card__value">{{ total_productos }}</div>
         <p class="kpi-card__label">Total productos</p>
-      </div>
-
-      <div class="kpi-card kpi-card--yellow">
-        <div class="kpi-card__icon"><i class="fas fa-tasks"></i></div>
-        <div class="kpi-card__value">{{ total_ordenes_procesadas }}</div>
-        <p class="kpi-card__label">Órdenes procesadas</p>
       </div>
 
     </div>
@@ -186,12 +213,6 @@
           <p class="metric-item__sub">Ingreso promedio por orden en el rango</p>
         </div>
 
-        <div class="metric-item">
-          <p class="metric-item__label">Tasa de conversión</p>
-          <p class="metric-item__value">{{ tasa_cumplimiento|floatformat:1 }}%</p>
-          <p class="metric-item__sub">Órdenes convertidas a ventas / total órdenes</p>
-        </div>
-
       </div>
     </div>
 
@@ -253,6 +274,53 @@
   </div><!-- /bottom-grid -->
 
 </div><!-- /dash-wrapper -->
+
+<div class="modal fade" id="pdfReportModal" tabindex="-1" aria-labelledby="pdfReportModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <div>
+          <h5 class="modal-title" id="pdfReportModalLabel">Generar informe en PDF</h5>
+          <p class="mb-0 text-white-50">Descargar el reporte de ventas por rango con resumen, productos más vendidos y ventas por afiliado.</p>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body p-4">
+        <form id="pdfReportForm" action="{% url 'dashboard' %}" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="generar_pdf" value="1" />
+          <input type="hidden" name="desde" id="modalDesde" value="{{ fecha_desde }}" />
+          <input type="hidden" name="hasta" id="modalHasta" value="{{ fecha_hasta }}" />
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Desde</label>
+              <input type="date" class="form-control" id="modalDesdeInput" value="{{ fecha_desde|date:'Y-m-d' }}" disabled />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Hasta</label>
+              <input type="date" class="form-control" id="modalHastaInput" value="{{ fecha_hasta|date:'Y-m-d' }}" disabled />
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <p class="mb-1"><strong>Resumen rápido:</strong></p>
+            <ul class="list-unstyled small text-muted">
+              <li><strong>Órdenes este mes:</strong> {{ total_ordenes_mes }}</li>
+              <li><strong>Ingresos del mes:</strong> ${{ ingresos_mes|floatformat:2 }}</li>
+              <li><strong>Total clientes:</strong> {{ total_clientes }}</li>
+              <li><strong>Órdenes procesadas:</strong> {{ total_ordenes_procesadas }}</li>
+            </ul>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="submit" form="pdfReportForm" class="btn btn-primary">Descargar PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
   try {

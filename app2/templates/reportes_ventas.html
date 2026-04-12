@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Informe de Ventas</title>
+    <style>
+      body { font-family: Arial, sans-serif; color: #1f2937; margin: 0; padding: 20px; background: #fff; }
+      .pdf-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+      .pdf-logo { height: 56px; object-fit: contain; }
+      .pdf-title { margin: 0; font-size: 24px; letter-spacing: -.02em; }
+      .pdf-subtitle { margin: 4px 0 0; color: #6b7280; font-size: 13px; }
+      .section { margin-bottom: 24px; }
+      .section-title { font-size: 16px; margin-bottom: 12px; font-weight: 700; color: #111827; }
+      .stats-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+      .stat-card { border: 1px solid #e5e7eb; padding: 16px; border-radius: 12px; background: #fafafa; }
+      .stat-label { color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+      .stat-value { font-size: 22px; font-weight: 700; color: #111827; margin: 0; }
+      .table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+      .table th,
+      .table td { padding: 10px 12px; border: 1px solid #e5e7eb; text-align: left; }
+      .table th { background: #f3f4f6; color: #111827; font-weight: 700; }
+      .table tbody tr:nth-child(even) { background: #fbfbfb; }
+      .text-right { text-align: right; }
+      .small-note { color: #6b7280; font-size: 12px; margin: 8px 0 0; }
+    </style>
+  </head>
+  <body>
+    <div class="pdf-header">
+      <img src="{% static 'images/logo.png' %}" alt="Logo de la marca" class="pdf-logo" />
+      <div>
+        <h1 class="pdf-title">Informe de Ventas</h1>
+        <p class="pdf-subtitle">Resumen del periodo seleccionado con ventas, productos top y resultados por afiliado.</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Resumen general</div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total ventas</div>
+          <p class="stat-value">${{ total_ventas|floatformat:2 }}</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Órdenes vendidas</div>
+          <p class="stat-value">{{ total_ordenes }}</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Ticket promedio</div>
+          <p class="stat-value">${{ ticket_promedio|floatformat:2 }}</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Productos top</div>
+          <p class="stat-value">{{ productos_mas_vendidos|length }}</p>
+        </div>
+      </div>
+      <p class="small-note">Rango: {{ fecha_desde|date:'d/m/Y' }} - {{ fecha_hasta|date:'d/m/Y' }}</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Productos más vendidos</div>
+      {% if productos_mas_vendidos %}
+        <table class="table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Producto</th>
+              <th class="text-right">Cantidad vendida</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for producto in productos_mas_vendidos %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ producto.producto__nombre }}</td>
+                <td class="text-right">{{ producto.total_vendido }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p class="small-note">No hay ventas de productos en el rango seleccionado.</p>
+      {% endif %}
+    </div>
+
+    <div class="section">
+      <div class="section-title">Ventas por afiliado</div>
+      {% if afiliados_por_codigo %}
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Afiliado</th>
+              <th>Código</th>
+              <th class="text-right">Órdenes</th>
+              <th class="text-right">Total vendido</th>
+              <th class="text-right">Descuento aplicado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for afiliado in afiliados_por_codigo %}
+              <tr>
+                <td>{{ afiliado.nombre }}</td>
+                <td>{{ afiliado.codigo }}</td>
+                <td class="text-right">{{ afiliado.ordenes }}</td>
+                <td class="text-right">${{ afiliado.total_ventas|floatformat:2 }}</td>
+                <td class="text-right">{{ afiliado.descuento_aplicado|floatformat:2 }}%</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p class="small-note">No se registraron ventas por afiliado en este rango.</p>
+      {% endif %}
+    </div>
+  </body>
+</html>

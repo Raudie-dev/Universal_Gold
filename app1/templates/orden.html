@@ -107,7 +107,17 @@
               <tfoot>
                 <tr>
                   <td colspan="3" class="text-end cart-subtotal-label">Subtotal Estimado</td>
-                  <td class="text-end cart-subtotal-amount">${{ subtotal }}</td>
+                  <td class="text-end cart-subtotal-amount">
+                    <span id="subtotalAmount" data-value="{{ subtotal }}">${{ subtotal }}</span>
+                  </td>
+                </tr>
+                <tr id="discountRow" class="{% if descuento_porcentaje and descuento_monto > 0 %}{% else %}d-none{% endif %}">
+                  <td colspan="3" class="text-end cart-subtotal-label text-warning">Descuento Afiliado (<span id="discountPercent">{{ descuento_porcentaje|floatformat:2 }}</span>%)</td>
+                  <td class="text-end cart-subtotal-amount text-warning">-<span id="discountAmount">{{ descuento_monto|floatformat:2 }}</span></td>
+                </tr>
+                <tr id="totalRow" class="{% if descuento_porcentaje and descuento_monto > 0 %}{% else %}d-none{% endif %}">
+                  <td colspan="3" class="text-end cart-subtotal-label fw-bold">Total con Descuento</td>
+                  <td class="text-end cart-subtotal-amount fw-bold">$<span id="totalConDescuento">{{ total_con_descuento|floatformat:2 }}</span></td>
                 </tr>
               </tfoot>
               {% endif %}
@@ -165,8 +175,16 @@
             </div>
 
             <div>
+              <label>Código de descuento</label>
+              <input type="text" name="codigo_descuento" class="form-control" placeholder="Ingrese el código del afiliado" value="{{ codigo_descuento|default:'' }}">
+              <div class="text-danger small mt-1" id="codigoError">
+                {% if codigo_error %}{{ codigo_error }}{% endif %}
+              </div>
+            </div>
+
+            <div>
               <label>Notas adicionales</label>
-              <textarea name="notas" class="form-control" rows="3"
+              <textarea name="mensaje" class="form-control" rows="3"
                         placeholder="¿Alguna solicitud especial?"></textarea>
             </div>
 
@@ -204,4 +222,83 @@
   </div>
 </div>
 
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+(function() {
+  const inputCodigo = document.querySelector('input[name="codigo_descuento"]');
+  const discountRow = document.getElementById('discountRow');
+  const totalRow = document.getElementById('totalRow');
+  const discountPercentEl = document.getElementById('discountPercent');
+  const discountAmountEl = document.getElementById('discountAmount');
+  const totalConDescuentoEl = document.getElementById('totalConDescuento');
+  const subtotalEl = document.getElementById('subtotalAmount');
+  const codigoErrorEl = document.getElementById('codigoError');
+
+  if (!inputCodigo || !subtotalEl) {
+    return;
+  }
+
+  const subtotal = parseFloat(subtotalEl.dataset.value || '0') || 0;
+  let timeoutId;
+
+  function updateTotals(descuento) {
+    if (!descuento || descuento <= 0) {
+      discountRow.classList.add('d-none');
+      totalRow.classList.add('d-none');
+      return;
+    }
+
+    const descuentoMonto = +(subtotal * descuento / 100).toFixed(2);
+    const totalDescuento = +(subtotal - descuentoMonto).toFixed(2);
+
+    discountPercentEl.textContent = descuento.toFixed(2);
+    discountAmountEl.textContent = descuentoMonto.toFixed(2);
+    totalConDescuentoEl.textContent = totalDescuento.toFixed(2);
+    discountRow.classList.remove('d-none');
+    totalRow.classList.remove('d-none');
+  }
+
+  function showError(message) {
+    if (!codigoErrorEl) return;
+    codigoErrorEl.textContent = message;
+  }
+
+  function clearError() {
+    if (!codigoErrorEl) return;
+    codigoErrorEl.textContent = '';
+  }
+
+  function validateCodigo() {
+    const codigo = inputCodigo.value.trim();
+    if (!codigo) {
+      clearError();
+      updateTotals(0);
+      return;
+    }
+
+    fetch(`{% url 'validar_codigo_afiliado' %}?codigo=${encodeURIComponent(codigo)}`)
+      .then(response => response.json())
+      .then(data => {
+        if (!data.valid) {
+          showError(data.error || 'Código inválido');
+          updateTotals(0);
+          return;
+        }
+        clearError();
+        updateTotals(Number(data.descuento));
+      })
+      .catch(() => {
+        showError('No se pudo validar el código. Intenta nuevamente.');
+        updateTotals(0);
+      });
+  }
+
+  inputCodigo.addEventListener('input', () => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(validateCodigo, 450);
+  });
+})();
+</script>
 {% endblock %}

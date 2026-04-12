@@ -1,4 +1,5 @@
 from .models import Cliente, Orden, OrdenItem, Product
+from decimal import Decimal
 
 
 def crear_cliente(nombre, correo, telefono=''):
@@ -23,7 +24,7 @@ def crear_cliente(nombre, correo, telefono=''):
     )
     return cliente
 
-def crear_orden_desde_carrito(cliente, items, mensaje=''):
+def crear_orden_desde_carrito(cliente, items, mensaje='', codigo_afiliado='', descuento_afiliado=0):
     """
     items: iterable de dicts {'product_id': int, 'cantidad': int}
     Crea la orden y items asociados. Devuelve la instancia Orden.
@@ -35,8 +36,14 @@ def crear_orden_desde_carrito(cliente, items, mensaje=''):
     # Asignar hora local de Venezuela
     venezuela_tz = pytz.timezone('America/Caracas')
     ahora = datetime.now(venezuela_tz).replace(tzinfo=None)
-    orden = Orden.objects.create(cliente=cliente, mensaje=(mensaje or '').strip(), creado=ahora)
-    total = 0
+    orden = Orden.objects.create(
+        cliente=cliente,
+        mensaje=(mensaje or '').strip(),
+        creado=ahora,
+        codigo_afiliado=(codigo_afiliado or '').strip(),
+        descuento_afiliado=Decimal(str(descuento_afiliado or 0))
+    )
+    total = Decimal('0')
     for it in items:
         pid = int(it.get('product_id'))
         cantidad = int(it.get('cantidad') or 1)
@@ -44,7 +51,7 @@ def crear_orden_desde_carrito(cliente, items, mensaje=''):
             prod = Product.objects.get(id=pid)
         except Product.DoesNotExist:
             continue
-        precio = prod.precio
+        precio = Decimal(prod.precio)
         OrdenItem.objects.create(
             orden=orden,
             producto=prod,
@@ -52,7 +59,13 @@ def crear_orden_desde_carrito(cliente, items, mensaje=''):
             precio_unitario=precio
         )
         total += precio * cantidad
-    orden.total = total
+
+    descuento_val = Decimal(str(descuento_afiliado or 0))
+    if descuento_val > 0:
+        descuento_monto = (total * descuento_val) / Decimal('100')
+        total -= descuento_monto
+
+    orden.total = total.quantize(Decimal('0.01'))
     orden.save()
     return orden
 

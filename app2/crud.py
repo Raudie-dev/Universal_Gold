@@ -1,8 +1,13 @@
+import io
+import os
+
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.base import ContentFile
 from app1.models import Product, Category, ProductImage
 from django.contrib.auth.hashers import make_password
-from .models import User_admin # Importa el modelo
+from .models import User_admin, Afiliado # Importa el modelo
 from django.utils import timezone
+from PIL import Image as PilImage
 
 def crear_categoria(nombre, padre_id=None):
     """
@@ -37,6 +42,122 @@ def eliminar_categoria(cat_id):
     Category.objects.filter(id=cat_id).delete()
 
 
+def generar_codigo_afiliado(nombre):
+    base = ''.join(ch for ch in (nombre or '').upper() if ch.isalnum())[:8] or 'AFI'
+    sufijo = '000'
+    intento = 0
+    while True:
+        codigo = f"{base}{sufijo if intento == 0 else intento:03d}"
+        if not Afiliado.objects.filter(codigo=codigo).exists():
+            return codigo
+        intento += 1
+
+
+def obtener_afiliados():
+    return Afiliado.objects.all()
+
+
+def crear_afiliado(nombre, codigo=None, descuento=0, comision=0):
+    nombre = (nombre or '').strip()
+    if not nombre:
+        raise ValueError('El nombre del afiliado es obligatorio.')
+
+    descuento_val = 0
+    try:
+        descuento_val = float(descuento or 0)
+    except (TypeError, ValueError):
+        raise ValueError('El descuento debe ser un número válido.')
+
+    if descuento_val < 0 or descuento_val > 100:
+        raise ValueError('El descuento debe estar entre 0 y 100.')
+
+    comision_val = 0
+    try:
+        comision_val = float(comision or 0)
+    except (TypeError, ValueError):
+        raise ValueError('La comisión debe ser un número válido.')
+
+    if comision_val < 0 or comision_val > 100:
+        raise ValueError('La comisión debe estar entre 0 y 100.')
+
+    codigo = (codigo or '').strip().upper()
+    if not codigo:
+        codigo = generar_codigo_afiliado(nombre)
+
+    if Afiliado.objects.filter(codigo__iexact=codigo).exists():
+        raise ValueError(f'El código {codigo} ya está en uso.')
+
+    return Afiliado.objects.create(
+        nombre=nombre,
+        codigo=codigo,
+        descuento=descuento_val,
+        comision=comision_val,
+    )
+
+
+def actualizar_afiliado(afiliado_id, **kwargs):
+    try:
+        afiliado = Afiliado.objects.get(id=afiliado_id)
+    except Afiliado.DoesNotExist:
+        raise ValueError('Afiliado no encontrado.')
+
+    if 'nombre' in kwargs and kwargs['nombre'] is not None:
+        afiliado.nombre = kwargs['nombre'].strip()
+    if 'codigo' in kwargs and kwargs['codigo']:
+        codigo = kwargs['codigo'].strip().upper()
+        if Afiliado.objects.filter(codigo__iexact=codigo).exclude(id=afiliado_id).exists():
+            raise ValueError(f'El código {codigo} ya está en uso por otro afiliado.')
+        afiliado.codigo = codigo
+    if 'descuento' in kwargs and kwargs['descuento'] is not None:
+        try:
+            descuento_val = float(kwargs['descuento'])
+        except (TypeError, ValueError):
+            raise ValueError('El descuento debe ser un porcentaje válido.')
+        if descuento_val < 0 or descuento_val > 100:
+            raise ValueError('El descuento debe estar entre 0 y 100.')
+        afiliado.descuento = descuento_val
+    if 'comision' in kwargs and kwargs['comision'] is not None:
+        try:
+            comision_val = float(kwargs['comision'])
+        except (TypeError, ValueError):
+            raise ValueError('La comisión debe ser un porcentaje válido.')
+        if comision_val < 0 or comision_val > 100:
+            raise ValueError('La comisión debe estar entre 0 y 100.')
+        afiliado.comision = comision_val
+    if 'activo' in kwargs:
+        afiliado.activo = bool(kwargs['activo'])
+
+    afiliado.save()
+    return afiliado
+
+
+def eliminar_afiliado(afiliado_id):
+    Afiliado.objects.filter(id=afiliado_id).delete()
+
+
+def convert_uploaded_image_to_webp(uploaded_file, quality=80):
+    """Convierte una imagen subida a WebP y devuelve un ContentFile listo para guardar."""
+    try:
+        uploaded_file.seek(0)
+        image = PilImage.open(uploaded_file)
+        if image.mode not in ('RGB', 'RGBA'):
+            image = image.convert('RGB')
+
+        output = io.BytesIO()
+        image.save(output, format='WEBP', quality=quality, method=6)
+        output.seek(0)
+
+        base_name, _ = os.path.splitext(uploaded_file.name or 'imagen')
+        webp_name = f"{base_name}.webp"
+        return ContentFile(output.read(), name=webp_name)
+    except Exception:
+        try:
+            uploaded_file.seek(0)
+        except Exception:
+            pass
+        return uploaded_file
+
+
 def crear_producto(nombre, precio, descripcion='', categoria_ids=None, imagen=None, imagenes=None):
     """Crea un producto. `imagenes` es una lista de archivos ordenados."""
     nombre = (nombre or '').strip()
@@ -63,10 +184,11 @@ def crear_producto(nombre, precio, descripcion='', categoria_ids=None, imagen=No
     # Guardar imágenes (ahora ordenadas)
     if imagenes:
         for idx, img in enumerate(imagenes):
+            webp_img = convert_uploaded_image_to_webp(img)
             ProductImage.objects.create(
-                product=producto, 
-                imagen=img, 
-                orden=idx, 
+                product=producto,
+                imagen=webp_img,
+                orden=idx,
                 is_portada=(idx == 0),
                 creado=timezone.now()
             )
@@ -102,12 +224,13 @@ def actualizar_producto(producto_id, **kwargs):
         p.categorias.set(cats)
 
     if 'imagen' in kwargs and kwargs['imagen'] is not None:
-        p.imagen = kwargs['imagen']
+        p.imagen = convert_uploaded_image_to_webp(kwargs['imagen'])
 
     if 'imagenes' in kwargs and kwargs['imagenes']:
         # Agregar nuevas imágenes extras
         for img in kwargs['imagenes']:
-            ProductImage.objects.create(product=p, imagen=img, is_portada=False, creado=timezone.now())
+            webp_img = convert_uploaded_image_to_webp(img)
+            ProductImage.objects.create(product=p, imagen=webp_img, is_portada=False, creado=timezone.now())
 
     # Cambiar portada si se solicita
     if 'portada_imagen_id' in kwargs and kwargs['portada_imagen_id']:
