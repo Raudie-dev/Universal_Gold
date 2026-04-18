@@ -1,43 +1,63 @@
-/* ═══════════════════════════════════════════════════════
-   UNIVERSAL GOLD — main.js
-   Constellation rendered INSIDE specific dark sections
-   (no fixed canvas, no white-gap issue)
-═══════════════════════════════════════════════════════ */
-
 document.addEventListener('DOMContentLoaded', () => {
 
+  // ─── UTILIDADES ───────────────────────────────────────
+  const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
+
+  function debounce(fn, ms) {
+    let t;
+    return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+  }
+
+  // ─── LOOP GLOBAL COMPARTIDO ───────────────────────────
+  // Un único requestAnimationFrame itera todas las instancias activas.
+  // Se pausa automáticamente cuando la pestaña no es visible.
+  const activeInstances = new Set();
+  let rafId = null;
+  let pageVisible = true;
+
+  function globalLoop() {
+    if (pageVisible && activeInstances.size > 0) {
+      activeInstances.forEach(inst => inst.draw());
+    }
+    rafId = requestAnimationFrame(globalLoop);
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    pageVisible = document.visibilityState === 'visible';
+  });
+
+  function startGlobalLoop() {
+    if (!rafId) rafId = requestAnimationFrame(globalLoop);
+  }
+
   // ─── CONSTELLATION ENGINE ─────────────────────────────
-  // Renders a canvas constellation as an absolute background
-  // inside any given container element.
   function createConstellation(container, opts = {}) {
+    const mobile = isMobile();
     const {
-      starCount    = 90,
+      starCount    = mobile ? 40 : 90,
       connectDist  = 150,
-      withShooting = true,
+      withShooting = !mobile,   // sin meteoros en móvil
       intensity    = 1,
     } = opts;
 
     const canvas = document.createElement('canvas');
     canvas.className = 'constellation-canvas';
     Object.assign(canvas.style, {
-      position:      'absolute',
-      inset:         '0',
-      width:         '100%',
-      height:        '100%',
-      pointerEvents: 'none',
-      zIndex:        '0',
+      position: 'absolute', inset: '0',
+      width: '100%', height: '100%',
+      pointerEvents: 'none', zIndex: '0',
     });
-    // Make sure the host section clips the canvas properly
     if (getComputedStyle(container).position === 'static') {
       container.style.position = 'relative';
     }
     container.prepend(canvas);
 
-    const ctx  = canvas.getContext('2d');
+    const ctx    = canvas.getContext('2d', { alpha: true });
     const GOLD   = [184, 150, 46];
     const SILVER = [220, 210, 190];
-    let W, H, frame = 0;
+    let W = 0, H = 0, frame = 0;
     let stars = [], shooters = [], nebulae = [];
+    let isVisible = false;   // controlado por IntersectionObserver
 
     function rgba(rgb, a) {
       return `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${Math.max(0, Math.min(1, a))})`;
@@ -47,23 +67,19 @@ document.addEventListener('DOMContentLoaded', () => {
       W = canvas.width  = container.offsetWidth  || 1;
       H = canvas.height = container.offsetHeight || 1;
 
-      nebulae = [];
-      for (let i = 0; i < 4; i++) {
-        nebulae.push({
-          x:     Math.random() * W,
-          y:     Math.random() * H,
-          rx:    90 + Math.random() * 200,
-          ry:    60 + Math.random() * 130,
-          alpha: (0.014 + Math.random() * 0.020) * intensity,
-          hue:   Math.random() > 0.5 ? GOLD : SILVER,
-        });
-      }
+      nebulae = Array.from({ length: 3 }, () => ({
+        x:     Math.random() * W,
+        y:     Math.random() * H,
+        rx:    90 + Math.random() * 180,
+        ry:    60 + Math.random() * 120,
+        alpha: (0.014 + Math.random() * 0.018) * intensity,
+        hue:   Math.random() > 0.5 ? GOLD : SILVER,
+      }));
 
-      stars = [];
       const count = Math.round(starCount * intensity);
-      for (let i = 0; i < count; i++) {
+      stars = Array.from({ length: count }, () => {
         const bright = Math.random() > 0.75;
-        stars.push({
+        return {
           x:     Math.random() * W,
           y:     Math.random() * H,
           r:     bright ? 1.0 + Math.random() * 1.4 : 0.3 + Math.random() * 0.8,
@@ -77,8 +93,10 @@ document.addEventListener('DOMContentLoaded', () => {
             x: (Math.random() - 0.5) * 0.03,
             y: (Math.random() - 0.5) * 0.016,
           },
-        });
-      }
+        };
+      });
+
+      shooters = [];
     }
 
     function spawnShooter() {
@@ -91,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
         y: Math.random() * H * 0.7,
         vx: fromLeft ?  Math.cos(angle) * speed : -Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed,
-        len: 70 + Math.random() * 110,
+        len: 70 + Math.random() * 100,
         alpha: 0, life: 0,
         maxLife: 55 + Math.random() * 50,
       });
@@ -102,8 +120,8 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.strokeStyle = rgba(color, a);
       ctx.lineWidth = 0.65;
       ctx.beginPath();
-      ctx.moveTo(x, y - size);  ctx.lineTo(x, y + size);
-      ctx.moveTo(x - size, y);  ctx.lineTo(x + size, y);
+      ctx.moveTo(x, y - size); ctx.lineTo(x, y + size);
+      ctx.moveTo(x - size, y); ctx.lineTo(x + size, y);
       const d = size * 0.48;
       ctx.moveTo(x - d, y - d); ctx.lineTo(x + d, y + d);
       ctx.moveTo(x + d, y - d); ctx.lineTo(x - d, y + d);
@@ -111,128 +129,176 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.restore();
     }
 
-    function draw() {
-      ctx.clearRect(0, 0, W, H);
-      frame++;
-
-      // Nebulae
-      nebulae.forEach(n => {
-        const r  = Math.max(n.rx, n.ry);
-        const sx = n.rx / r, sy = n.ry / r;
-        ctx.save();
-        ctx.scale(sx, sy);
-        const gx = n.x / sx, gy = n.y / sy;
-        const gr = ctx.createRadialGradient(gx, gy, 0, gx, gy, r);
-        gr.addColorStop(0,   rgba(n.hue, n.alpha));
-        gr.addColorStop(0.5, rgba(n.hue, n.alpha * 0.38));
-        gr.addColorStop(1,   rgba(n.hue, 0));
-        ctx.fillStyle = gr;
-        ctx.beginPath();
-        ctx.arc(gx, gy, r, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
+    // ── Spatial grid para reducir comparaciones O(n²) ──
+    // Solo busca vecinos en la celda adyacente, no en todas las estrellas.
+    function buildGrid() {
+      const cell = connectDist;
+      const cols = Math.ceil(W / cell) + 1;
+      const grid = new Map();
+      stars.forEach((s, i) => {
+        const cx = Math.floor(s.x / cell);
+        const cy = Math.floor(s.y / cell);
+        const key = cx + ',' + cy;
+        if (!grid.has(key)) grid.set(key, []);
+        grid.get(key).push(i);
       });
-
-      // Constellation lines
-      for (let i = 0; i < stars.length; i++) {
-        for (let j = i + 1; j < stars.length; j++) {
-          const dx   = stars[i].x - stars[j].x;
-          const dy   = stars[i].y - stars[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < connectDist) {
-            const t  = 1 - dist / connectDist;
-            const la = t * t * 0.19 * intensity;
-            const gr = ctx.createLinearGradient(stars[i].x, stars[i].y, stars[j].x, stars[j].y);
-            gr.addColorStop(0,   rgba(stars[i].color, la));
-            gr.addColorStop(0.5, rgba(GOLD, la * 1.3));
-            gr.addColorStop(1,   rgba(stars[j].color, la));
-            ctx.beginPath();
-            ctx.strokeStyle = gr;
-            ctx.lineWidth   = 0.38 + t * 0.28;
-            ctx.moveTo(stars[i].x, stars[i].y);
-            ctx.lineTo(stars[j].x, stars[j].y);
-            ctx.stroke();
-          }
-        }
-      }
-
-      // Stars
-      stars.forEach(s => {
-        s.phase += s.speed;
-        s.x += s.drift.x;  s.y += s.drift.y;
-        if (s.x < -8) s.x = W + 8;
-        if (s.x > W + 8) s.x = -8;
-        if (s.y < -8) s.y = H + 8;
-        if (s.y > H + 8) s.y = -8;
-
-        const twinkle = 0.5 + 0.5 * Math.sin(s.phase);
-        const a = s.alpha * (0.35 + 0.65 * twinkle);
-
-        const halo = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 4.2);
-        halo.addColorStop(0, rgba(s.color, a * 0.4));
-        halo.addColorStop(1, rgba(s.color, 0));
-        ctx.fillStyle = halo;
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r * 4.2, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = rgba(s.color, a);
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fill();
-
-        if (s.sparkle && twinkle > 0.6) {
-          drawSparkle(s.x, s.y, s.sparkleSize * twinkle, a * 0.8, s.color);
-        }
-      });
-
-      // Shooting stars
-      if (frame % 300 === 0 && Math.random() > 0.3) spawnShooter();
-      shooters = shooters.filter(ss => ss.life < ss.maxLife);
-      shooters.forEach(ss => {
-        ss.life++;
-        ss.x += ss.vx;  ss.y += ss.vy;
-        const t = ss.life / ss.maxLife;
-        ss.alpha = t < 0.2 ? t / 0.2 : t > 0.72 ? 1 - (t - 0.72) / 0.28 : 1;
-
-        const hyp  = Math.hypot(ss.vx, ss.vy);
-        const tailX = ss.x - (ss.vx / hyp) * ss.len;
-        const tailY = ss.y - (ss.vy / hyp) * ss.len;
-
-        const gr = ctx.createLinearGradient(tailX, tailY, ss.x, ss.y);
-        gr.addColorStop(0,   rgba(GOLD, 0));
-        gr.addColorStop(0.6, rgba(GOLD, ss.alpha * 0.48));
-        gr.addColorStop(1,   rgba([255, 245, 200], ss.alpha));
-
-        ctx.save();
-        ctx.strokeStyle = gr;
-        ctx.lineWidth   = 1.4;
-        ctx.shadowColor = rgba(GOLD, ss.alpha * 0.5);
-        ctx.shadowBlur  = 5;
-        ctx.beginPath();
-        ctx.moveTo(tailX, tailY);
-        ctx.lineTo(ss.x, ss.y);
-        ctx.stroke();
-
-        const hg = ctx.createRadialGradient(ss.x, ss.y, 0, ss.x, ss.y, 4);
-        hg.addColorStop(0, rgba([255, 250, 215], ss.alpha));
-        hg.addColorStop(1, rgba(GOLD, 0));
-        ctx.fillStyle = hg;
-        ctx.beginPath();
-        ctx.arc(ss.x, ss.y, 4, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      });
-
-      requestAnimationFrame(draw);
+      return { grid, cols, cell };
     }
 
-    // Keep canvas in sync when the section resizes
-    const ro = new ResizeObserver(() => buildAll());
+    function drawLines({ grid, cell }) {
+      const cellRange = 1;
+      const drawn = new Set();
+
+      stars.forEach((s, i) => {
+        const cx = Math.floor(s.x / cell);
+        const cy = Math.floor(s.y / cell);
+
+        for (let dx = -cellRange; dx <= cellRange; dx++) {
+          for (let dy = -cellRange; dy <= cellRange; dy++) {
+            const neighbors = grid.get((cx + dx) + ',' + (cy + dy));
+            if (!neighbors) continue;
+
+            neighbors.forEach(j => {
+              if (j <= i) return;
+              const pairKey = i * 10000 + j;
+              if (drawn.has(pairKey)) return;
+              drawn.add(pairKey);
+
+              const ddx  = s.x - stars[j].x;
+              const ddy  = s.y - stars[j].y;
+              const dist = Math.sqrt(ddx * ddx + ddy * ddy);
+              if (dist >= connectDist) return;
+
+              const t  = 1 - dist / connectDist;
+              const la = t * t * 0.19 * intensity;
+              const gr = ctx.createLinearGradient(s.x, s.y, stars[j].x, stars[j].y);
+              gr.addColorStop(0,   rgba(s.color, la));
+              gr.addColorStop(0.5, rgba(GOLD, la * 1.3));
+              gr.addColorStop(1,   rgba(stars[j].color, la));
+              ctx.beginPath();
+              ctx.strokeStyle = gr;
+              ctx.lineWidth   = 0.38 + t * 0.28;
+              ctx.moveTo(s.x, s.y);
+              ctx.lineTo(stars[j].x, stars[j].y);
+              ctx.stroke();
+            });
+          }
+        }
+      });
+    }
+
+    // ── draw() — llamado desde el loop global ────────────
+    const instance = {
+      draw() {
+        if (!isVisible || W === 0) return;
+        ctx.clearRect(0, 0, W, H);
+        frame++;
+
+        // Nebulae
+        nebulae.forEach(n => {
+          const r  = Math.max(n.rx, n.ry);
+          const sx = n.rx / r, sy = n.ry / r;
+          ctx.save();
+          ctx.scale(sx, sy);
+          const gx = n.x / sx, gy = n.y / sy;
+          const gr = ctx.createRadialGradient(gx, gy, 0, gx, gy, r);
+          gr.addColorStop(0,   rgba(n.hue, n.alpha));
+          gr.addColorStop(0.5, rgba(n.hue, n.alpha * 0.38));
+          gr.addColorStop(1,   rgba(n.hue, 0));
+          ctx.fillStyle = gr;
+          ctx.beginPath();
+          ctx.arc(gx, gy, r, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        });
+
+        // Líneas con spatial grid
+        const gridData = buildGrid();
+        drawLines(gridData);
+
+        // Stars
+        stars.forEach(s => {
+          s.phase += s.speed;
+          s.x += s.drift.x; s.y += s.drift.y;
+          if (s.x < -8) s.x = W + 8;
+          if (s.x > W + 8) s.x = -8;
+          if (s.y < -8) s.y = H + 8;
+          if (s.y > H + 8) s.y = -8;
+
+          const twinkle = 0.5 + 0.5 * Math.sin(s.phase);
+          const a = s.alpha * (0.35 + 0.65 * twinkle);
+
+          const halo = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r * 4.2);
+          halo.addColorStop(0, rgba(s.color, a * 0.4));
+          halo.addColorStop(1, rgba(s.color, 0));
+          ctx.fillStyle = halo;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r * 4.2, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = rgba(s.color, a);
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fill();
+
+          if (s.sparkle && twinkle > 0.6) {
+            drawSparkle(s.x, s.y, s.sparkleSize * twinkle, a * 0.8, s.color);
+          }
+        });
+
+        // Shooting stars
+        if (frame % 300 === 0 && Math.random() > 0.3) spawnShooter();
+        shooters = shooters.filter(ss => ss.life < ss.maxLife);
+        shooters.forEach(ss => {
+          ss.life++;
+          ss.x += ss.vx; ss.y += ss.vy;
+          const t = ss.life / ss.maxLife;
+          ss.alpha = t < 0.2 ? t / 0.2 : t > 0.72 ? 1 - (t - 0.72) / 0.28 : 1;
+
+          const hyp  = Math.hypot(ss.vx, ss.vy);
+          const tailX = ss.x - (ss.vx / hyp) * ss.len;
+          const tailY = ss.y - (ss.vy / hyp) * ss.len;
+
+          const gr = ctx.createLinearGradient(tailX, tailY, ss.x, ss.y);
+          gr.addColorStop(0,   rgba(GOLD, 0));
+          gr.addColorStop(0.6, rgba(GOLD, ss.alpha * 0.48));
+          gr.addColorStop(1,   rgba([255, 245, 200], ss.alpha));
+
+          ctx.save();
+          ctx.strokeStyle = gr;
+          ctx.lineWidth   = 1.4;
+          ctx.shadowColor = rgba(GOLD, ss.alpha * 0.5);
+          ctx.shadowBlur  = 5;
+          ctx.beginPath();
+          ctx.moveTo(tailX, tailY);
+          ctx.lineTo(ss.x, ss.y);
+          ctx.stroke();
+
+          const hg = ctx.createRadialGradient(ss.x, ss.y, 0, ss.x, ss.y, 4);
+          hg.addColorStop(0, rgba([255, 250, 215], ss.alpha));
+          hg.addColorStop(1, rgba(GOLD, 0));
+          ctx.fillStyle = hg;
+          ctx.beginPath();
+          ctx.arc(ss.x, ss.y, 4, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        });
+      },
+    };
+
+    // ── Visibilidad — pausa cuando sale de pantalla ───────
+    const io = new IntersectionObserver(entries => {
+      isVisible = entries[0].isIntersecting;
+    }, { threshold: 0.01 });
+    io.observe(container);
+
+    // ── ResizeObserver con debounce ───────────────────────
+    const ro = new ResizeObserver(debounce(() => buildAll(), 200));
     ro.observe(container);
 
     buildAll();
-    draw();
+    activeInstances.add(instance);
+    startGlobalLoop();
 
     if (withShooting) {
       setTimeout(spawnShooter, 2600);
@@ -241,33 +307,28 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // ─── ATTACH TO SPECIFIC DARK SECTIONS ─────────────────
-  // Only dark-background sections — no white/cream pages affected.
+  // ─── ATTACH TO DARK SECTIONS ──────────────────────────
+  const mobile = isMobile();
   const constellationTargets = [
-    // Page header on inner pages (Catálogo, Carrito)
     {
       selector: '.page-header',
-      opts: { starCount: 70, intensity: 0.8, withShooting: true },
+      opts: { starCount: mobile ? 35 : 70, intensity: 0.8, withShooting: !mobile },
     },
-    // Product breadcrumb bar
     {
       selector: '.product-breadcrumb-bar',
-      opts: { starCount: 40, intensity: 0.55, withShooting: false },
+      opts: { starCount: mobile ? 20 : 40, intensity: 0.55, withShooting: false },
     },
-    // Contact card (dark panel in cart)
     {
       selector: '.contact-card',
-      opts: { starCount: 38, connectDist: 110, intensity: 0.55, withShooting: false },
+      opts: { starCount: mobile ? 18 : 38, connectDist: 110, intensity: 0.55, withShooting: false },
     },
-    // Featured products band (dark ink)
     {
       selector: '#destacados',
-      opts: { starCount: 80, intensity: 0.9, withShooting: true },
+      opts: { starCount: mobile ? 40 : 80, intensity: 0.9, withShooting: !mobile },
     },
-    // CTA full-bleed dark section
     {
       selector: '.cta-section',
-      opts: { starCount: 110, intensity: 1.15, withShooting: true },
+      opts: { starCount: mobile ? 50 : 110, intensity: mobile ? 0.8 : 1.15, withShooting: !mobile },
     },
   ];
 
@@ -277,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 
-  // ─── HEADER SCROLL ───────────────────────────────────
+  // ─── HEADER SCROLL ────────────────────────────────────
   const header = document.getElementById('mainHeader');
   if (header) {
     const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 60);
@@ -289,6 +350,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const slides = document.querySelectorAll('.hero-slide');
   const dots   = document.querySelectorAll('.hero-dot');
   let current = 0, heroInterval;
+
+  // Precargar el segundo slide (el primero ya se muestra en CSS)
+  if (slides.length > 1) {
+    const second = slides[1];
+    const bgUrl  = second.style.backgroundImage.replace(/url\(["']?(.+?)["']?\)/, '$1');
+    if (bgUrl) {
+      const link = document.createElement('link');
+      link.rel = 'prefetch'; link.as = 'image'; link.href = bgUrl;
+      document.head.appendChild(link);
+    }
+  }
 
   function goToSlide(idx) {
     slides[current]?.classList.remove('active');
@@ -325,7 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
     revealEls.forEach(el => io.observe(el));
   }
 
-  // ─── CART FORM VALIDATION ────────────────────────────
+  // ─── CART FORM VALIDATION ─────────────────────────────
   const phoneInput  = document.getElementById('inputTelefono');
   const phoneError  = document.getElementById('phoneError');
   const nombreInput = document.getElementById('inputNombre');

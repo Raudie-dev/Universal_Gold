@@ -107,9 +107,6 @@ body {
   padding: 3px;
   align-items: center;
   justify-content: center;
-  color: white;
-  font-size: 2rem;
-  box-shadow: var(--shadow-md);
 }
 
 /* Logo imagen */

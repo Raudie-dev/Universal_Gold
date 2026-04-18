@@ -3,7 +3,8 @@
    Cream & Ivory · Gold Constellations
 ═══════════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Montserrat:wght@200;300;400;500&display=swap');
+/* Google Fonts se carga desde el <head> del HTML con <link> para evitar
+   bloqueo de render. El @import ha sido eliminado intencionalmente. */
 
 :root {
   --gold:         #B8962E;
@@ -80,6 +81,8 @@ a { text-decoration: none; color: inherit; }
   z-index: 0;
   opacity: 0;
   animation: constellationFadeIn 2s 0.4s ease forwards;
+  will-change: opacity;        /* promueve a capa GPU desde el inicio */
+  contain: strict;             /* aisla el canvas del layout/paint del resto */
 }
 
 @keyframes constellationFadeIn { to { opacity: 1; } }
@@ -120,7 +123,7 @@ em { font-style: italic; color: var(--gold); }
 }
 
 /* ─── LAYOUT ─────────────────────────────────────────── */
-.container { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 2rem; }
+.container { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 0.5rem; }
 .container-fluid { padding: 0 2.5rem; }
 .section { padding: 8rem 0; }
 
@@ -249,6 +252,7 @@ em { font-style: italic; color: var(--gold); }
   position: absolute; inset: 0;
   background-size: cover; background-position: center;
   opacity: 0; transition: opacity 1.4s var(--ease-gold);
+  will-change: opacity;   /* GPU compositing para el fade entre slides */
 }
 .hero-slide.active { opacity: 1; }
 .hero-slide::after {
@@ -365,7 +369,7 @@ em { font-style: italic; color: var(--gold); }
 .cat-more a:hover { letter-spacing: 0.32em; border-bottom-color: var(--gold); }
 
 /* ─── PRODUCT CARDS ──────────────────────────────────── */
-.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
 
 .product-card { background: var(--white); position: relative; overflow: hidden; border: 1px solid var(--border-soft); }
 
@@ -391,6 +395,8 @@ em { font-style: italic; color: var(--gold); }
   width: 100%;
   height: 100%;
   transition: opacity 0.55s var(--ease-gold), transform 0.8s var(--ease-gold), filter 0.5s;
+  /* Usa GPU para transform/opacity, evita layout durante animación */
+  will-change: transform, opacity;
 }
 
 /* Imagen principal — joya sobre fondo blanco */
@@ -1143,7 +1149,7 @@ a.contact-info-item:hover .contact-info-icon {
 @media (max-width: 480px) {
   .contact-info-panel { padding: 2.5rem 1.5rem; }
   a.contact-info-item:hover { margin: 0 -1.5rem; padding-left: 1.5rem; padding-right: 1.5rem; }
-  .contact-hours { flex-direction: column; gap: 0.8rem; }
+  .contact-hours {  gap: 1.8rem; }
 }
 
 /* ─── WHATSAPP ───────────────────────────────────────── */
@@ -1152,7 +1158,7 @@ a.contact-info-item:hover .contact-info-icon {
 
 /* ─── FOOTER ─────────────────────────────────────────── */
 .footer { background: var(--ink); border-top: 1px solid rgba(201,168,76,0.15); padding: 6rem 0 2.5rem; }
-.footer-brand img { height: 40px; width: auto; margin-bottom: 1.5rem; filter: brightness(10); opacity: 0.88; }
+.footer-brand img { height: 100px; width: auto; margin-bottom: 1.5rem; filter: brightness(10); opacity: 0.88; }
 .footer-desc { font-size: 0.78rem; color: rgba(250,247,240,0.48); line-height: 1.9; max-width: 260px; margin-bottom: 2rem; }
 .footer-social { display: flex; gap: 0.75rem; }
 .footer-social a { width: 36px; height: 36px; border: 1px solid rgba(201,168,76,0.22); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: rgba(250,247,240,0.48); transition: all 0.3s; }
@@ -1881,7 +1887,7 @@ a.contact-info-item:hover .contact-info-icon {
   font-family: var(--font-display);
   font-size: 3.5rem;
   font-weight: 300;
-  color: rgba(184,150,46,0.14);
+  color: rgba(184, 150, 46, 0.6);
   line-height: 1;
   margin-bottom: -0.5rem;
   letter-spacing: -0.03em;
@@ -2305,7 +2311,7 @@ a.contact-info-item:hover .contact-info-icon {
   font-family: var(--font-display);
   font-size: 4rem;
   font-weight: 300;
-  color: rgba(184,150,46,0.12);
+  color: rgb(184 150 46 / 60%);
   line-height: 1;
   letter-spacing: -0.03em;
   margin-bottom: -0.5rem;
@@ -2364,6 +2370,7 @@ a.contact-info-item:hover .contact-info-icon {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 5rem;
+  padding: 0 5rem;
   align-items: center;
 }
 
@@ -2396,7 +2403,6 @@ a.contact-info-item:hover .contact-info-icon {
 
 .vip-join-btns {
   display: flex;
-  flex-direction: column;
   gap: 0.85rem;
   align-items: flex-start;
 }
@@ -2412,7 +2418,7 @@ a.contact-info-item:hover .contact-info-icon {
 /* VIP responsive */
 @media (max-width: 991px) {
   .vip-dashboard-wrap { grid-template-columns: 1fr; gap: 3rem; }
-  .vip-join-inner { grid-template-columns: 1fr; gap: 3rem; }
+  .vip-join-inner { grid-template-columns: 1fr; gap: 3rem; padding: 0;}
   .vip-benefit-full-badge { display: none; }
 }
 
@@ -2433,6 +2439,20 @@ a.contact-info-item:hover .contact-info-icon {
 
 .reveal { opacity: 0; transform: translateY(36px); transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out); }
 .reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ─── CONTENT-VISIBILITY — secciones fuera de pantalla ── */
+/* El browser pospone el paint/layout de estas secciones hasta que
+   el usuario las alcanza, reduciendo el trabajo inicial del render.   */
+.about-section,
+.pillars-section,
+.related-section,
+.cta-section,
+.contact-section,
+.store-body,
+.cart-body {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 600px; /* placeholder height para que el scroll no salte */
+}
 
 /* ─── PALETA EXTENDIDA — Verde & Morado ──────────────── */
 
@@ -2548,7 +2568,7 @@ em.purple { font-style: italic; color: var(--purple); }
 
 .wholesale-inner {
   display: grid;
-  grid-template-columns: 1fr 3fr;
+  grid-template-columns: 2fr 3fr;
   min-height: 580px;
 }
 
@@ -2584,7 +2604,7 @@ em.purple { font-style: italic; color: var(--purple); }
 
 /* Content panel — right */
 .wholesale-content {
-  padding: 5rem 20rem 5rem 4.5rem;
+  padding: 5rem 10rem 5rem 4.5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -2592,11 +2612,11 @@ em.purple { font-style: italic; color: var(--purple); }
 
 .wholesale-eyebrow { color: var(--gold-light); }
 
-.wholesale-title { color: var(--white); }
+.wholesale-title { color: var(--white); font-size: 3.8rem;}
 
 .wholesale-desc {
   color: rgba(250,247,240,0.68);
-  font-size: 0.88rem;
+  font-size: 1.22rem;
   line-height: 1.9;
   margin-bottom: 2.5rem;
 }
@@ -2640,17 +2660,6 @@ em.purple { font-style: italic; color: var(--purple); }
 .btn-wholesale-wa:hover::before { opacity: 1; }
 .btn-wholesale-wa i { font-size: 1.05rem; }
 
-.wholesale-note {
-  font-size: 0.58rem;
-  color: rgba(250,247,240,0.28);
-  letter-spacing: 0.08em;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin: 0;
-}
-
-.wholesale-note i { font-size: 0.5rem; }
 
 /* ─── RESPONSIVE ─────────────────────────────────────── */
 @media (max-width: 1199px) {
@@ -2692,17 +2701,16 @@ em.purple { font-style: italic; color: var(--purple); }
   .product-detail-info { padding: 3rem 1.5rem; }
   .filter-panel { position: relative; top: 0; }
   .footer-bottom { flex-direction: column; text-align: center; }
-  .wholesale-media { height: 260px; }
   .wholesale-content { padding: 3rem 1.5rem; }
-  .wholesale-benefits { grid-template-columns: 1fr; gap: 1.1rem; }
+  .wholesale-desc { font-size: 1rem;}
+  .wholesale-benefits { grid-template-columns: 1qfr; gap: 1.1rem; }
   .btn-wholesale-wa { width: 100%; justify-content: center; }
 
-  /* ── Video mobile: stack vertically, auto height ── */
   .about-section { grid-template-columns: 1fr; }
   .about-visual {
-    height: 56vw;        /* proporción 16:9 aprox en el ancho disponible */
+    height: 100%;     
     min-height: 240px;
-    max-height: 420px;
+    max-height: 520px;
   }
   .about-visual video {
     width: 100%;
@@ -2733,7 +2741,7 @@ em.purple { font-style: italic; color: var(--purple); }
 /* ─── TYPOGRAPHY — títulos más pequeños en mobile ───── */
 @media (max-width: 480px) {
   h1 { font-size: clamp(1.7rem, 8vw, 2.4rem); }
-  h2 { font-size: clamp(1.3rem, 6vw, 1.8rem); }
+  h2 { font-size: clamp(2.3rem, 6vw, 1.8rem); }
   h3 { font-size: clamp(1.1rem, 4.5vw, 1.4rem); }
   .hero-content h1 { font-size: clamp(1.8rem, 9vw, 2.6rem); }
 }
@@ -2756,7 +2764,7 @@ em.purple { font-style: italic; color: var(--purple); }
 @media (max-width: 767px) {
   .contact-info-list {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 0;
   }
 

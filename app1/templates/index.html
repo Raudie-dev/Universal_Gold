@@ -3,6 +3,22 @@
 
 {% block title %}Universal Gold — Joyería Artesanal en Oro 18k{% endblock %}
 
+{% block extra_head %}
+<!-- ── Preconnects: resuelve DNS/TLS antes de pedir recursos ── -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<!-- ── Google Fonts via <link> (no @import) con display=swap ── -->
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500&display=swap">
+
+<!-- ── Preload del primer slide hero (LCP) ─────────────────── -->
+<link rel="preload"
+      as="image"
+      fetchpriority="high"
+      href="https://joyeriafinarte.com/wp-content/uploads/2023/11/Compra-y-Venta-Oro-Joyas-Madrid-Finarte.jpg">
+{% endblock %}
+
 {% block content %}
 
 <!-- ═══════════════════════════════════════════════════
@@ -43,12 +59,6 @@
     <button class="hero-dot" data-index="2" aria-label="Slide 3"></button>
   </div>
 
-  <!-- Scroll -->
-  <div class="hero-scroll-indicator">
-    <span>Scroll</span>
-    <div class="hero-scroll-line"></div>
-  </div>
-
 </section>
 
 <!-- ═══════════════════════════════════════════════════
@@ -77,16 +87,16 @@
               <a href="{% url 'productos' producto.id %}">
                 <div class="image-container">
                   {% if producto.portada %}
-                    <img class="main-image" src="{{ producto.portada.url }}" alt="{{ producto.nombre }}">
+                    <img class="main-image" src="{{ producto.portada.url }}" alt="{{ producto.nombre }}" loading="lazy" decoding="async">
                   {% elif producto.imagen %}
-                    <img class="main-image" src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}">
+                    <img class="main-image" src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" loading="lazy" decoding="async">
                   {% else %}
-                    <img class="main-image" src="{% static 'images/default_event.jpg' %}" alt="{{ producto.nombre }}">
+                    <img class="main-image" src="{% static 'images/default_event.jpg' %}" alt="{{ producto.nombre }}" loading="lazy" decoding="async">
                   {% endif %}
 
                   {% with producto.imagenes.all|slice:"1:2" as second_image %}
                     {% if second_image %}
-                      <img class="hover-image" src="{{ second_image.0.imagen.url }}" alt="{{ producto.nombre }}">
+                      <img class="hover-image" src="{{ second_image.0.imagen.url }}" alt="{{ producto.nombre }}" loading="lazy" decoding="async">
                     {% endif %}
                   {% endwith %}
                 </div>
@@ -128,7 +138,7 @@
 <section class="about-section">
 
   <div class="about-visual">
-    <video id="heroVideo" src="{% static 'video/video.mp4' %}" autoplay loop muted playsinline controls alt="Maestro joyero Universal Gold" loading="lazy"></video></video>
+    <video id="heroVideo" src="{% static 'video/video.mp4' %}" autoplay loop muted playsinline preload="none"></video>
        
     <div class="about-visual-overlay"></div>
     <div class="about-badge">
@@ -147,24 +157,6 @@
     <p>
       Nuestros maestros joyeros combinan métodos tradicionales con inspiración contemporánea, resultando en diseños únicos en oro 18k puro que trascienden el tiempo.
     </p>
-    <div class="about-stats">
-      <div class="about-stat">
-        <strong>15+</strong>
-        <span>Años de experiencia</span>
-      </div>
-      <div class="about-stat">
-        <strong>1000+</strong>
-        <span>Clientes satisfechos</span>
-      </div>
-      <div class="about-stat">
-        <strong>100%</strong>
-        <span>Oro 18k Puro</span>
-      </div>
-      <div class="about-stat">
-        <strong>Artesanal</strong>
-        <span>Hecho a mano</span>
-      </div>
-    </div>
   </div>
 
 </section>
@@ -246,10 +238,6 @@
           <span>Consultar Condiciones Mayoristas</span>
         </a>
         {% endif %}
-        <p class="wholesale-note">
-          <i class="fas fa-lock"></i>
-          Información 100% confidencial · Respuesta en menos de 2 horas
-        </p>
       </div>
     </div>
 
