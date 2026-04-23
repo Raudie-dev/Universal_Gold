@@ -4,15 +4,10 @@
 {% block title %}Universal Gold — Joyería Artesanal en Oro 18k{% endblock %}
 
 {% block extra_head %}
-<!-- ── Preconnects: resuelve DNS/TLS antes de pedir recursos ── -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<!-- ── Google Fonts via <link> (no @import) con display=swap ── -->
 <link rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500&display=swap">
-
-<!-- ── Preload del primer slide hero (LCP) ─────────────────── -->
 <link rel="preload"
       as="image"
       fetchpriority="high"
@@ -52,7 +47,6 @@
     </div>
   </div>
 
-  <!-- Dots -->
   <div class="hero-dots">
     <button class="hero-dot active" data-index="0" aria-label="Slide 1"></button>
     <button class="hero-dot" data-index="1" aria-label="Slide 2"></button>
@@ -60,6 +54,49 @@
   </div>
 
 </section>
+
+
+<!-- ═══════════════════════════════════════════════════
+     CATEGORÍAS EN CÍRCULOS
+════════════════════════════════════════════════════ -->
+{% if categorias %}
+<section class="cat-circles-section cat-circles-section--index" id="categorias">
+  <div class="container">
+
+    <div class="cat-circles-header reveal">
+      <span class="eyebrow">Colecciones</span>
+      <h2>Explora nuestras <em>Categorías</em></h2>
+      <div class="gold-rule"></div>
+    </div>
+
+    <div class="cat-circles-track">
+      {% for cat in categorias %}
+        {% if not cat.padre %}
+        <a href="{% url 'tienda' %}?categoria={{ cat.id }}" class="cat-circle-item reveal">
+          <div class="cat-circle-wrap">
+            <div class="cat-circle-img-outer">
+              {% with cat.productos.all|first as sample %}
+                {% if sample and sample.portada %}
+                  <img src="{{ sample.portada.url }}" alt="{{ cat.nombre }}">
+                {% elif sample and sample.imagen %}
+                  <img src="{{ sample.imagen.url }}" alt="{{ cat.nombre }}">
+                {% else %}
+                  <img src="{% static 'images/default_event.jpg' %}" alt="{{ cat.nombre }}">
+                {% endif %}
+              {% endwith %}
+              <div class="cat-circle-overlay"></div>
+            </div>
+          </div>
+          <span class="cat-circle-label">{{ cat.nombre }}</span>
+        </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+{% endif %}
+
 
 <!-- ═══════════════════════════════════════════════════
      FEATURED PRODUCTS
@@ -79,7 +116,7 @@
       </a>
     </div>
 
-    <div class="product-grid">
+    <div class="product-grid" style="grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));">
       {% if productos %}
         {% for producto in productos %}
           <div class="product-card reveal">
@@ -139,7 +176,6 @@
 
   <div class="about-visual">
     <video id="heroVideo" src="{% static 'video/video.mp4' %}" autoplay loop muted playsinline preload="none"></video>
-       
     <div class="about-visual-overlay"></div>
     <div class="about-badge">
       <strong>18k</strong>
@@ -198,6 +234,11 @@
         <h5>Pulido Profesional</h5>
         <p>Devolvemos el brillo original a tus joyas con técnicas de pulido profesional, eliminando rayones y devolviéndoles su lustre de siempre.</p>
       </div>
+      <div class="pillar">
+        <span class="pillar-icon"><i class="fas fa-gem"></i></span>
+        <h5>Engaste de Piedras</h5>
+        <p>Incorporamos diamantes, rubíes, esmeraldas y otras gemas seleccionadas a mano en cualquier pieza. Cada piedra es elegida por su pureza y brillo para complementar el oro 18k.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -209,13 +250,11 @@
 <section class="wholesale-section reveal">
   <div class="wholesale-inner">
 
-    <!-- Left: Media (imagen o video) -->
     <div class="wholesale-media">
       <video src="{% static 'video/mayorista.mp4' %}" autoplay loop muted playsinline></video>
       <div class="wholesale-media-overlay"></div>
     </div>
 
-    <!-- Right: Content -->
     <div class="wholesale-content">
       <span class="eyebrow wholesale-eyebrow">Programa Exclusivo</span>
       <h2 class="wholesale-title">Ventas al <em>Mayor</em></h2>
@@ -225,7 +264,6 @@
         Ofrecemos condiciones especiales para joyerías, revendedores y distribuidores. Accede a nuestra colección completa en oro con precios mayoristas, volúmenes flexibles y atención personalizada para tu negocio.
       </p>
 
-      <!-- CTA -->
       <div class="wholesale-cta">
         {% if whatsapp_url %}
         <a href="{{ whatsapp_url }}" target="_blank" rel="noopener" class="btn-wholesale-wa">
@@ -244,6 +282,7 @@
   </div>
 </section>
 
+
 <!-- ═══════════════════════════════════════════════════
      CONTACT & LOCATION
 ════════════════════════════════════════════════════ -->
@@ -252,7 +291,6 @@
   <div class="container">
     <div class="contact-grid reveal">
 
-      <!-- ── Left: Info ──────────────────────────── -->
       <div class="contact-info-panel">
         <span class="eyebrow">Información de Contacto</span>
         <h2>Hablemos de<br><em>tu próxima joya</em></h2>
@@ -310,10 +348,8 @@
         </div>
       </div>
 
-      <!-- ── Right: Map + Form ───────────────────── -->
       <div class="contact-map-panel">
 
-        <!-- Google Maps embed — replace src with your actual embed URL -->
         <div class="contact-map-embed">
           <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3923.5!2d-66.872!3d10.488!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zQ0MgVG9sw7NuIEZhc2hpb24gTWFsbA!5e0!3m2!1ses!2sve!4v1"
@@ -324,7 +360,6 @@
           ></iframe>
         </div>
 
-        <!-- Contact form -->
         <div class="contact-form-area">
           <h4>Envíanos un <em>mensaje</em></h4>
           <p class="form-subtitle">Cuéntanos qué buscas y te asesoramos sin compromiso.</p>
@@ -373,7 +408,6 @@
     </div>
   </div>
 
-  <!-- Location strip -->
   <div class="contact-location-strip">
     <div class="container">
       <div class="contact-location-inner">
