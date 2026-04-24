@@ -19,6 +19,51 @@
   </div>
 </div>
 
+<!-- ─── FILTER BAR ──────────────────────────────────────── -->
+<div class="pf-bar">
+  <div class="container">
+    <div class="pf-top">
+      <span class="pf-count">
+        {% if productos %}
+          <strong>{{ productos|length }}</strong> pieza{% if productos|length != 1 %}s{% endif %}
+        {% else %}Sin resultados{% endif %}
+      </span>
+
+      <div class="filter">
+        <div class="pf-avail-inline">
+          <button type="button"
+                  class="pf-avail-pill{% if not agotado_filter %} selected{% endif %}"
+                  onclick="pfSetAvail('')">Todas</button>
+          <button type="button"
+                  class="pf-avail-pill{% if agotado_filter == '0' %} selected{% endif %}"
+                  onclick="pfSetAvail('0')">Disponibles</button>
+        </div>
+
+        <div class="pf-search-inline">
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+            <input id="pf-q" type="text" class="form-control"
+                   placeholder="Nombre o código…"
+                   value="{{ q|default:'' }}">
+            <button type="button" class="pf-btn-inline-search" onclick="pfApply()">
+              Buscar
+            </button>
+            {% if q %}
+            <button type="button" class="pf-btn-inline-clear" onclick="pfClearKey('q')" title="Limpiar">
+              <i class="fas fa-times"></i>
+            </button>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      {% if q or agotado_filter %}
+      <button type="button" class="pf-clear-all" onclick="pfClearAll()">Limpiar todo</button>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
 <!-- ─── CATEGORY CIRCLES ──────────────────────────────────── -->
 {% if categorias %}
 <div class="cat-circles-section">
@@ -63,123 +108,6 @@
   </div>
 </div>
 {% endif %}
-
-<!-- ─── PANDORA-STYLE FILTER BAR ──────────────────────────── -->
-<div class="pf-bar">
-  <div class="container">
-
-    <!-- Fila superior -->
-    <div class="pf-top">
-      <span class="pf-count">
-        {% if productos %}
-          <strong>{{ productos|length }}</strong> pieza{% if productos|length != 1 %}s{% endif %}
-        {% else %}Sin resultados{% endif %}
-      </span>
-      <div class="pf-sort">
-        <span>Ordenar por</span>
-        <select id="pf-orden">
-          <option value="">Más recientes</option>
-          <option value="precio_asc">Precio: menor a mayor</option>
-          <option value="precio_desc">Precio: mayor a menor</option>
-          <option value="nombre">Nombre A–Z</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Fila de filtros -->
-    <div class="pf-filters">
-
-      <!-- Búsqueda -->
-      <div class="pf-dropdown" id="pf-drop-search">
-        <button type="button"
-                class="pf-trigger{% if q %} has-value{% endif %}"
-                onclick="pfToggle('pf-drop-search')">
-          <i class="fas fa-search"></i>
-          Buscar
-          <span class="pf-dot"></span>
-          <i class="fas fa-chevron-down arrow"></i>
-        </button>
-        <div class="pf-panel">
-          <div class="input-group">
-            <span class="input-group-text"><i class="fas fa-search"></i></span>
-            <input id="pf-q" type="text" class="form-control"
-                   placeholder="Nombre o código…"
-                   value="{{ q|default:'' }}">
-          </div>
-          <div class="pf-panel-actions">
-            <button type="button" class="pf-btn-apply" onclick="pfApply()">Buscar</button>
-            {% if q %}
-            <button type="button" class="pf-btn-clear" onclick="pfClearKey('q')">Limpiar</button>
-            {% endif %}
-          </div>
-        </div>
-      </div>
-
-      <!-- Categoría -->
-      <div class="pf-dropdown" id="pf-drop-cat">
-        <button type="button"
-                class="pf-trigger{% if categoria_id %} has-value{% endif %}"
-                onclick="pfToggle('pf-drop-cat')">
-          <i class="fas fa-layer-group"></i>
-          Categoría
-          <span class="pf-dot"></span>
-          <i class="fas fa-chevron-down arrow"></i>
-        </button>
-        <div class="pf-panel">
-          <ul class="pf-option-list">
-            <li>
-              <label onclick="pfSetCat('')">
-                <span class="pf-opt-check{% if not categoria_id %} checked{% endif %}"></span>
-                Todas las categorías
-              </label>
-            </li>
-            {% for cat in categorias %}
-              {% if not cat.padre %}
-              <li>
-                <label onclick="pfSetCat('{{ cat.id }}')">
-                  <span class="pf-opt-check{% if categoria_id == cat.id|stringformat:'s' %} checked{% endif %}"></span>
-                  {{ cat.nombre }}
-                </label>
-              </li>
-              {% endif %}
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
-
-      <!-- Disponibilidad -->
-      <div class="pf-dropdown" id="pf-drop-avail">
-        <button type="button"
-                class="pf-trigger{% if agotado_filter %} has-value{% endif %}"
-                onclick="pfToggle('pf-drop-avail')">
-          <i class="fas fa-circle-dot"></i>
-          Disponibilidad
-          <span class="pf-dot"></span>
-          <i class="fas fa-chevron-down arrow"></i>
-        </button>
-        <div class="pf-panel">
-          <div class="pf-avail-pills">
-            <button type="button"
-                    class="pf-avail-pill{% if not agotado_filter %} selected{% endif %}"
-                    onclick="pfSetAvail('')">Todas</button>
-            <button type="button"
-                    class="pf-avail-pill{% if agotado_filter == '0' %} selected{% endif %}"
-                    onclick="pfSetAvail('0')">Disponibles</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Limpiar todo -->
-      {% if q or categoria_id or agotado_filter %}
-      <button type="button" class="pf-clear-all" onclick="pfClearAll()">Limpiar todo</button>
-      {% endif %}
-
-    </div>
-  </div>
-</div>
-
-<!-- Overlay -->
-<div class="pf-overlay" id="pf-overlay" onclick="pfCloseAll()"></div>
 
 <!-- ─── STORE BODY ─────────────────────────────────────────── -->
 <div class="store-body">
@@ -239,73 +167,40 @@
 
 <!-- ─── JS ─────────────────────────────────────────────────── -->
 <script>
-// Estado actual de los filtros (inyectado desde Django)
 const _state = {
   q:        "{{ q|default:''|escapejs }}",
   categoria: "{{ categoria_id|default:''|escapejs }}",
-  agotado:  "{{ agotado_filter|default:''|escapejs }}"
+  agotado:  "{{ agotado_filter|default:''|escapejs }}",
+  orden:    "{{ orden|default:''|escapejs }}"
 };
 
-// Navega a la URL con los parámetros dados
 function pfGo(params) {
   const url = new URLSearchParams();
-  if (params.q)        url.set('q', params.q);
-  if (params.categoria) url.set('categoria', params.categoria);
+  if (params.q)          url.set('q', params.q);
+  if (params.categoria)  url.set('categoria', params.categoria);
   if (params.agotado !== undefined && params.agotado !== '') url.set('agotado', params.agotado);
   window.location.search = url.toString();
 }
 
-// Abre/cierra panel
-function pfToggle(id) {
-  const drop    = document.getElementById(id);
-  const panel   = drop.querySelector('.pf-panel');
-  const trigger = drop.querySelector('.pf-trigger');
-  const overlay = document.getElementById('pf-overlay');
-  const isOpen  = panel.classList.contains('open');
-  pfCloseAll();
-  if (!isOpen) {
-    panel.classList.add('open');
-    trigger.classList.add('active-filter');
-    overlay.classList.add('open');
-  }
-}
-
-function pfCloseAll() {
-  document.querySelectorAll('.pf-panel').forEach(p => p.classList.remove('open'));
-  document.querySelectorAll('.pf-trigger').forEach(t => t.classList.remove('active-filter'));
-  const ov = document.getElementById('pf-overlay');
-  if (ov) ov.classList.remove('open');
-}
-
-// Aplica búsqueda
 function pfApply() {
   const q = document.getElementById('pf-q').value.trim();
   pfGo({ ..._state, q });
 }
 
-// Enter en el input de búsqueda
 document.getElementById('pf-q').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') pfApply();
 });
 
-// Selecciona categoría y navega
-function pfSetCat(val) {
-  pfGo({ ..._state, categoria: val });
-}
-
-// Selecciona disponibilidad y navega
-function pfSetAvail(val) {
-  pfGo({ ..._state, agotado: val });
-}
-
-// Limpia una clave específica
 function pfClearKey(key) {
   pfGo({ ..._state, [key]: '' });
 }
 
-// Limpia todos los filtros
 function pfClearAll() {
   window.location.search = '';
+}
+
+function pfSetAvail(val) {
+  pfGo({ ..._state, agotado: val });
 }
 </script>
 
