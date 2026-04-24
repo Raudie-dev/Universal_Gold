@@ -77,59 +77,47 @@ def registro(request):
         return render(request, 'login.html')
 
     # --- PROCESAMIENTO DE FORMULARIOS (POST) ---
+
     if request.method == 'POST':
-        
+
         # 1. CREAR CATEGORÍA (Con soporte jerárquico)
         if 'crear_categoria' in request.POST:
             nombre_cat = request.POST.get('categoria_nombre', '').strip()
-            
-            # Capturamos el ID del padre del select
             padre_id = request.POST.get('categoria_padre')
-            
-            # Si el valor es vacío o string vacía, lo forzamos a None (Raíz)
             if not padre_id:
                 padre_id = None
-            
+            icono_img = request.FILES.get('categoria_icono_img')
             if nombre_cat:
                 try:
-                    # Llamamos a la función corregida enviando el padre_id
-                    crear_categoria(nombre_cat, padre_id)
+                    crear_categoria(nombre_cat, padre_id, icono_img)
                     messages.success(request, 'Categoría creada correctamente')
                 except Exception as e:
                     messages.error(request, f'Error al crear la categoría: {e}')
             else:
                 messages.error(request, 'El nombre de la categoría es obligatorio')
-        
+
         if 'editar_categoria' in request.POST:
             cat_id = request.POST.get('editar_categoria_id')
             nuevo_nombre = request.POST.get('categoria_nombre', '').strip()
             nuevo_padre_id = request.POST.get('categoria_padre')
+            icono_img = request.FILES.get('categoria_icono_img')
 
             if cat_id and nuevo_nombre:
                 try:
                     categoria = Category.objects.get(id=cat_id)
-                    
                     # Validación básica para evitar ciclos (una cat no puede ser padre de sí misma)
                     if nuevo_padre_id and int(nuevo_padre_id) == int(cat_id):
                         messages.error(request, 'Una categoría no puede ser su propio padre.')
                     else:
-                        categoria.nombre = nuevo_nombre
-                        
-                        # Actualizar padre
-                        if nuevo_padre_id:
-                            categoria.padre_id = int(nuevo_padre_id)
-                        else:
-                            categoria.padre = None # Se vuelve categoría principal
-                        
-                        categoria.save()
+                        from app1.crud import editar_categoria
+                        editar_categoria(categoria, nombre=nuevo_nombre, padre_id=nuevo_padre_id, icono_img=icono_img if icono_img else None)
                         messages.success(request, 'Categoría actualizada correctamente.')
-                        
                 except Category.DoesNotExist:
                     messages.error(request, 'La categoría no existe.')
                 except Exception as e:
                     messages.error(request, f'Error al actualizar: {e}')
             else:
-                messages.error(request, 'Datos incompletos para editar.')        
+                messages.error(request, 'Datos incompletos para editar.')
 
         # 2. CREAR PRODUCTO
         elif 'crear_producto' in request.POST:

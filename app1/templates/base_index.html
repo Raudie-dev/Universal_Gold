@@ -46,27 +46,28 @@
 
     <!-- Desktop Nav -->
     <nav class="header-nav d-none d-md-flex">
-      <a href="{% url 'index' %}"
-         class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}">
-        Inicio
-      </a>
-      <a href="{% url 'tienda' %}"
-         class="nav-link {% if request.resolver_match.url_name == 'tienda' %}active{% endif %}">
-        Catálogo
-      </a>
-      <a href="{% url 'personalizada' %}"
-         class="nav-link {% if request.resolver_match.url_name == 'personalizada' %}active{% endif %}">
-        Personalizada
-      </a>
-      <a href="{% url 'vip' %}"
-         class="nav-link {% if request.resolver_match.url_name == 'vip' %}active{% endif %}">
-        VIP
-      </a>
+      <a href="{% url 'index' %}#heroSection"
+        class="nav-link">Inicio</a>
+      <a href="{% url 'index' %}#categorias"
+        class="nav-link">Categorías</a>
+      <a href="{% url 'index' %}#destacados"
+        class="nav-link">Catálogo</a>
+      <a href="{% url 'index' %}#about"
+        class="nav-link">Nuestra Historia</a>
+      <a href="{% url 'index' %}#servicios"
+        class="nav-link">Servicios</a>
+      <a href="{% url 'index' %}#wholesale"
+        class="nav-link">Mayoristas</a>
+      <a href="{% url 'index' %}#personalizada"
+        class="nav-link">Personalizada</a>
+      <a href="{% url 'index' %}#vip"
+        class="nav-link">VIP</a>
+      <a href="{% url 'index' %}#contacto" class="nav-link">Contacto</a>
       <a href="{% url 'orden' %}" class="btn-cart-header ms-3">
         <i class="fas fa-shopping-bag"></i>
         <span>Carrito</span>
         {% if cart_count > 0 %}
-          <span class="badge-cart">{{ cart_count }}</span>
+         <span class="badge-cart">{{ cart_count }}</span>
         {% endif %}
       </a>
     </nav>

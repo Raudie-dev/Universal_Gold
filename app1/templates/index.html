@@ -55,6 +55,107 @@
 
 </section>
 
+<!-- ═══════════════════════════════════════════════════
+     PERSONALIZADA (como sección)
+═════════════════════════════════════════════════════ -->
+<section id="personalizada">
+  <div class="page-header">
+    <div class="container">
+      <h1>Joyería <em>Personalizada</em></h1>
+      <p>Creamos piezas únicas que cuentan tu historia. Cada diseño nace de un momento especial.</p>
+      <nav aria-label="breadcrumb" class="mt-3">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+          <li class="breadcrumb-item active">Joyería Personalizada</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <div class="custom-intro-strip">
+    <div class="container">
+      <div class="custom-intro-inner">
+        <div class="custom-intro-item">
+          <i class="fas fa-drafting-compass"></i>
+          <span>Diseño a medida</span>
+        </div>
+        <div class="custom-intro-divider"></div>
+        <div class="custom-intro-item">
+          <i class="fas fa-certificate"></i>
+          <span>Oro 18k garantizado</span>
+        </div>
+        <div class="custom-intro-divider"></div>
+        <div class="custom-intro-item">
+          <i class="fas fa-clock"></i>
+          <span>Entrega estimada 7–21 días</span>
+        </div>
+        <div class="custom-intro-divider"></div>
+        <div class="custom-intro-item">
+          <i class="fab fa-whatsapp"></i>
+          <span>Asesoría por WhatsApp</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Puedes agregar más contenido de personalizada.html aquí si lo deseas -->
+</section>
+
+<!-- ═══════════════════════════════════════════════════
+     VIP (como sección)
+═════════════════════════════════════════════════════ -->
+<section id="vip">
+  <div class="vip-hero">
+    <div class="vip-hero-bg-pattern"></div>
+    <div class="container" style="position:relative;z-index:1;">
+      <div class="vip-hero-inner">
+        <div class="vip-crown-lg">
+          <i class="fas fa-crown"></i>
+        </div>
+        <span class="eyebrow" style="color:var(--gold-light);">Membresía Exclusiva</span>
+        <h1 style="color:var(--white);">Club <em>VIP</em><br>Universal Gold</h1>
+        <div class="gold-rule centered"></div>
+        <p class="vip-hero-subtitle">
+          Únete a nuestra comunidad de clientes privilegiados. Beneficios exclusivos, atención personalizada y acceso anticipado a nuevas colecciones.
+        </p>
+        <div class="vip-hero-actions">
+          {% if whatsapp_url %}
+          <a href="{{ whatsapp_url }}" target="_blank" rel="noopener" class="btn btn-primary">
+            <i class="fab fa-whatsapp"></i>
+            <span>Solicitar membresía VIP</span>
+          </a>
+          {% endif %}
+          <a href="#beneficios" class="btn btn-gold-outline">
+            <span>Ver beneficios</span>
+            <i class="fas fa-chevron-down"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <section class="vip-benefits-section section" id="beneficios">
+    <div class="container">
+      <div class="text-center mb-6 reveal">
+        <span class="eyebrow">¿Qué incluye?</span>
+        <h2>Beneficios <em>exclusivos</em></h2>
+        <div class="gold-rule centered"></div>
+        <p style="font-size:0.88rem;color:var(--ink-muted);max-width:520px;margin:1rem auto 0;line-height:1.9;">
+          Como miembro VIP accedes a un nivel de servicio y ventajas que no están disponibles para el público general.
+        </p>
+      </div>
+      <div class="vip-benefits-full reveal">
+        <div class="vip-benefit-full">
+          <div class="vip-benefit-full-icon"><i class="fas fa-tag"></i></div>
+          <div class="vip-benefit-full-body">
+            <h4>Precios Preferenciales</h4>
+            <p>Descuentos exclusivos en toda la colección disponible. Como VIP accedes a precios especiales que no están publicados y que solo tu asesor puede ofrecerte.</p>
+          </div>
+          <div class="vip-benefit-full-badge">Descuentos exclusivos</div>
+        </div>
+        <!-- Puedes agregar más beneficios aquí -->
+      </div>
+    </div>
+  </section>
+</section>
+
 
 <!-- ═══════════════════════════════════════════════════
      CATEGORÍAS EN CÍRCULOS
@@ -73,21 +174,30 @@
       {% for cat in categorias %}
         {% if not cat.padre %}
         <a href="{% url 'tienda' %}?categoria={{ cat.id }}" class="cat-circle-item reveal">
-          <div class="cat-circle-wrap">
+            <div class="cat-circle-wrap">
             <div class="cat-circle-img-outer">
-              {% with cat.productos.all|first as sample %}
-                {% if sample and sample.portada %}
-                  <img src="{{ sample.portada.url }}" alt="{{ cat.nombre }}">
-                {% elif sample and sample.imagen %}
-                  <img src="{{ sample.imagen.url }}" alt="{{ cat.nombre }}">
-                {% else %}
-                  <img src="{% static 'images/default_event.jpg' %}" alt="{{ cat.nombre }}">
-                {% endif %}
-              {% endwith %}
+              {% if cat.icono %}
+                <img src="{{ cat.icono.url }}" alt="{{ cat.nombre }}">
+              {% else %}
+                {% with cat.productos.all|first as sample %}
+                  {% if sample and sample.portada %}
+                    <img src="{{ sample.portada.url }}" alt="{{ cat.nombre }}">
+                  {% elif sample and sample.imagen %}
+                    <img src="{{ sample.imagen.url }}" alt="{{ cat.nombre }}">
+                  {% else %}
+                    <img src="{% static 'images/default_event.jpg' %}" alt="{{ cat.nombre }}">
+                  {% endif %}
+                {% endwith %}
+              {% endif %}
               <div class="cat-circle-overlay"></div>
             </div>
           </div>
-          <span class="cat-circle-label">{{ cat.nombre }}</span>
+          <span class="cat-circle-label">
+            {% if cat.icono %}
+              <img src="{{ cat.icono.url }}" alt="icono" style="width:32px;height:32px;margin-right:0.4em;vertical-align:middle;object-fit:contain;border-radius:50%;">
+            {% endif %}
+            {{ cat.nombre }}
+          </span>
         </a>
         {% endif %}
       {% endfor %}

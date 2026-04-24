@@ -72,7 +72,12 @@
 
       <div class="product-badges">
         {% for cat in producto.categorias_hoja %}
-          <span class="badge-gold">{{ cat.nombre }}</span>
+          <span class="badge-gold">
+            {% if cat.icono %}
+              <img src="{{ cat.icono.url }}" alt="icono" style="width:24px;height:24px;margin-right:0.3em;vertical-align:middle;object-fit:contain;border-radius:50%;">
+            {% endif %}
+            {{ cat.nombre }}
+          </span>
         {% endfor %}
         {% if producto.agotado %}
           <span class="badge-sold-out">Agotado</span>
@@ -149,6 +154,32 @@
       <div>
         <span class="eyebrow">También te puede gustar</span>
         <h3 class="related-title">Productos Relacionados</h3>
+      <!-- ─── FILTER & SEARCH BAR ─────────────────────────────── -->
+      <div class="pf-bar" style="border-radius: 1.5rem; margin: 2.5rem auto 2.5rem auto; max-width: 900px; box-shadow: 0 2px 18px rgba(28,24,16,0.04); overflow: hidden;">
+        <div class="container">
+          <div class="pf-filters" style="padding: 0.7rem 1.5rem; gap: 1.5rem;">
+            <!-- Búsqueda -->
+            <form method="get" action="" style="display: flex; align-items: center; gap: 0.7rem; flex: 1;">
+              <div class="input-group" style="flex: 1;">
+                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                <input type="text" name="q" class="form-control" placeholder="Buscar en productos..." value="{{ request.GET.q|default:'' }}">
+              </div>
+              <button type="submit" class="btn btn-primary" style="padding: 0.7rem 1.5rem; border-radius: 1.2rem; font-size: 0.7rem;">Buscar</button>
+            </form>
+            <!-- Filtro de categoría (opcional, si hay contexto de categorías) -->
+            {% if producto.categorias_hoja %}
+            <div class="pf-dropdown" style="min-width: 180px;">
+              <select class="form-control" style="border-radius: 1.2rem;" name="categoria" onchange="this.form && this.form.submit && this.form.submit()">
+                <option value="">Todas las categorías</option>
+                {% for cat in producto.categorias_hoja %}
+                  <option value="{{ cat.id }}" {% if request.GET.categoria == cat.id|stringformat:'s' %}selected{% endif %}>{{ cat.nombre }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
       </div>
       <a href="{% url 'tienda' %}" class="btn btn-ghost" style="font-size:0.6rem;">
         <span>Ver todo</span>
@@ -186,7 +217,14 @@
         </div>
         <div class="product-card-body">
           {% with sugerido.categorias.all|first as cat %}
-            {% if cat %}<div class="product-card-cat">{{ cat.nombre }}</div>{% endif %}
+            {% if cat %}
+              <div class="product-card-cat">
+                {% if cat.icono %}
+                  <img src="{{ cat.icono.url }}" alt="icono" style="width:20px;height:20px;margin-right:0.3em;vertical-align:middle;object-fit:contain;border-radius:50%;">
+                {% endif %}
+                {{ cat.nombre }}
+              </div>
+            {% endif %}
           {% endwith %}
           <div class="product-card-name">
             <a href="{% url 'productos' sugerido.id %}">{{ sugerido.nombre }}</a>

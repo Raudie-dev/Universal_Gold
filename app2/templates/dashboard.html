@@ -289,28 +289,16 @@
         <form id="pdfReportForm" action="{% url 'dashboard' %}" method="post">
           {% csrf_token %}
           <input type="hidden" name="generar_pdf" value="1" />
-          <input type="hidden" name="desde" id="modalDesde" value="{{ fecha_desde }}" />
-          <input type="hidden" name="hasta" id="modalHasta" value="{{ fecha_hasta }}" />
 
           <div class="row g-3">
             <div class="col-md-6">
               <label class="form-label">Desde</label>
-              <input type="date" class="form-control" id="modalDesdeInput" value="{{ fecha_desde|date:'Y-m-d' }}" disabled />
+              <input type="date" name="desde" class="form-control" id="modalDesdeInput" value="{{ fecha_desde|date:'Y-m-d' }}" />
             </div>
             <div class="col-md-6">
               <label class="form-label">Hasta</label>
-              <input type="date" class="form-control" id="modalHastaInput" value="{{ fecha_hasta|date:'Y-m-d' }}" disabled />
+              <input type="date" name="hasta" class="form-control" id="modalHastaInput" value="{{ fecha_hasta|date:'Y-m-d' }}" />
             </div>
-          </div>
-
-          <div class="mt-4">
-            <p class="mb-1"><strong>Resumen rápido:</strong></p>
-            <ul class="list-unstyled small text-muted">
-              <li><strong>Órdenes este mes:</strong> {{ total_ordenes_mes }}</li>
-              <li><strong>Ingresos del mes:</strong> ${{ ingresos_mes|floatformat:2 }}</li>
-              <li><strong>Total clientes:</strong> {{ total_clientes }}</li>
-              <li><strong>Órdenes procesadas:</strong> {{ total_ordenes_procesadas }}</li>
-            </ul>
           </div>
         </form>
       </div>

@@ -1,4 +1,4 @@
-from .models import Cliente, Orden, OrdenItem, Product
+from .models import Cliente, Orden, OrdenItem, Product, Category
 from decimal import Decimal
 
 
@@ -69,5 +69,36 @@ def crear_orden_desde_carrito(cliente, items, mensaje='', codigo_afiliado='', de
     orden.save()
     return orden
 
+def crear_categoria(nombre, padre_id=None, icono_img=None):
+    nombre = (nombre or '').strip()
+    if not nombre:
+        raise ValueError('El nombre de la categoría es obligatorio')
+    padre = None
+    if padre_id:
+        try:
+            padre = Category.objects.get(id=padre_id)
+        except Category.DoesNotExist:
+            padre = None
+    cat = Category(nombre=nombre, padre=padre)
+    if icono_img:
+        cat.icono = icono_img
+    cat.save()
+    return cat
+
+def editar_categoria(cat, nombre=None, padre_id=None, icono_img=None):
+    if nombre:
+        cat.nombre = nombre
+    if padre_id is not None:
+        if padre_id:
+            try:
+                cat.padre = Category.objects.get(id=padre_id)
+            except Category.DoesNotExist:
+                cat.padre = None
+        else:
+            cat.padre = None
+    if icono_img is not None:
+        cat.icono = icono_img
+    cat.save()
+    return cat
 # Compatibilidad con el nombre antiguo
 crear_cotizacion_desde_carrito = crear_orden_desde_carrito

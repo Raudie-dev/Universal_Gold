@@ -311,16 +311,17 @@ def orden(request):
             saludo = AppConfig.get_valor('WHATSAPP_SALUDO', 'Hola, buenos días. Me interesa solicitar una cotización.')
             total_mensaje = total_con_descuento if afiliado_valido else total_orden
             texto_orden = (
-                f"{saludo}\n\n"
-                f"Orden #: {orden.id}\n"
-                f"Cliente: {nombre} ({correo})\n"
-                f"Teléfono: {telefono if telefono else 'N/A'}\n"
-                f"Fecha: {fecha_str}\n\n"
-                f"Productos:\n{productos_str}\n\n"
-                f"Subtotal: ${total_orden:.2f}\n"
-                + (f"Código afiliado: {codigo_descuento} (-{descuento_porcentaje}% )\n" if afiliado_valido else "")
-                + f"Total: ${total_mensaje:.2f}\n\n"
-                f"Mensaje adicional: {mensaje if mensaje else '-'}"
+                f"📦 {saludo}\n\n"
+                f"🆔 Orden #: {orden.id}\n"
+                f"👤 Cliente: {nombre} ({correo})\n"
+                f"📞 Teléfono: {telefono if telefono else 'N/A'}\n"
+                f"📅 Fecha: {fecha_str}\n\n"
+                f"🛒 Productos:\n{productos_str}\n\n"
+                f"💵 Subtotal: ${total_orden:.2f}\n"
+                + (f"🏷️ Código afiliado: {codigo_descuento} (-{descuento_porcentaje}% )\n" if afiliado_valido else "")
+                + f"💰 Total: ${total_mensaje:.2f}\n\n"
+                f"📝 Mensaje adicional: {mensaje if mensaje else '-'}\n\n"
+                f"✅ ¡Gracias por tu pedido!"
             )
 
             telefono_ventas = AppConfig.get_valor('WHATSAPP_EMPRESA') or getattr(settings, 'WHATSAPP_EMPRESA', '')
@@ -344,7 +345,11 @@ def orden(request):
             request.session['orden'] = {}
             request.session.modified = True
 
-            return redirect(whatsapp_url)
+            return render(request, 'orden_success.html', {
+                'orden': orden,
+                'whatsapp_url': whatsapp_url,
+                'cart_count': 0,
+            })
 
         except Exception as e:
             print(f"Error procesando orden/WhatsApp: {e}")

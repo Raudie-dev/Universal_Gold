@@ -3,6 +3,8 @@ from django.db import models
 
 class Category(models.Model):
     nombre = models.CharField(max_length=120, unique=True)
+    # Imagen de icono para la categoría
+    icono = models.ImageField(upload_to='categorias/iconos/', blank=True, null=True, help_text="Imagen de icono para la categoría")
     
     # --- CAMPO NUEVO PARA SUBCATEGORÍAS ---
     # 'self' indica relación con este mismo modelo.

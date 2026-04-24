@@ -6,8 +6,15 @@
 <div class="container py-5">
     <div class="alert alert-success">
         <h4 class="alert-heading">Orden enviada</h4>
-        <p>Gracias. Su orden (ID: {{ cotizacion.id }}) ha sido creada. Se ha generado un enlace para notificar a ventas por WhatsApp.</p>
+        <p>Gracias. Su orden (ID: {{ orden.id }}) ha sido creada. Se ha generado un enlace para notificar a ventas por WhatsApp.</p>
     </div>
     <a href="{% url 'tienda' %}" class="btn btn-primary">Volver a la tienda</a>
 </div>
+
+<a href="{{ whatsapp_url }}" target="_blank" id="whatsapp-link" style="display:none;"></a>
+<script>
+window.addEventListener('load', function() {
+    document.getElementById('whatsapp-link').click();
+});
+</script>
 {% endblock %}

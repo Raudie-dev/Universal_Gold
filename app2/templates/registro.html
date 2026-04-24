@@ -115,11 +115,18 @@
       <form method="post">
         {% csrf_token %}
         <div class="modal-body p-4">
-          
+
           <!-- Nombre -->
           <div class="mb-3">
             <label class="form-label fw-bold">Nombre de la Categoría</label>
             <input type="text" name="categoria_nombre" class="form-control" required placeholder="Ej. Motores">
+          </div>
+
+          <!-- Icono Imagen -->
+          <div class="mb-3">
+            <label class="form-label fw-bold">Icono de la Categoría (imagen)</label>
+            <input type="file" name="categoria_icono_img" accept="image/*" class="form-control">
+            <div class="form-text">Carga una imagen para usar como icono de la categoría.</div>
           </div>
 
           <!-- Selector de Padre (3 Niveles) -->
@@ -262,7 +269,7 @@
       <form method="post">
         {% csrf_token %}
         <div class="modal-body p-4">
-          
+
           <!-- ID Oculto para saber cuál editar -->
           <input type="hidden" name="editar_categoria_id" id="editCatId">
 
@@ -270,6 +277,13 @@
           <div class="mb-3">
             <label class="form-label fw-bold">Nombre de la Categoría</label>
             <input type="text" name="categoria_nombre" id="editCatNombre" class="form-control" required>
+          </div>
+
+          <!-- Icono Imagen -->
+          <div class="mb-3">
+            <label class="form-label fw-bold">Icono de la Categoría (imagen)</label>
+            <input type="file" name="categoria_icono_img" accept="image/*" class="form-control">
+            <div class="form-text">Carga una imagen para usar como icono de la categoría. Si no seleccionas una nueva, se mantiene la actual.</div>
           </div>
 
           <!-- Selector de Padre (Nivel) -->

@@ -163,15 +163,12 @@
             </div>
 
             <div>
-              <label>Teléfono (Venezuela) *</label>
+              <label>Teléfono *</label>
               <div class="input-group">
                 <span class="input-group-text"><i class="fab fa-whatsapp"></i></span>
                 <input type="tel" id="inputTelefono" name="telefono"
-                       class="form-control" placeholder="+58XXXXXXXXXX" required>
+                       class="form-control" placeholder="Tu número de teléfono" required>
               </div>
-              <p class="phone-error" id="phoneError">
-                Formato: +58 seguido de 10 dígitos (sin 0 inicial)
-              </p>
             </div>
 
             <div>
@@ -227,6 +224,10 @@
 {% block extra_scripts %}
 <script>
 (function() {
+  const inputNombre = document.getElementById('inputNombre');
+  const inputCorreo = document.getElementById('inputCorreo');
+  const inputTelefono = document.getElementById('inputTelefono');
+  const btnSubmit = document.getElementById('btnSubmit');
   const inputCodigo = document.querySelector('input[name="codigo_descuento"]');
   const discountRow = document.getElementById('discountRow');
   const totalRow = document.getElementById('totalRow');
@@ -235,6 +236,26 @@
   const totalConDescuentoEl = document.getElementById('totalConDescuento');
   const subtotalEl = document.getElementById('subtotalAmount');
   const codigoErrorEl = document.getElementById('codigoError');
+
+  function checkForm() {
+    const nombre = inputNombre.value.trim();
+    const correo = inputCorreo.value.trim();
+    const telefono = inputTelefono.value.trim();
+    if (nombre && correo && telefono) {
+      btnSubmit.disabled = false;
+      btnSubmit.innerHTML = '<span>Enviar por WhatsApp</span><i class="fab fa-whatsapp"></i>';
+    } else {
+      btnSubmit.disabled = true;
+      btnSubmit.innerHTML = '<span>Completa los datos</span><i class="fas fa-lock"></i>';
+    }
+  }
+
+  inputNombre.addEventListener('input', checkForm);
+  inputCorreo.addEventListener('input', checkForm);
+  inputTelefono.addEventListener('input', checkForm);
+
+  // Initial check
+  checkForm();
 
   if (!inputCodigo || !subtotalEl) {
     return;
