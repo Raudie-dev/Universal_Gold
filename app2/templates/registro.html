@@ -104,7 +104,7 @@
 <!-- BLOQUE DE MODALES -->
 {% block modals %}
 
-<!-- MODAL 1: CREAR CATEGORÍA (Con soporte jerárquico de 3 niveles) -->
+<!-- MODAL 1: CREAR CATEGORÍA -->
 <div class="modal fade" id="modalCrearCategoria" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -112,48 +112,46 @@
         <h5 class="modal-title"><i class="fas fa-tag me-2"></i> Nueva Categoría</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
-      <form method="post">
+      <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="modal-body p-4">
 
-          <!-- Nombre -->
           <div class="mb-3">
             <label class="form-label fw-bold">Nombre de la Categoría</label>
             <input type="text" name="categoria_nombre" class="form-control" required placeholder="Ej. Motores">
           </div>
 
-          <!-- Icono Imagen -->
+          <!-- Icono: igual al modal de editar, sin form anidado -->
           <div class="mb-3">
             <label class="form-label fw-bold">Icono de la Categoría (imagen)</label>
             <input type="file" name="categoria_icono_img" accept="image/*" class="form-control">
             <div class="form-text">Carga una imagen para usar como icono de la categoría.</div>
           </div>
 
-          <!-- Selector de Padre (3 Niveles) -->
           <div class="mb-3">
             <label class="form-label fw-bold">Categoría Padre <small class="text-muted fw-normal">(Opcional)</small></label>
-              <select name="categoria_padre" class="form-select">
-                  <option value="">-- Es una Categoría Principal (Nivel 1) --</option>
-                  {% for cat in categorias %}
-                      {% if not cat.padre %}
-                          {# Usamos el include recursivo #}
-                          {% include "includes/opcion_categoria.html" with cat=cat nivel=0 %}
-                      {% endif %}
-                  {% endfor %}
-              </select>
+            <select name="categoria_padre" class="form-select">
+              <option value="">-- Es una Categoría Principal (Nivel 1) --</option>
+              {% for cat in categorias %}
+                {% if not cat.padre %}
+                  {% include "includes/opcion_categoria.html" with cat=cat nivel=0 %}
+                {% endif %}
+              {% endfor %}
+            </select>
             <div class="form-text">Si seleccionas un padre, esta será una subcategoría.</div>
           </div>
 
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" name="crear_categoria" class="btn btn-primary"><i class="fas fa-save me-1"></i> Guardar</button>
+          <button type="submit" name="crear_categoria" class="btn btn-primary">
+            <i class="fas fa-save me-1"></i> Guardar
+          </button>
         </div>
       </form>
     </div>
   </div>
 </div>
-
 <!-- MODAL 2: CREAR PRODUCTO (Selector de Categoría mejorado) -->
 <div class="modal fade" id="modalCrearProducto" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-xl">
@@ -266,45 +264,50 @@
         <h5 class="modal-title"><i class="fas fa-edit me-2"></i> Editar Categoría</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
-      <form method="post">
+      <form method="post" enctype="multipart/form-data">   {# ← AÑADIR enctype #}
         {% csrf_token %}
         <div class="modal-body p-4">
 
-          <!-- ID Oculto para saber cuál editar -->
           <input type="hidden" name="editar_categoria_id" id="editCatId">
 
-          <!-- Nombre -->
           <div class="mb-3">
             <label class="form-label fw-bold">Nombre de la Categoría</label>
             <input type="text" name="categoria_nombre" id="editCatNombre" class="form-control" required>
           </div>
 
-          <!-- Icono Imagen -->
           <div class="mb-3">
-            <label class="form-label fw-bold">Icono de la Categoría (imagen)</label>
-            <input type="file" name="categoria_icono_img" accept="image/*" class="form-control">
-            <div class="form-text">Carga una imagen para usar como icono de la categoría. Si no seleccionas una nueva, se mantiene la actual.</div>
+            <label class="form-label fw-bold">Icono actual</label>
+            <div id="editCatIconoPreview" class="mb-2" style="display:none;">
+              <img id="editCatIconoImg"
+                   src=""
+                   alt="Icono actual"
+                   style="width:70px;height:70px;object-fit:cover;border-radius:50%;border:2px solid #dee2e6;">
+              <div class="form-text">Esta es la imagen actual.</div>
+            </div>
+            <label class="form-label fw-bold">Cambiar Icono <small class="text-muted fw-normal">(Opcional)</small></label>
+            <input type="file" name="categoria_icono_img" id="editCatIconoInput" accept="image/*" class="form-control">
+            <div class="form-text">Si no seleccionas una nueva, se mantiene la actual.</div>
           </div>
 
-          <!-- Selector de Padre (Nivel) -->
           <div class="mb-3">
             <label class="form-label fw-bold">Categoría Padre (Nivel)</label>
-              <select name="categoria_padre" id="editCatPadre" class="form-select">
-                  <option value="">-- Es una Categoría Principal (Nivel 1) --</option>
-                  {% for cat in categorias %}
-                      <!-- Usamos el include para llenar las opciones igual que en crear -->
-                      {% if not cat.padre %}
-                          {% include "includes/opcion_categoria.html" with cat=cat nivel=0 %}
-                      {% endif %}
-                  {% endfor %}
-              </select>
+            <select name="categoria_padre" id="editCatPadre" class="form-select">
+              <option value="">-- Es una Categoría Principal (Nivel 1) --</option>
+              {% for cat in categorias %}
+                {% if not cat.padre %}
+                  {% include "includes/opcion_categoria.html" with cat=cat nivel=0 %}
+                {% endif %}
+              {% endfor %}
+            </select>
             <div class="form-text">Cambia el padre para mover la categoría de nivel.</div>
           </div>
 
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" name="editar_categoria" class="btn btn-warning"><i class="fas fa-save me-1"></i> Actualizar</button>
+          <button type="submit" name="editar_categoria" class="btn btn-warning">
+            <i class="fas fa-save me-1"></i> Actualizar
+          </button>
         </div>
       </form>
     </div>
@@ -328,32 +331,48 @@
             });
         }
 
-        // 2. NUEVA: Lógica para Modal Editar
         var modalEditar = document.getElementById('modalEditarCategoria');
         if (modalEditar) {
             modalEditar.addEventListener('show.bs.modal', function (event) {
                 var button = event.relatedTarget;
-                
-                // Obtener datos del botón
-                var catId = button.getAttribute('data-bs-id');
+
+                var catId     = button.getAttribute('data-bs-id');
                 var catNombre = button.getAttribute('data-bs-nombre');
-                var catPadreId = button.getAttribute('data-bs-padre'); // ID del padre actual
-                
-                // Asignar valores a los inputs del modal
-                modalEditar.querySelector('#editCatId').value = catId;
+                var catPadreId = button.getAttribute('data-bs-padre');
+                var catIcono  = button.getAttribute('data-bs-icono');  
+
+                modalEditar.querySelector('#editCatId').value    = catId;
                 modalEditar.querySelector('#editCatNombre').value = catNombre;
-                
-                // Asignar el select del padre
-                var selectPadre = modalEditar.querySelector('#editCatPadre');
-                if (catPadreId && catPadreId !== 'None') {
-                    selectPadre.value = catPadreId;
+
+                // Mostrar/ocultar preview del icono actual
+                var previewDiv = modalEditar.querySelector('#editCatIconoPreview');
+                var previewImg = modalEditar.querySelector('#editCatIconoImg');
+                if (catIcono && catIcono.trim() !== '') {
+                    previewImg.src = catIcono;
+                    previewDiv.style.display = 'block';
                 } else {
-                    selectPadre.value = ""; // Es principal
+                    previewImg.src = '';
+                    previewDiv.style.display = 'none';
                 }
+
+                var inputIcono = modalEditar.querySelector('#editCatIconoInput');
+                inputIcono.value = '';  
+                inputIcono.onchange = function() {
+                    if (this.files && this.files[0]) {
+                        var reader = new FileReader();
+                        reader.onload = function(e) {
+                            previewImg.src = e.target.result;
+                            previewDiv.style.display = 'block';
+                        };
+                        reader.readAsDataURL(this.files[0]);
+                    }
+                };
+
+                var selectPadre = modalEditar.querySelector('#editCatPadre');
+                selectPadre.value = (catPadreId && catPadreId !== 'None') ? catPadreId : '';
             });
         }
 
-        // 3. Nueva: Lógica para previsualización de imágenes en modal crear producto
         const imagenesInput = document.getElementById('imagenesNuevoProducto');
         const previewDiv = document.getElementById('imagenesPreview');
         const imagenesList = document.getElementById('imagenesList');

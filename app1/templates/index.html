@@ -56,108 +56,6 @@
 </section>
 
 <!-- ═══════════════════════════════════════════════════
-     PERSONALIZADA (como sección)
-═════════════════════════════════════════════════════ -->
-<section id="personalizada">
-  <div class="page-header">
-    <div class="container">
-      <h1>Joyería <em>Personalizada</em></h1>
-      <p>Creamos piezas únicas que cuentan tu historia. Cada diseño nace de un momento especial.</p>
-      <nav aria-label="breadcrumb" class="mt-3">
-        <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
-          <li class="breadcrumb-item active">Joyería Personalizada</li>
-        </ol>
-      </nav>
-    </div>
-  </div>
-  <div class="custom-intro-strip">
-    <div class="container">
-      <div class="custom-intro-inner">
-        <div class="custom-intro-item">
-          <i class="fas fa-drafting-compass"></i>
-          <span>Diseño a medida</span>
-        </div>
-        <div class="custom-intro-divider"></div>
-        <div class="custom-intro-item">
-          <i class="fas fa-certificate"></i>
-          <span>Oro 18k garantizado</span>
-        </div>
-        <div class="custom-intro-divider"></div>
-        <div class="custom-intro-item">
-          <i class="fas fa-clock"></i>
-          <span>Entrega estimada 7–21 días</span>
-        </div>
-        <div class="custom-intro-divider"></div>
-        <div class="custom-intro-item">
-          <i class="fab fa-whatsapp"></i>
-          <span>Asesoría por WhatsApp</span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Puedes agregar más contenido de personalizada.html aquí si lo deseas -->
-</section>
-
-<!-- ═══════════════════════════════════════════════════
-     VIP (como sección)
-═════════════════════════════════════════════════════ -->
-<section id="vip">
-  <div class="vip-hero">
-    <div class="vip-hero-bg-pattern"></div>
-    <div class="container" style="position:relative;z-index:1;">
-      <div class="vip-hero-inner">
-        <div class="vip-crown-lg">
-          <i class="fas fa-crown"></i>
-        </div>
-        <span class="eyebrow" style="color:var(--gold-light);">Membresía Exclusiva</span>
-        <h1 style="color:var(--white);">Club <em>VIP</em><br>Universal Gold</h1>
-        <div class="gold-rule centered"></div>
-        <p class="vip-hero-subtitle">
-          Únete a nuestra comunidad de clientes privilegiados. Beneficios exclusivos, atención personalizada y acceso anticipado a nuevas colecciones.
-        </p>
-        <div class="vip-hero-actions">
-          {% if whatsapp_url %}
-          <a href="{{ whatsapp_url }}" target="_blank" rel="noopener" class="btn btn-primary">
-            <i class="fab fa-whatsapp"></i>
-            <span>Solicitar membresía VIP</span>
-          </a>
-          {% endif %}
-          <a href="#beneficios" class="btn btn-gold-outline">
-            <span>Ver beneficios</span>
-            <i class="fas fa-chevron-down"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-  <section class="vip-benefits-section section" id="beneficios">
-    <div class="container">
-      <div class="text-center mb-6 reveal">
-        <span class="eyebrow">¿Qué incluye?</span>
-        <h2>Beneficios <em>exclusivos</em></h2>
-        <div class="gold-rule centered"></div>
-        <p style="font-size:0.88rem;color:var(--ink-muted);max-width:520px;margin:1rem auto 0;line-height:1.9;">
-          Como miembro VIP accedes a un nivel de servicio y ventajas que no están disponibles para el público general.
-        </p>
-      </div>
-      <div class="vip-benefits-full reveal">
-        <div class="vip-benefit-full">
-          <div class="vip-benefit-full-icon"><i class="fas fa-tag"></i></div>
-          <div class="vip-benefit-full-body">
-            <h4>Precios Preferenciales</h4>
-            <p>Descuentos exclusivos en toda la colección disponible. Como VIP accedes a precios especiales que no están publicados y que solo tu asesor puede ofrecerte.</p>
-          </div>
-          <div class="vip-benefit-full-badge">Descuentos exclusivos</div>
-        </div>
-        <!-- Puedes agregar más beneficios aquí -->
-      </div>
-    </div>
-  </section>
-</section>
-
-
-<!-- ═══════════════════════════════════════════════════
      CATEGORÍAS EN CÍRCULOS
 ════════════════════════════════════════════════════ -->
 {% if categorias %}
@@ -174,30 +72,17 @@
       {% for cat in categorias %}
         {% if not cat.padre %}
         <a href="{% url 'tienda' %}?categoria={{ cat.id }}" class="cat-circle-item reveal">
-            <div class="cat-circle-wrap">
+          <div class="cat-circle-wrap">
             <div class="cat-circle-img-outer">
               {% if cat.icono %}
                 <img src="{{ cat.icono.url }}" alt="{{ cat.nombre }}">
               {% else %}
-                {% with cat.productos.all|first as sample %}
-                  {% if sample and sample.portada %}
-                    <img src="{{ sample.portada.url }}" alt="{{ cat.nombre }}">
-                  {% elif sample and sample.imagen %}
-                    <img src="{{ sample.imagen.url }}" alt="{{ cat.nombre }}">
-                  {% else %}
-                    <img src="{% static 'images/default_event.jpg' %}" alt="{{ cat.nombre }}">
-                  {% endif %}
-                {% endwith %}
+                <i class="fas fa-tag" style="font-size:1.6rem;color:var(--gold-dim);"></i>
               {% endif %}
               <div class="cat-circle-overlay"></div>
             </div>
           </div>
-          <span class="cat-circle-label">
-            {% if cat.icono %}
-              <img src="{{ cat.icono.url }}" alt="icono" style="width:32px;height:32px;margin-right:0.4em;vertical-align:middle;object-fit:contain;border-radius:50%;">
-            {% endif %}
-            {{ cat.nombre }}
-          </span>
+          <span class="cat-circle-label">{{ cat.nombre }}</span>
         </a>
         {% endif %}
       {% endfor %}
@@ -206,7 +91,6 @@
   </div>
 </section>
 {% endif %}
-
 
 <!-- ═══════════════════════════════════════════════════
      FEATURED PRODUCTS
@@ -226,7 +110,7 @@
       </a>
     </div>
 
-    <div class="product-grid" style="grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));">
+    <div class="product-grid">
       {% if productos %}
         {% for producto in productos %}
           <div class="product-card reveal">
@@ -240,7 +124,6 @@
                   {% else %}
                     <img class="main-image" src="{% static 'images/default_event.jpg' %}" alt="{{ producto.nombre }}" loading="lazy" decoding="async">
                   {% endif %}
-
                   {% with producto.imagenes.all|slice:"1:2" as second_image %}
                     {% if second_image %}
                       <img class="hover-image" src="{{ second_image.0.imagen.url }}" alt="{{ producto.nombre }}" loading="lazy" decoding="async">
@@ -268,7 +151,7 @@
           </div>
         {% endfor %}
       {% else %}
-        <div style="text-align:center; color:#fff; width:100%;">
+        <div style="text-align:center; color:#fff; width:100%; grid-column:1/-1;">
           <p style="font-size:1.2rem; margin-bottom:1rem;">No hay productos destacados disponibles en este momento.</p>
           <a href="{% url 'tienda' %}" class="btn btn-gold-outline">Ver catálogo completo</a>
         </div>
@@ -278,11 +161,10 @@
   </div>
 </section>
 
-
 <!-- ═══════════════════════════════════════════════════
      ABOUT — SPLIT SCREEN
 ════════════════════════════════════════════════════ -->
-<section class="about-section">
+<section class="about-section" id="nosotros">
 
   <div class="about-visual">
     <video id="heroVideo" src="{% static 'video/video.mp4' %}" autoplay loop muted playsinline preload="none"></video>
@@ -303,15 +185,15 @@
     <p>
       Nuestros maestros joyeros combinan métodos tradicionales con inspiración contemporánea, resultando en diseños únicos en oro 18k puro que trascienden el tiempo.
     </p>
+    </div>
   </div>
 
 </section>
 
-
 <!-- ═══════════════════════════════════════════════════
      SERVICES
 ════════════════════════════════════════════════════ -->
-<section class="pillars-section">
+<section class="pillars-section" id="servicios">
   <div class="container">
     <div class="text-center mb-5 reveal">
       <span class="eyebrow">Lo que hacemos</span>
@@ -347,12 +229,89 @@
       <div class="pillar">
         <span class="pillar-icon"><i class="fas fa-gem"></i></span>
         <h5>Engaste de Piedras</h5>
-        <p>Incorporamos diamantes, rubíes, esmeraldas y otras gemas seleccionadas a mano en cualquier pieza. Cada piedra es elegida por su pureza y brillo para complementar el oro 18k.</p>
+        <p>Incorporamos diamantes, rubíes, esmeraldas y otras gemas seleccionadas a mano en cualquier pieza. Cada piedra elegida por su pureza y brillo.</p>
       </div>
     </div>
   </div>
 </section>
 
+<!-- ═══════════════════════════════════════════════════
+     JOYERÍA PERSONALIZADA
+════════════════════════════════════════════════════ -->
+<section class="custom-section" id="personalizada">
+  <div class="container">
+    <div class="custom-section-inner">
+
+      <div class="custom-section-text reveal">
+        <span class="eyebrow">Diseño Exclusivo</span>
+        <h2>Joyería <em>Personalizada</em></h2>
+        <div class="gold-rule"></div>
+        <p>Creamos piezas únicas que cuentan tu historia. Cada diseño nace de un momento especial — un aniversario, una promesa, un recuerdo que merece perdurar en oro.</p>
+        <div class="custom-features">
+          <div class="custom-feature">
+            <div class="custom-feature-icon"><i class="fas fa-drafting-compass"></i></div>
+            <div>
+              <strong>Diseño a medida</strong>
+              <span>Trabajamos desde tu idea hasta el boceto final</span>
+            </div>
+          </div>
+          <div class="custom-feature">
+            <div class="custom-feature-icon"><i class="fas fa-certificate"></i></div>
+            <div>
+              <strong>Oro 18k garantizado</strong>
+              <span>Cada pieza certificada con pureza comprobada</span>
+            </div>
+          </div>
+          <div class="custom-feature">
+            <div class="custom-feature-icon"><i class="fas fa-clock"></i></div>
+            <div>
+              <strong>Entrega estimada 7–21 días</strong>
+              <span>Proceso artesanal cuidado paso a paso</span>
+            </div>
+          </div>
+        </div>
+        {% if whatsapp_url %}
+        <a href="{{ whatsapp_url }}" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top:2rem;">
+          <i class="fab fa-whatsapp"></i>
+          <span>Consultar por WhatsApp</span>
+        </a>
+        {% endif %}
+      </div>
+
+      <div class="custom-section-visual reveal">
+        <div class="custom-carousel-container">
+          <div class="custom-carousel">
+            <div class="carousel-slide active">
+              <img src="https://m.media-amazon.com/images/I/51K10qzJmUL._AC_SY1000_.jpg" alt="Joya personalizada 1" loading="lazy">
+            </div>
+            <div class="carousel-slide">
+              <img src="https://i0.wp.com/piedrarosa-cr.com/wp-content/uploads/2026/01/ChatGPT-Image-Jan-28-2026-10_01_18-PM.png?resize=1024%2C683&ssl=1" alt="Joya personalizada 2" loading="lazy">
+            </div>
+            <div class="carousel-slide">
+              <img src="https://www.sesnines.es/img/cms/diseno-joyas-personalizadas-palma-mallorca.jpg" alt="Joya personalizada 3" loading="lazy">
+            </div>
+            <div class="carousel-slide">
+              <img src="https://joyassiliva.es/wp-content/uploads/2019/10/joyassiliva-pulsera-ledicia-02-ok.jpg" alt="Joya personalizada 4" loading="lazy">
+            </div>
+          </div>
+          <button class="carousel-btn carousel-prev" aria-label="Anterior">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="carousel-btn carousel-next" aria-label="Siguiente">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+          <div class="carousel-dots">
+            <button class="carousel-dot active" data-index="0" aria-label="Slide 1"></button>
+            <button class="carousel-dot" data-index="1" aria-label="Slide 2"></button>
+            <button class="carousel-dot" data-index="2" aria-label="Slide 3"></button>
+            <button class="carousel-dot" data-index="3" aria-label="Slide 4"></button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
 
 <!-- ═══════════════════════════════════════════════════
      VENTAS AL MAYOR
@@ -369,11 +328,9 @@
       <span class="eyebrow wholesale-eyebrow">Programa Exclusivo</span>
       <h2 class="wholesale-title">Ventas al <em>Mayor</em></h2>
       <div class="gold-rule"></div>
-
       <p class="wholesale-desc">
         Ofrecemos condiciones especiales para joyerías, revendedores y distribuidores. Accede a nuestra colección completa en oro con precios mayoristas, volúmenes flexibles y atención personalizada para tu negocio.
       </p>
-
       <div class="wholesale-cta">
         {% if whatsapp_url %}
         <a href="{{ whatsapp_url }}" target="_blank" rel="noopener" class="btn-wholesale-wa">
@@ -392,6 +349,66 @@
   </div>
 </section>
 
+<!-- ═══════════════════════════════════════════════════
+     VIP
+════════════════════════════════════════════════════ -->
+<section class="vip-index-section" id="vip">
+  <div class="vip-index-bg"></div>
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="vip-index-inner">
+
+      <div class="vip-index-text reveal">
+        <div class="vip-crown-sm"><i class="fas fa-crown"></i></div>
+        <span class="eyebrow" style="color:var(--gold-light);">Membresía Exclusiva</span>
+        <h2 style="color:var(--white);">Club <em>VIP</em><br>Universal Gold</h2>
+        <div class="gold-rule"></div>
+        <p style="font-size:0.87rem;color:rgba(250,247,240,0.55);line-height:1.9;max-width:420px;margin-bottom:2rem;">
+          Únete a nuestra comunidad de clientes privilegiados. Beneficios exclusivos, atención personalizada y acceso anticipado a nuevas colecciones.
+        </p>
+        <div class="vip-index-actions">
+          {% if whatsapp_url %}
+          <a href="{{ whatsapp_url }}" target="_blank" rel="noopener" class="btn btn-primary">
+            <i class="fab fa-whatsapp"></i>
+            <span>Solicitar membresía VIP</span>
+          </a>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="vip-index-benefits reveal">
+        <div class="vip-index-benefit">
+          <div class="vip-benefit-full-icon"><i class="fas fa-tag" style="color:var(--gold-light);"></i></div>
+          <div class="vip-benefit-full-body">
+            <h4 style="color:var(--white);">Precios Preferenciales</h4>
+            <p style="color:rgba(250,247,240,0.7);">Descuentos exclusivos en toda la colección. Precios especiales solo disponibles para miembros VIP.</p>
+          </div>
+        </div>
+        <div class="vip-index-benefit">
+          <div class="vip-benefit-full-icon"><i class="fas fa-bell" style="color:var(--gold-light);"></i></div>
+          <div class="vip-benefit-full-body">
+            <h4 style="color:var(--white);">Acceso Anticipado</h4>
+            <p style="color:rgba(250,247,240,0.7);">Sé el primero en ver nuevas colecciones antes de su lanzamiento al público general.</p>
+          </div>
+        </div>
+        <div class="vip-index-benefit">
+          <div class="vip-benefit-full-icon"><i class="fas fa-user-tie" style="color:var(--gold-light);"></i></div>
+          <div class="vip-benefit-full-body">
+            <h4 style="color:var(--white);">Asesor Personal</h4>
+            <p style="color:rgba(250,247,240,0.7);">Atención personalizada y dedicada con tu propio asesor de joyería por WhatsApp.</p>
+          </div>
+        </div>
+        <div class="vip-index-benefit">
+          <div class="vip-benefit-full-icon"><i class="fas fa-gift" style="color:var(--gold-light);"></i></div>
+          <div class="vip-benefit-full-body">
+            <h4 style="color:var(--white);">Beneficios Especiales</h4>
+            <p style="color:rgba(250,247,240,0.7);">Eventos privados, sorpresas exclusivas y ventajas únicas reservadas para miembros.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
 
 <!-- ═══════════════════════════════════════════════════
      CONTACT & LOCATION
@@ -552,7 +569,6 @@
   </div>
 
 </section>
-
 
 <!-- ═══════════════════════════════════════════════════
      CTA

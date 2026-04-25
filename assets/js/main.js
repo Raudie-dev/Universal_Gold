@@ -425,6 +425,92 @@ document.addEventListener('DOMContentLoaded', () => {
   nombreInput?.addEventListener('input', checkForm);
   correoInput?.addEventListener('input', checkForm);
 
+  // ─── CUSTOM CAROUSEL (PERSONALIZADO SECTION) ─────────
+  function initCustomCarousel() {
+    const container = document.querySelector('.custom-carousel-container');
+    if (!container) return;
+
+    const carousel = container.querySelector('.custom-carousel');
+    const slides = carousel.querySelectorAll('.carousel-slide');
+    const prevBtn = container.querySelector('.carousel-prev');
+    const nextBtn = container.querySelector('.carousel-next');
+    const dots = container.querySelectorAll('.carousel-dot');
+
+    if (!slides.length) return;
+
+    let currentIndex = 0;
+    let autoplayTimer = null;
+
+    function updateSlide(index) {
+      // Asegurar que el índice esté dentro del rango
+      currentIndex = (index + slides.length) % slides.length;
+
+      // Actualizar slides
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === currentIndex);
+      });
+
+      // Actualizar dots
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentIndex);
+      });
+    }
+
+    function nextSlide() {
+      updateSlide(currentIndex + 1);
+      resetAutoplay();
+    }
+
+    function prevSlide() {
+      updateSlide(currentIndex - 1);
+      resetAutoplay();
+    }
+
+    function goToSlide(index) {
+      updateSlide(index);
+      resetAutoplay();
+    }
+
+    function startAutoplay() {
+      autoplayTimer = setInterval(nextSlide, 5000); // Cambiar cada 5 segundos
+    }
+
+    function resetAutoplay() {
+      clearInterval(autoplayTimer);
+      startAutoplay();
+    }
+
+    // Event listeners
+    prevBtn.addEventListener('click', prevSlide);
+    nextBtn.addEventListener('click', nextSlide);
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => goToSlide(index));
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (document.activeElement === container || container.contains(document.activeElement)) {
+        if (e.key === 'ArrowLeft') prevSlide();
+        if (e.key === 'ArrowRight') nextSlide();
+      }
+    });
+
+    // Pausar autoplay cuando el mouse está sobre el carrusel
+    container.addEventListener('mouseenter', () => {
+      clearInterval(autoplayTimer);
+    });
+
+    container.addEventListener('mouseleave', () => {
+      startAutoplay();
+    });
+
+    // Iniciar autoplay
+    startAutoplay();
+  }
+
+  // Inicializar carrusel cuando DOM esté listo
+  initCustomCarousel();
+
   // ─── SMOOTH ANCHOR SCROLL ─────────────────────────────
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', e => {

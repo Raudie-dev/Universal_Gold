@@ -47,14 +47,14 @@
     <!-- COLUMNA ACCIONES -->
     <td class="text-end">
         <!-- BOTÓN EDITAR (MODIFICADO: Estilo limpio igual al eliminar) -->
-        <button type="button" 
-                class="btn btn-sm btn-outline-primary border-0" 
-                onclick="event.stopPropagation();"
-                data-bs-toggle="modal" 
-                data-bs-target="#modalEditarCategoria"
-                data-bs-id="{{ cat.id }}"
-                data-bs-nombre="{{ cat.nombre }}"
-                data-bs-padre="{{ cat.padre.id|default:'' }}">
+        <button type="button"
+            class="btn btn-sm btn-warning"
+            data-bs-toggle="modal"
+            data-bs-target="#modalEditarCategoria"
+            data-bs-id="{{ cat.id }}"
+            data-bs-nombre="{{ cat.nombre }}"
+            data-bs-padre="{{ cat.padre_id|default:'' }}"
+            data-bs-icono="{% if cat.icono %}{{ cat.icono.url }}{% endif %}">
             <i class="fas fa-edit"></i>
         </button>
 

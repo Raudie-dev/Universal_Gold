@@ -69,31 +69,8 @@
 <div class="cat-circles-section">
   <div class="container">
     <div class="cat-circles-track">
-      {% for cat in categorias %}
-        {% if not cat.padre %}
-        <a href="?categoria={{ cat.id }}"
-           class="cat-circle-item {% if categoria_id == cat.id|stringformat:'s' %}active{% endif %}">
-          <div class="cat-circle-wrap">
-            <div class="cat-circle-img-outer">
-              {% with cat.productos.all|first as sample %}
-                {% if sample and sample.portada %}
-                  <img src="{{ sample.portada.url }}" alt="{{ cat.nombre }}">
-                {% elif sample and sample.imagen %}
-                  <img src="{{ sample.imagen.url }}" alt="{{ cat.nombre }}">
-                {% else %}
-                  <img src="{% static 'images/default_event.jpg' %}" alt="{{ cat.nombre }}">
-                {% endif %}
-              {% endwith %}
-              <div class="cat-circle-overlay"></div>
-            </div>
-            {% if categoria_id == cat.id|stringformat:'s' %}
-              <div class="cat-circle-active-ring"></div>
-            {% endif %}
-          </div>
-          <span class="cat-circle-label">{{ cat.nombre }}</span>
-        </a>
-        {% endif %}
-      {% endfor %}
+
+      <!-- Botón "Todas" -->
       <a href="{% url 'tienda' %}"
          class="cat-circle-item {% if not categoria_id %}active{% endif %} cat-circle-item--all">
         <div class="cat-circle-wrap">
@@ -104,8 +81,49 @@
         </div>
         <span class="cat-circle-label">Todas</span>
       </a>
+
+      <!-- Categorías padre -->
+      {% for cat in categorias %}
+        {% if not cat.padre %}
+        <a href="?categoria={{ cat.id }}"
+           class="cat-circle-item {% if categoria_id == cat.id|stringformat:'s' %}active{% endif %}">
+          <div class="cat-circle-wrap">
+            <div class="cat-circle-img-outer">
+              {% if cat.icono %}
+                <img src="{{ cat.icono.url }}" alt="{{ cat.nombre }}">
+              {% else %}
+                <i class="fas fa-tag" style="font-size:1.6rem;color:var(--gold-dim);"></i>
+              {% endif %}
+              <div class="cat-circle-overlay"></div>
+            </div>
+            {% if categoria_id == cat.id|stringformat:'s' %}
+              <div class="cat-circle-active-ring"></div>
+            {% endif %}
+          </div>
+          <span class="cat-circle-label">{{ cat.nombre }}</span>
+        </a>
+        {% endif %}
+      {% endfor %}
+
     </div>
   </div>
+
+  <!-- ─── SUBCATEGORÍAS ── -->
+  {% if categoria_seleccionada and categoria_seleccionada.subcategorias.all %}
+  <div class="subcat-bar">
+    <div class="container">
+      <div class="subcat-track">
+        {% for sub in categoria_seleccionada.subcategorias.all %}
+        <a href="?categoria={{ categoria_seleccionada.id }}&subcategoria={{ sub.id }}"
+           class="subcat-pill {% if subcategoria_id == sub.id|stringformat:'s' %}active{% endif %}">
+          {{ sub.nombre }}
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
 </div>
 {% endif %}
 
@@ -168,16 +186,18 @@
 <!-- ─── JS ─────────────────────────────────────────────────── -->
 <script>
 const _state = {
-  q:        "{{ q|default:''|escapejs }}",
-  categoria: "{{ categoria_id|default:''|escapejs }}",
-  agotado:  "{{ agotado_filter|default:''|escapejs }}",
-  orden:    "{{ orden|default:''|escapejs }}"
+  q:           "{{ q|default:''|escapejs }}",
+  categoria:   "{{ categoria_id|default:''|escapejs }}",
+  subcategoria:"{{ subcategoria_id|default:''|escapejs }}",
+  agotado:     "{{ agotado_filter|default:''|escapejs }}",
+  orden:       "{{ orden|default:''|escapejs }}"
 };
 
 function pfGo(params) {
   const url = new URLSearchParams();
-  if (params.q)          url.set('q', params.q);
-  if (params.categoria)  url.set('categoria', params.categoria);
+  if (params.q)           url.set('q', params.q);
+  if (params.categoria)   url.set('categoria', params.categoria);
+  if (params.subcategoria)url.set('subcategoria', params.subcategoria);
   if (params.agotado !== undefined && params.agotado !== '') url.set('agotado', params.agotado);
   window.location.search = url.toString();
 }

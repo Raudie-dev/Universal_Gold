@@ -9,24 +9,30 @@ from .models import User_admin, Afiliado # Importa el modelo
 from django.utils import timezone
 from PIL import Image as PilImage
 
-def crear_categoria(nombre, padre_id=None):
-    """
-    Crea una categoría nueva o devuelve la existente.
-    La unicidad se basa en el par (nombre, padre_id) para permitir
-    mismos nombres en diferentes ramas del árbol.
-    """
+def crear_categoria(nombre, padre_id=None, icono_img=None):
     nombre = (nombre or '').strip()
     if not nombre:
         return None
-    
-    # IMPORTANTE: Buscamos usando el nombre Y el padre_id.
-    # get_or_create devuelve una tupla (objeto, creado_boolean)
     cat, created = Category.objects.get_or_create(
         nombre=nombre,
         padre_id=padre_id
     )
-    
+    if icono_img:
+        cat.icono = convert_uploaded_image_to_webp(icono_img)  # ✅ icono
+        cat.save()
     return cat
+
+
+def editar_categoria(categoria, nombre, padre_id=None, icono_img=None):
+    categoria.nombre = nombre.strip()
+    if padre_id and padre_id != '':
+        categoria.padre_id = padre_id
+    else:
+        categoria.padre_id = None
+    if icono_img:
+        categoria.icono = convert_uploaded_image_to_webp(icono_img)  # ✅ icono
+    categoria.save()
+    return categoria    
 
 
 def obtener_categorias():

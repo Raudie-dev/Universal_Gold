@@ -73,40 +73,38 @@ def index(request):
         'whatsapp_number': whatsapp_number,
     })
 
-# Nueva vista: tienda pública con búsqueda y filtros
 def tienda(request):
-    # Optimización: Cargar subcategorías de una vez para el menú
     categorias = Category.objects.prefetch_related('subcategorias').all()
-    
-    # Base de productos
     productos = Product.objects.prefetch_related('categorias').all()
 
     q = request.GET.get('q', '').strip()
     categoria_id = request.GET.get('categoria', '').strip()
-    agotado_filter = request.GET.get('agotado', '').strip()  # '' | '1' | '0'
+    subcategoria_id = request.GET.get('subcategoria', '').strip()  # ← nuevo
+    agotado_filter = request.GET.get('agotado', '').strip()
 
     # 1. Filtro por Texto
     if q:
         from django.db.models import Q
         productos = productos.filter(Q(nombre__icontains=q) | Q(descripcion__icontains=q))
 
-    # 2. Filtro por Categoría (MEJORADO PARA SUBCATEGORÍAS)
+    # 2. Filtro por Categoría / Subcategoría
+    categoria_seleccionada = None  # ← nuevo
     if categoria_id:
         try:
             cid = int(categoria_id)
-            # Buscamos la categoría seleccionada
-            cat_obj = Category.objects.get(id=cid)
-            
-            # Obtenemos una lista con el ID seleccionado + IDs de sus hijos
-            # values_list('id', flat=True) devuelve solo los números [1, 5, 8...]
-            ids_a_buscar = list(cat_obj.subcategorias.values_list('id', flat=True))
-            ids_a_buscar.append(cid) # Agregamos el padre también
-            
-            # Filtramos productos que estén en CUALQUIERA de esos IDs
-            productos = productos.filter(categorias__id__in=ids_a_buscar)
-            
+            categoria_seleccionada = Category.objects.prefetch_related('subcategorias').get(id=cid)  # ← nuevo
+
+            if subcategoria_id:
+                # Filtra solo por la subcategoría elegida
+                productos = productos.filter(categorias__id=int(subcategoria_id))
+            else:
+                # Filtra por el padre + todas sus hijas
+                ids_a_buscar = list(categoria_seleccionada.subcategorias.values_list('id', flat=True))
+                ids_a_buscar.append(cid)
+                productos = productos.filter(categorias__id__in=ids_a_buscar)
+
         except (ValueError, TypeError, Category.DoesNotExist):
-            pass # Si el ID no es válido o no existe, ignoramos el filtro
+            pass
 
     # 3. Filtro por Disponibilidad
     if agotado_filter == '1':
@@ -115,8 +113,7 @@ def tienda(request):
         productos = productos.filter(agotado=False)
 
     productos = productos.distinct().order_by('-creado')
-    
-    # Asumo que esta función auxiliar la tienes definida en tu archivo
+
     cart_count = _get_cart_count(request)
     whatsapp_url = get_whatsapp_url()
     whatsapp_number = get_whatsapp_empresa()
@@ -126,6 +123,8 @@ def tienda(request):
         'productos': productos,
         'q': q,
         'categoria_id': categoria_id,
+        'subcategoria_id': subcategoria_id,        # ← nuevo
+        'categoria_seleccionada': categoria_seleccionada,  # ← nuevo
         'agotado_filter': agotado_filter,
         'cart_count': cart_count,
         'whatsapp_url': whatsapp_url,

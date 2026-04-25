@@ -23,6 +23,7 @@ from reportlab.graphics.shapes import Drawing
 from reportlab.graphics.charts.barcharts import VerticalBarChart
 from .crud import (
     crear_categoria,
+    editar_categoria,
     obtener_categorias,
     crear_producto,
     obtener_productos,
@@ -220,6 +221,7 @@ def control_productos(request):
         # --- BLOQUE DE EDICIÓN CORREGIDO ---
         if 'editar_producto' in request.POST:
             producto_id = request.POST.get('editar_producto_id')
+            imagenes_nuevas = request.FILES.getlist('imagenes_extras')
             
             try:
                 # 1. Obtener el producto existente
