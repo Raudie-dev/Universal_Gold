@@ -946,7 +946,6 @@ em { font-style: italic; color: var(--gold); }
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: radial-gradient(circle at 50% 110%, rgba(28,24,16,0.38) 0%, rgba(28,24,16,0.05) 60%, transparent 100%);
   pointer-events: none;
 }
 
@@ -1013,13 +1012,12 @@ em { font-style: italic; color: var(--gold); }
 
 /* ─── SUBCATEGORY BAR ────────────────────────────────── */
 .subcat-bar {
-  background: var(--cream);
   padding: 1.2rem 0;
-  border-top: 1px solid var(--border-soft);
 }
 .subcat-track {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   flex-wrap: wrap;
   overflow-x: auto;
