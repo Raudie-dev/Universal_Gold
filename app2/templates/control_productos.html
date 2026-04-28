@@ -277,15 +277,40 @@
               <!-- Columna Derecha -->
               <div class="col-md-4">
                 <div class="bg-light p-3 rounded h-100 border">
+
                   {% if SHOW_PRICES %}
                   <div class="mb-3">
                     <label class="form-label fw-bold">Precio</label>
                     <div class="input-group">
                       <span class="input-group-text">$</span>
-                      <input type="number" step="0.01" name="precio" class="form-control" value="{{ producto.precio }}" required>
+                      <input type="number" step="0.01" name="precio" class="form-control precio-unico-input" value="{{ producto.precio }}" {% if producto.por_peso %}disabled{% endif %} required>
                     </div>
                   </div>
                   {% endif %}
+
+                  <div class="form-check form-switch mb-3">
+                    <input class="form-check-input check-por-peso" type="checkbox" role="switch" name="por_peso" id="checkPorPeso{{ producto.id }}" {% if producto.por_peso %}checked{% endif %}>
+                    <label class="form-check-label fw-bold" for="checkPorPeso{{ producto.id }}">¿Vender por peso?</label>
+                  </div>
+
+                  <div class="multi-precio-por-peso-wrap" id="multiPrecioPorPesoWrap{{ producto.id }}" style="display:{% if producto.por_peso %}block{% else %}none{% endif %};">
+                    <label class="form-label fw-bold">Precios por Peso</label>
+                    <div class="multi-precio-por-peso-list">
+                      {% for p in producto.precios_por_peso.all %}
+                        <div class="precio-peso-item d-flex align-items-center gap-2 mb-2">
+                          <span class="peso-label">Peso</span>
+                          <input type="number" step="0.01" min="0.01" name="precios_por_peso_peso[]" class="form-control form-control-sm" placeholder="Peso (g)" style="width:90px;" value="{{ p.peso }}">
+                          <span>x</span>
+                          <input type="number" step="0.01" min="0.01" name="precios_por_peso_precio[]" class="form-control form-control-sm" placeholder="Precio $" style="width:110px;" value="{{ p.precio }}">
+                          <button type="button" class="btn btn-danger btn-sm btn-remove-precio-peso"><i class="fas fa-trash"></i></button>
+                        </div>
+                      {% endfor %}
+                    </div>
+                    <button type="button" class="btn btn-outline-secondary btn-sm mt-2 btn-add-precio-por-peso">
+                      <i class="fas fa-plus"></i> Agregar precio por peso
+                    </button>
+                    <div class="form-text">Ejemplo: 2g = $100, 3g = $150, etc.</div>
+                  </div>
                   
                   <!-- 3. SELECTOR DE CATEGORÍAS (RECURSIVO MULTIPLE) -->
                   <div class="mb-3">
@@ -387,7 +412,51 @@
               });
           }
 
-          // Script for sortable images
+          // Script para multi-precio por peso en edición
+          document.querySelectorAll('.check-por-peso').forEach(function(check) {
+            check.addEventListener('change', function() {
+              const id = this.id.replace('checkPorPeso', '');
+              const wrap = document.getElementById('multiPrecioPorPesoWrap' + id);
+              const precioUnico = this.closest('.bg-light').querySelector('.precio-unico-input');
+              if (this.checked) {
+                wrap.style.display = 'block';
+                if (precioUnico) { precioUnico.disabled = true; precioUnico.value = ''; }
+              } else {
+                wrap.style.display = 'none';
+                if (precioUnico) { precioUnico.disabled = false; }
+                // Limpiar los precios por peso
+                wrap.querySelector('.multi-precio-por-peso-list').innerHTML = '';
+              }
+            });
+          });
+
+          document.querySelectorAll('.btn-add-precio-por-peso').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+              const wrap = this.closest('.multi-precio-por-peso-wrap');
+              const list = wrap.querySelector('.multi-precio-por-peso-list');
+              const div = document.createElement('div');
+              div.className = 'precio-peso-item d-flex align-items-center gap-2 mb-2';
+              div.innerHTML = `
+                <span class="peso-label">Peso</span>
+                <input type="number" step="0.01" min="0.01" name="precios_por_peso_peso[]" class="form-control form-control-sm" placeholder="Peso (g)" style="width:90px;">
+                <span>x</span>
+                <input type="number" step="0.01" min="0.01" name="precios_por_peso_precio[]" class="form-control form-control-sm" placeholder="Precio $" style="width:110px;">
+                <button type="button" class="btn btn-danger btn-sm btn-remove-precio-peso"><i class="fas fa-trash"></i></button>
+              `;
+              div.querySelector('.btn-remove-precio-peso').onclick = function() {
+                div.remove();
+              };
+              list.appendChild(div);
+            });
+          });
+
+          document.querySelectorAll('.multi-precio-por-peso-list').forEach(function(list) {
+            list.querySelectorAll('.btn-remove-precio-peso').forEach(function(btn) {
+              btn.onclick = function() {
+                btn.closest('.precio-peso-item').remove();
+              };
+            });
+          });
           document.querySelectorAll('.move-up').forEach(btn => {
               btn.addEventListener('click', function() {
                   const item = this.closest('.sortable-item');

@@ -89,10 +89,25 @@
       <h1 class="product-name">{{ producto.nombre }}</h1>
       <div class="gold-rule"></div>
 
+
+      {% if precios_por_peso and precios_por_peso|length > 0 %}
+      <div class="product-price-wrap mb-2">
+        <span class="product-price-label">Precios por peso:</span>
+        <ul class="list-unstyled mt-2 mb-0">
+          {% for p in precios_por_peso %}
+            <li>
+              <span class="fw-bold">{{ p.peso|floatformat:2 }}g</span>:
+              <span class="text-success">${{ p.precio|floatformat:2 }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% else %}
       <div class="product-price-wrap">
         <span class="product-price">${{ producto.precio }}</span>
         <span class="product-price-label">Precio unitario</span>
       </div>
+      {% endif %}
 
       {% if producto.descripcion %}
       <div class="product-description">

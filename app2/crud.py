@@ -164,8 +164,8 @@ def convert_uploaded_image_to_webp(uploaded_file, quality=80):
         return uploaded_file
 
 
-def crear_producto(nombre, precio, descripcion='', categoria_ids=None, imagen=None, imagenes=None):
-    """Crea un producto. `imagenes` es una lista de archivos ordenados."""
+def crear_producto(nombre, precio, descripcion='', categoria_ids=None, imagen=None, imagenes=None, por_peso=False, precios_por_peso=None, agotado=False):
+    """Crea un producto. `imagenes` es una lista de archivos ordenados. `precios_por_peso` es una lista de dicts: [{peso, precio}]"""
     nombre = (nombre or '').strip()
     if not nombre:
         raise ValueError('El nombre es obligatorio')
@@ -178,7 +178,9 @@ def crear_producto(nombre, precio, descripcion='', categoria_ids=None, imagen=No
         nombre=nombre,
         precio=precio_val,
         descripcion=descripcion or '',
-        creado=timezone.now()  # Set the current timestamp for 'creado'
+        creado=timezone.now(),
+        por_peso=por_peso,
+        agotado=agotado,
     )
 
     # Asociar categorías si se entregaron ids
@@ -199,6 +201,18 @@ def crear_producto(nombre, precio, descripcion='', categoria_ids=None, imagen=No
                 creado=timezone.now()
             )
 
+    # Guardar precios por peso si aplica
+    if por_peso and precios_por_peso:
+        from app1.models import PrecioPorPeso
+        for item in precios_por_peso:
+            try:
+                peso = float(item.get('peso', 0))
+                precio_peso = float(item.get('precio', 0))
+                if peso > 0 and precio_peso > 0:
+                    PrecioPorPeso.objects.create(producto=producto, peso=peso, precio=precio_peso)
+            except Exception:
+                continue
+
     return producto
 
 
@@ -218,9 +232,24 @@ def actualizar_producto(producto_id, **kwargs):
     except ObjectDoesNotExist:
         return None
 
-    for field in ('nombre', 'descripcion', 'precio', 'agotado'):
+    for field in ('nombre', 'descripcion', 'precio', 'agotado', 'por_peso'):
         if field in kwargs and kwargs[field] is not None:
             setattr(p, field, kwargs[field])
+    # Actualizar precios por peso si aplica
+    if p.por_peso and 'precios_por_peso' in kwargs:
+        from app1.models import PrecioPorPeso
+        nuevos = kwargs['precios_por_peso'] or []
+        # Eliminar los existentes
+        PrecioPorPeso.objects.filter(producto=p).delete()
+        # Crear los nuevos
+        for item in nuevos:
+            try:
+                peso = float(item.get('peso', 0))
+                precio_peso = float(item.get('precio', 0))
+                if peso > 0 and precio_peso > 0:
+                    PrecioPorPeso.objects.create(producto=p, peso=peso, precio=precio_peso)
+            except Exception:
+                continue
 
     # Soporte para actualizar categorias (lista de ids)
     if 'categoria_ids' in kwargs:

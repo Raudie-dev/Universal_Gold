@@ -129,16 +129,13 @@
           </div>
 
           <div class="mb-3">
-            <label class="form-label fw-bold">Categoría Padre <small class="text-muted fw-normal">(Opcional)</small></label>
-            <select name="categoria_padre" class="form-select">
-              <option value="">-- Es una Categoría Principal (Nivel 1) --</option>
+            <label class="form-label fw-bold">Categorías Padre <small class="text-muted fw-normal">(Opcional, puedes seleccionar varias)</small></label>
+            <select name="categoria_padres" class="form-select" multiple size="8">
               {% for cat in categorias %}
-                {% if not cat.padre %}
-                  {% include "includes/opcion_categoria.html" with cat=cat nivel=0 %}
-                {% endif %}
+                {% include "includes/opcion_categoria.html" with cat=cat nivel=0 %}
               {% endfor %}
             </select>
-            <div class="form-text">Si seleccionas un padre, esta será una subcategoría.</div>
+            <div class="form-text">Ctrl + Clic para seleccionar varias. Si no seleccionas ninguna, será una categoría principal.</div>
           </div>
 
         </div>
@@ -188,12 +185,27 @@
             <div class="col-md-4">
               <div class="bg-light p-3 rounded h-100 border">
                 
+
                 <div class="mb-3">
                   <label class="form-label fw-bold">Precio</label>
                   <div class="input-group">
                     <span class="input-group-text bg-dark text-white border-secondary">$</span>
-                    <input type="number" step="0.01" name="precio" class="form-control" placeholder="0.00" required>
+                    <input type="number" step="0.01" name="precio" class="form-control" placeholder="0.00" id="precioUnicoInput" required>
                   </div>
+                </div>
+
+                <div class="form-check form-switch mb-3">
+                  <input class="form-check-input" type="checkbox" role="switch" name="por_peso" id="checkPorPesoNuevo">
+                  <label class="form-check-label fw-bold" for="checkPorPesoNuevo">¿Vender por peso?</label>
+                </div>
+
+                <div id="multiPrecioPorPesoWrap" style="display:none;">
+                  <label class="form-label fw-bold">Precios por Peso</label>
+                  <div id="multiPrecioPorPesoList"></div>
+                  <button type="button" class="btn btn-outline-secondary btn-sm mt-2" id="btnAddPrecioPorPeso">
+                    <i class="fas fa-plus"></i> Agregar precio por peso
+                  </button>
+                  <div class="form-text">Ejemplo: 2g = $100, 3g = $150, etc.</div>
                 </div>
 
                 <hr class="border-secondary">
@@ -290,16 +302,13 @@
           </div>
 
           <div class="mb-3">
-            <label class="form-label fw-bold">Categoría Padre (Nivel)</label>
-            <select name="categoria_padre" id="editCatPadre" class="form-select">
-              <option value="">-- Es una Categoría Principal (Nivel 1) --</option>
+            <label class="form-label fw-bold">Categorías Padre (Nivel)</label>
+            <select name="categoria_padres" id="editCatPadres" class="form-select" multiple size="8">
               {% for cat in categorias %}
-                {% if not cat.padre %}
-                  {% include "includes/opcion_categoria.html" with cat=cat nivel=0 %}
-                {% endif %}
+                {% include "includes/opcion_categoria.html" with cat=cat nivel=0 %}
               {% endfor %}
             </select>
-            <div class="form-text">Cambia el padre para mover la categoría de nivel.</div>
+            <div class="form-text">Ctrl + Clic para seleccionar varias. Si no seleccionas ninguna, será una categoría principal.</div>
           </div>
 
         </div>
@@ -373,51 +382,57 @@
             });
         }
 
-        const imagenesInput = document.getElementById('imagenesNuevoProducto');
-        const previewDiv = document.getElementById('imagenesPreview');
-        const imagenesList = document.getElementById('imagenesList');
 
-        if (imagenesInput) {
-            imagenesInput.addEventListener('change', function(e) {
-                const files = Array.from(e.target.files);
-                if (files.length > 0) {
-                    previewDiv.style.display = 'block';
-                    imagenesList.innerHTML = '';
-                    
-                    files.forEach((file, index) => {
-                        if (file.type.startsWith('image/')) {
-                            const reader = new FileReader();
-                            reader.onload = function(e) {
-                                const div = document.createElement('div');
-                                div.className = 'position-relative';
-                                div.draggable = true;
-                                div.dataset.index = index;
-                                
-                                div.innerHTML = `
-                                    <img src="${e.target.result}" class="rounded border" style="width: 80px; height: 80px; object-fit: cover; cursor: grab;">
-                                    <div class="position-absolute top-0 end-0">
-                                        <button type="button" class="btn btn-sm btn-danger btn-remove-image" data-index="${index}">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    </div>
-                                    ${index === 0 ? '<small class="text-primary fw-bold d-block">Portada</small>' : ''}
-                                `;
-                                
-                                // Drag and drop functionality
-                                div.addEventListener('dragstart', handleDragStart);
-                                div.addEventListener('dragover', handleDragOver);
-                                div.addEventListener('drop', handleDrop);
-                                div.addEventListener('dragend', handleDragEnd);
-                                
-                                imagenesList.appendChild(div);
-                            };
-                            reader.readAsDataURL(file);
-                        }
-                    });
-                } else {
-                    previewDiv.style.display = 'none';
-                }
-            });
+        // Multi-precio por peso
+        const checkPorPesoNuevo = document.getElementById('checkPorPesoNuevo');
+        const multiPrecioPorPesoWrap = document.getElementById('multiPrecioPorPesoWrap');
+        const multiPrecioPorPesoList = document.getElementById('multiPrecioPorPesoList');
+        const btnAddPrecioPorPeso = document.getElementById('btnAddPrecioPorPeso');
+        const precioUnicoInput = document.getElementById('precioUnicoInput');
+
+        function renderPreciosPorPeso() {
+          const items = multiPrecioPorPesoList.querySelectorAll('.precio-peso-item');
+          items.forEach((item, idx) => {
+            item.querySelector('.peso-label').textContent = `Peso #${idx+1}`;
+          });
+        }
+
+        function addPrecioPorPesoRow(peso='', precio='') {
+          const div = document.createElement('div');
+          div.className = 'precio-peso-item d-flex align-items-center gap-2 mb-2';
+          div.innerHTML = `
+            <span class="peso-label">Peso</span>
+            <input type="number" step="0.01" min="0.01" name="precios_por_peso_peso[]" class="form-control form-control-sm" placeholder="Peso (g)" style="width:90px;" value="${peso}">
+            <span>x</span>
+            <input type="number" step="0.01" min="0.01" name="precios_por_peso_precio[]" class="form-control form-control-sm" placeholder="Precio $" style="width:110px;" value="${precio}">
+            <button type="button" class="btn btn-danger btn-sm btn-remove-precio-peso"><i class="fas fa-trash"></i></button>
+          `;
+          div.querySelector('.btn-remove-precio-peso').onclick = function() {
+            div.remove();
+            renderPreciosPorPeso();
+          };
+          multiPrecioPorPesoList.appendChild(div);
+          renderPreciosPorPeso();
+        }
+
+        if (checkPorPesoNuevo) {
+          checkPorPesoNuevo.addEventListener('change', function() {
+            if (this.checked) {
+              multiPrecioPorPesoWrap.style.display = '';
+              precioUnicoInput.disabled = true;
+              precioUnicoInput.value = '';
+            } else {
+              multiPrecioPorPesoWrap.style.display = 'none';
+              precioUnicoInput.disabled = false;
+              // Limpiar los precios por peso
+              multiPrecioPorPesoList.innerHTML = '';
+            }
+          });
+        }
+        if (btnAddPrecioPorPeso) {
+          btnAddPrecioPorPeso.addEventListener('click', function() {
+            addPrecioPorPesoRow();
+          });
         }
 
         // Drag and drop handlers

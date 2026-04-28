@@ -151,6 +151,11 @@ def productos(request, producto_id):
     cart_count = _get_cart_count(request)
     whatsapp_url = get_whatsapp_url()
     whatsapp_number = get_whatsapp_empresa()
+    # Obtener precios por peso si aplica
+    precios_por_peso = None
+    if getattr(producto, 'por_peso', False):
+        precios_por_peso = list(getattr(producto, 'precios_por_peso', []).all())
+
     return render(request, 'productos.html', {
         'producto': producto,
         'imagenes': imagenes,
@@ -158,6 +163,7 @@ def productos(request, producto_id):
         'cart_count': cart_count,
         'whatsapp_url': whatsapp_url,
         'whatsapp_number': whatsapp_number,
+        'precios_por_peso': precios_por_peso,
     })
 
 # Nueva vista: añadir item al carrito de orden (session)

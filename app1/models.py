@@ -1,42 +1,38 @@
 from django.db import models
 from django.db import models
 
+
 class Category(models.Model):
     nombre = models.CharField(max_length=120, unique=True)
-    # Imagen de icono para la categoría
     icono = models.ImageField(upload_to='categorias/iconos/', blank=True, null=True, help_text="Imagen de icono para la categoría")
-    
-    # --- CAMPO NUEVO PARA SUBCATEGORÍAS ---
-    # 'self' indica relación con este mismo modelo.
-    # null=True y blank=True permite que sea una categoría principal (sin padre).
-    # related_name='subcategorias' es vital para el HTML que te pasé antes.
-    padre = models.ForeignKey(
-        'self', 
-        null=True, 
-        blank=True, 
-        related_name='subcategorias', 
-        on_delete=models.CASCADE
-    )
+    # Ahora una categoría puede tener varios padres
+    padres = models.ManyToManyField('self', symmetrical=False, blank=True, related_name='subcategorias')
 
     class Meta:
         verbose_name = 'Categoría'
         verbose_name_plural = 'Categorías'
 
     def __str__(self):
-        # Si tiene padre, muestra "Padre > Hijo", si no, solo el nombre.
-        if self.padre:
-            return f"{self.padre.nombre} > {self.nombre}"
+        padres = self.padres.all()
+        if padres.exists():
+            return f"{' / '.join([p.nombre for p in padres])} > {self.nombre}"
         return self.nombre
 
 class Product(models.Model):
     nombre = models.CharField(max_length=200)
     descripcion = models.TextField(blank=True)
     precio = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    # Permite múltiples categorías por producto
-    categorias = models.ManyToManyField('Category', blank=True, related_name='productos') # Asegúrate que 'Category' coincida con tu modelo
+    categorias = models.ManyToManyField('Category', blank=True, related_name='productos')
     imagen = models.ImageField(upload_to='productos/', null=True, blank=True)
     creado = models.DateTimeField(null=True, blank=True)
     agotado = models.BooleanField(default=False)
+    por_peso = models.BooleanField(default=False, help_text="¿El producto se vende por peso?")
+    def get_precios_por_peso(self):
+        """Devuelve los precios por peso asociados a este producto, si aplica."""
+        if not self.por_peso:
+            return None
+        return self.precios_por_peso.all()
+
 
     def __str__(self):
         return self.nombre
@@ -118,3 +114,18 @@ class OrdenItem(models.Model):
 # Compatibilidad con referencia antigua
 Cotizacion = Orden
 CotizacionItem = OrdenItem
+
+# Nuevo modelo para multi-precio por peso
+class PrecioPorPeso(models.Model):
+    producto = models.ForeignKey(Product, related_name='precios_por_peso', on_delete=models.CASCADE)
+    peso = models.DecimalField(max_digits=7, decimal_places=2, help_text="Peso en gramos")
+    precio = models.DecimalField(max_digits=10, decimal_places=2, help_text="Precio para este peso")
+
+    class Meta:
+        unique_together = ('producto', 'peso')
+        verbose_name = 'Precio por Peso'
+        verbose_name_plural = 'Precios por Peso'
+        ordering = ['peso']
+
+    def __str__(self):
+        return f"{self.producto.nombre} - {self.peso}g: ${self.precio}"
