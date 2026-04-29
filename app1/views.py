@@ -257,6 +257,7 @@ def orden(request):
                 'peso':        peso,
                 'total':       item_total,
                 'es_por_peso': True,
+                'precio':      str(precio_unit),  # Para el payload a crud
             })
         else:
             cantidad    = int(entry)
@@ -269,6 +270,7 @@ def orden(request):
                 'peso':        '',
                 'total':       item_total,
                 'es_por_peso': False,
+                'precio':      str(precio_unit),
             })
 
         subtotal += item_total
@@ -338,7 +340,11 @@ def orden(request):
         try:
             cliente = crud.crear_cliente(nombre, correo, telefono)
             items_payload = [
-                {'product_id': it['product'].id, 'cantidad': it['cantidad']}
+                {
+                    'product_id': it['product'].id,
+                    'cantidad': it['cantidad'],
+                    'precio': it['precio'],
+                }
                 for it in items
             ]
             orden_obj = crud.crear_orden_desde_carrito(

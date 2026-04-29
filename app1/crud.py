@@ -51,7 +51,8 @@ def crear_orden_desde_carrito(cliente, items, mensaje='', codigo_afiliado='', de
             prod = Product.objects.get(id=pid)
         except Product.DoesNotExist:
             continue
-        precio = Decimal(prod.precio)
+        # Usar el precio enviado si está presente (multiprecio), si no, el del producto
+        precio = Decimal(str(it.get('precio', prod.precio)))
         OrdenItem.objects.create(
             orden=orden,
             producto=prod,
