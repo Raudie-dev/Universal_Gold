@@ -72,12 +72,14 @@
 
       <div class="product-badges">
         {% for cat in producto.categorias_hoja %}
+          {% if not cat.es_subcategoria %}
           <span class="badge-gold">
             {% if cat.icono %}
               <img src="{{ cat.icono.url }}" alt="icono" style="width:24px;height:24px;margin-right:0.3em;vertical-align:middle;object-fit:contain;border-radius:50%;">
             {% endif %}
             {{ cat.nombre }}
           </span>
+          {% endif %}
         {% endfor %}
         {% if producto.agotado %}
           <span class="badge-sold-out">Agotado</span>

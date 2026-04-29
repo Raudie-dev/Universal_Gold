@@ -48,7 +48,7 @@ from django.db.models import Sum, Min
 
 def index(request):
     categoria_id = request.GET.get('categoria')
-    categorias = Category.objects.all()
+    categorias = Category.objects.filter(padres__isnull=True)
 
     productos = Product.objects.filter(
         ordenitem__orden__es_venta=True
@@ -63,8 +63,11 @@ def index(request):
             pass
 
     cart_count = _get_cart_count(request)
+
     whatsapp_url = get_whatsapp_url()
     whatsapp_number = get_whatsapp_empresa()
+    # Limpiar el número para WhatsApp (solo dígitos, sin espacios ni símbolos)
+    whatsapp_number_clean = ''.join(ch for ch in whatsapp_number if ch.isdigit()) if whatsapp_number else ''
 
     return render(request, 'index.html', {
         'categorias': categorias,
@@ -73,11 +76,12 @@ def index(request):
         'cart_count': cart_count,
         'whatsapp_url': whatsapp_url,
         'whatsapp_number': whatsapp_number,
+        'whatsapp_number_clean': whatsapp_number_clean,
     })
 
 
 def tienda(request):
-    categorias = Category.objects.prefetch_related('subcategorias').all()
+    categorias = Category.objects.prefetch_related('subcategorias').filter(padres__isnull=True)
     productos = Product.objects.prefetch_related('categorias').all()
 
     q = request.GET.get('q', '').strip()

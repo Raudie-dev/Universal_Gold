@@ -3,6 +3,8 @@ from django.db import models
 
 
 class Category(models.Model):
+    def es_subcategoria(self):
+            return self.padres.exists()
     nombre = models.CharField(max_length=120, unique=True)
     icono = models.ImageField(upload_to='categorias/iconos/', blank=True, null=True, help_text="Imagen de icono para la categoría")
     # Ahora una categoría puede tener varios padres

@@ -70,7 +70,6 @@
 
     <div class="cat-circles-track">
       {% for cat in categorias %}
-        {% if not cat.padre %}
         <a href="{% url 'tienda' %}?categoria={{ cat.id }}" class="cat-circle-item reveal">
           <div class="cat-circle-wrap">
             <div class="cat-circle-img-outer">
@@ -84,7 +83,6 @@
           </div>
           <span class="cat-circle-label">{{ cat.nombre }}</span>
         </a>
-        {% endif %}
       {% endfor %}
     </div>
 
@@ -201,37 +199,41 @@
       <div class="gold-rule centered"></div>
     </div>
     <div class="pillar-grid reveal">
-      <div class="pillar">
+      <div class="pillar pillar-wa-reparacion" style="cursor:pointer;">
         <span class="pillar-icon"><i class="fas fa-tools"></i></span>
         <h5>Reparación de Joyas</h5>
         <p>Restauramos tus piezas favoritas con la misma precisión artesanal con que fueron creadas. Soldaduras, ajustes y reparaciones completas.</p>
       </div>
-      <div class="pillar">
+      <div class="pillar pillar-wa-avaluo" style="cursor:pointer;">
         <span class="pillar-icon"><i class="fas fa-balance-scale"></i></span>
         <h5>Análisis y Avalúo de Prendas</h5>
         <p>Evaluamos tus joyas con instrumentos profesionales para determinar su pureza, peso y valor real de mercado con total transparencia.</p>
       </div>
-      <div class="pillar">
+      <div class="pillar pillar-wa-compra" style="cursor:pointer;">
         <span class="pillar-icon"><i class="fas fa-coins"></i></span>
         <h5>Compra de Oro</h5>
         <p>Compramos oro en cualquier presentación: joyas, monedas o lingotes. Ofrecemos el mejor precio del mercado de forma inmediata y segura.</p>
       </div>
-      <div class="pillar">
+      <div class="pillar pillar-wa-personalizada" style="cursor:pointer;">
         <span class="pillar-icon"><i class="fas fa-pencil-ruler"></i></span>
         <h5>Personalización de Joyas</h5>
         <p>Diseñamos y fabricamos piezas únicas según tu visión. Desde el boceto hasta la joya terminada, creamos la prenda de tus sueños en oro 18k.</p>
       </div>
-      <div class="pillar">
+      <div class="pillar pillar-wa-pulido" style="cursor:pointer;">
         <span class="pillar-icon"><i class="fas fa-star"></i></span>
         <h5>Pulido Profesional</h5>
         <p>Devolvemos el brillo original a tus joyas con técnicas de pulido profesional, eliminando rayones y devolviéndoles su lustre de siempre.</p>
       </div>
-      <div class="pillar">
+      <div class="pillar pillar-wa-engaste" style="cursor:pointer;">
         <span class="pillar-icon"><i class="fas fa-gem"></i></span>
         <h5>Engaste de Piedras</h5>
         <p>Incorporamos diamantes, rubíes, esmeraldas y otras gemas seleccionadas a mano en cualquier pieza. Cada piedra elegida por su pureza y brillo.</p>
       </div>
     </div>
+    <script>
+      window.WHATSAPP_EMPRESA = "{{ whatsapp_number_clean|default:'' }}";
+    </script>
+    <script src="{% static 'js/servicios-wa.js' %}"></script>
   </div>
 </section>
 

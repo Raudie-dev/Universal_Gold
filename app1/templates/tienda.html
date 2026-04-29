@@ -84,7 +84,6 @@
 
       <!-- Categorías padre -->
       {% for cat in categorias %}
-        {% if not cat.padre %}
         <a href="?categoria={{ cat.id }}"
            class="cat-circle-item {% if categoria_id == cat.id|stringformat:'s' %}active{% endif %}">
           <div class="cat-circle-wrap">
@@ -102,7 +101,6 @@
           </div>
           <span class="cat-circle-label">{{ cat.nombre }}</span>
         </a>
-        {% endif %}
       {% endfor %}
 
     </div>
