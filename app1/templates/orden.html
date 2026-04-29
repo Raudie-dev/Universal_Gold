@@ -97,8 +97,8 @@
                     <span class="cart-qty">{{ it.cantidad }}</span>
                   </td>
                   {% if SHOW_PRICES_CLIENTES %}
-                  <td class="text-end cart-price-unit">${{ it.product.precio }}</td>
-                  <td class="text-end cart-price-total">${{ it.total }}</td>
+                      <td class="text-end cart-price-unit">${{ it.precio_unit }}</td>
+                      <td class="text-end cart-price-total">${{ it.total }}</td>
                   {% endif %}
                 </tr>
                 {% endfor %}
@@ -108,7 +108,7 @@
                 <tr>
                   <td colspan="3" class="text-end cart-subtotal-label">Subtotal Estimado</td>
                   <td class="text-end cart-subtotal-amount">
-                    <span id="subtotalAmount" data-value="{{ subtotal }}">${{ subtotal }}</span>
+                    <span id="subtotalAmount" data-value="{{ subtotal|floatformat:2 }}">${{ subtotal|floatformat:2 }}</span>
                   </td>
                 </tr>
                 <tr id="discountRow" class="{% if descuento_porcentaje and descuento_monto > 0 %}{% else %}d-none{% endif %}">

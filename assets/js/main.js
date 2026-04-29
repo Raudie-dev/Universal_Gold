@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   // ─── UTILIDADES ───────────────────────────────────────
-  const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
+  const isMobile = () => window.matchMedia('(max-width: 980px)').matches;
 
   function debounce(fn, ms) {
     let t;
@@ -222,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
           s.x += s.drift.x; s.y += s.drift.y;
           if (s.x < -8) s.x = W + 8;
           if (s.x > W + 8) s.x = -8;
-          if (s.y < -8) s.y = H + 8;
+          if (s.y < -8) s.y = H + 8;  
           if (s.y > H + 8) s.y = -8;
 
           const twinkle = 0.5 + 0.5 * Math.sin(s.phase);

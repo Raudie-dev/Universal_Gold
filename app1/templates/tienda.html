@@ -165,7 +165,13 @@
           <div class="product-card-name">
             <a href="{% url 'productos' producto.id %}">{{ producto.nombre }}</a>
           </div>
-          <div class="product-card-price">${{ producto.precio }}</div>
+          <div class="product-card-price">
+            {% if producto.precio_minimo %}
+              <span class="product-card-price-desde">Desde</span> ${{ producto.precio_minimo|floatformat:2 }}
+            {% else %}
+              ${{ producto.precio }}
+            {% endif %}
+          </div>
         </div>
       </div>
 

@@ -91,16 +91,25 @@
 
 
       {% if precios_por_peso and precios_por_peso|length > 0 %}
-      <div class="product-price-wrap mb-2">
-        <span class="product-price-label">Precios por peso:</span>
-        <ul class="list-unstyled mt-2 mb-0">
+      <div class="product-price-wrap mb-2" id="precioPesoWrap">
+        <span class="product-price-label">Elige un precio por peso:</span>
+        <ul class="list-unstyled mt-2 mb-0" id="precioPesoList">
           {% for p in precios_por_peso %}
-            <li>
-              <span class="fw-bold">{{ p.peso|floatformat:2 }}g</span>:
+            <li class="precio-peso-option"
+                data-id="{{ p.id }}"
+                data-precio="{{ p.precio|floatformat:2 }}"
+                data-peso="{{ p.peso|floatformat:2 }}">
+              <span class="precio-peso-radio"><i class="fas fa-circle"></i></span>
+              <span class="fw-bold">{{ p.peso|floatformat:2 }}g</span>
               <span class="text-success">${{ p.precio|floatformat:2 }}</span>
+              <span class="precio-peso-check"><i class="fas fa-check"></i></span>
             </li>
           {% endfor %}
         </ul>
+        <div id="precioPesoAlert" class="precio-peso-alert" style="display:none;">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span>Debes seleccionar un precio por peso antes de agregar al carrito.</span>
+        </div>
       </div>
       {% else %}
       <div class="product-price-wrap">
@@ -116,9 +125,14 @@
       {% endif %}
 
       <!-- Add to cart -->
-      <form method="post" action="{% url 'orden_add' %}">
+      <form method="post" action="{% url 'orden_add' %}" id="addToCartForm">
         {% csrf_token %}
         <input type="hidden" name="product_id" value="{{ producto.id }}">
+        {% if precios_por_peso and precios_por_peso|length > 0 %}
+        <input type="hidden" name="precio_peso_id"      id="inputPrecioPesoId"      value="">
+        <input type="hidden" name="precio_seleccionado" id="inputPrecioSeleccionado" value="">
+        <input type="hidden" name="peso_seleccionado"   id="inputPesoSeleccionado"   value="">
+        {% endif %}
 
         <div class="qty-wrap">
           <label class="qty-label">Cantidad</label>
@@ -129,7 +143,7 @@
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary w-100 mt-3"
+        <button type="submit" class="btn btn-primary w-100 mt-3" id="btnAddCart"
                 {% if producto.agotado %}disabled style="opacity:0.5;cursor:not-allowed;"{% endif %}>
           <i class="fas fa-shopping-bag"></i>
           <span>{% if producto.agotado %}Producto Agotado{% else %}Agregar al Carrito{% endif %}</span>
@@ -253,4 +267,54 @@
 </section>
 {% endif %}
 
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+(function () {
+  var list   = document.getElementById('precioPesoList');
+  var alertEl = document.getElementById('precioPesoAlert');
+  var form   = document.getElementById('addToCartForm');
+
+  // Si no hay multiprecios en esta página, salir
+  if (!list || !form) return;
+
+  var inputId     = document.getElementById('inputPrecioPesoId');
+  var inputPrecio = document.getElementById('inputPrecioSeleccionado');
+  var inputPeso   = document.getElementById('inputPesoSeleccionado');
+
+  // ── Selección de fila ─────────────────────────────────────
+  list.querySelectorAll('.precio-peso-option').forEach(function (li) {
+    li.addEventListener('click', function () {
+      // Deseleccionar todos
+      list.querySelectorAll('.precio-peso-option').forEach(function (el) {
+        el.classList.remove('selected');
+      });
+      // Seleccionar el clickeado
+      li.classList.add('selected');
+
+      // Llenar los campos ocultos
+      inputId.value     = li.dataset.id     || '';
+      inputPrecio.value = li.dataset.precio || '';
+      inputPeso.value   = li.dataset.peso   || '';
+
+      // Ocultar alerta si estaba visible
+      alertEl.style.display = 'none';
+    });
+  });
+
+  // ── Validación al enviar ───────────────────────────────────
+  form.addEventListener('submit', function (e) {
+    if (!inputPrecio.value) {
+      e.preventDefault();
+      alertEl.style.display = 'flex';
+      // Scroll suave a la lista de precios
+      list.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Animación de sacudida para llamar la atención
+      list.classList.add('shake');
+      setTimeout(function () { list.classList.remove('shake'); }, 600);
+    }
+  });
+})();
+</script>
 {% endblock %}
