@@ -10,10 +10,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500&display=swap">
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500&display=swap">
 
   <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -44,38 +43,42 @@
       <img src="{% static 'images/logo.png' %}" alt="Universal Gold">
     </a>
 
-    <!-- Desktop Nav -->
-    <nav class="header-nav d-none d-md-flex">
-      <a href="{% url 'index' %}#heroSection"
-        class="nav-link">Inicio</a>
-      <a href="{% url 'tienda' %}" 
-        class="nav-link">Joyas</a>
-      <a href="{% url 'index' %}#nosotros"
-        class="nav-link">Nuestra Historia</a>
-      <a href="{% url 'index' %}#servicios"
-        class="nav-link">Servicios</a>
-      <a href="{% url 'index' %}#personalizada"
-        class="nav-link">Personalizada</a>
-      <a href="{% url 'index' %}#vip"
-        class="nav-link">VIP</a>
-      <a href="{% url 'index' %}#contacto" class="nav-link">Contacto</a>
+    <!-- Desktop Nav — se oculta en < 992px -->
+    <nav class="header-nav d-none d-lg-flex">
+      <a href="{% url 'index' %}#heroSection"    class="nav-link">Inicio</a>
+      <a href="{% url 'tienda' %}"               class="nav-link">Joyas</a>
+      <a href="{% url 'index' %}#nosotros"       class="nav-link">Nuestra Historia</a>
+      <a href="{% url 'index' %}#servicios"      class="nav-link">Servicios</a>
+      <a href="{% url 'index' %}#personalizada"  class="nav-link">Personalizada</a>
+      <a href="{% url 'index' %}#vip"            class="nav-link">VIP</a>
+      <a href="{% url 'index' %}#contacto"       class="nav-link">Contacto</a>
       <a href="{% url 'orden' %}" class="btn-cart-header ms-3">
         <i class="fas fa-shopping-bag"></i>
         <span>Carrito</span>
         {% if cart_count > 0 %}
-         <span class="badge-cart">{{ cart_count }}</span>
+          <span class="badge-cart">{{ cart_count }}</span>
         {% endif %}
       </a>
     </nav>
 
-    <!-- Mobile toggle -->
-    <button class="btn-mobile-toggle d-md-none"
-            type="button"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#mobileMenu"
-            aria-label="Menú">
-      <i class="fas fa-bars"></i>
-    </button>
+    <!-- Carrito visible en tablet + hamburger — ambos en < 992px -->
+    <div class="d-flex d-lg-none align-items-center gap-3">
+      <a href="{% url 'orden' %}" class="btn-cart-header" style="position:relative;">
+        <i class="fas fa-shopping-bag"></i>
+        <span>Carrito</span>
+        {% if cart_count > 0 %}
+          <span class="badge-cart">{{ cart_count }}</span>
+        {% endif %}
+      </a>
+      <button class="btn-mobile-toggle"
+              type="button"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#mobileMenu"
+              aria-label="Menú">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+
   </div>
 </header>
 
@@ -92,14 +95,23 @@
       <a href="{% url 'index' %}" class="mobile-nav-link">
         <i class="fas fa-home me-3" style="color:var(--gold);width:16px;"></i>Inicio
       </a>
+      <a href="{% url 'index' %}#nosotros" class="mobile-nav-link">
+        <i class="fas fa-book-open me-3" style="color:var(--gold);width:16px;"></i>Nuestra Historia
+      </a>
       <a href="{% url 'tienda' %}" class="mobile-nav-link">
         <i class="fas fa-gem me-3" style="color:var(--gold);width:16px;"></i>Joyas
+      </a>
+      <a href="{% url 'index' %}#servicios" class="mobile-nav-link">
+        <i class="fas fa-tools me-3" style="color:var(--gold);width:16px;"></i>Servicios
       </a>
       <a href="{% url 'personalizada' %}" class="mobile-nav-link">
         <i class="fas fa-ring me-3" style="color:var(--gold);width:16px;"></i>Personalizada
       </a>
       <a href="{% url 'vip' %}" class="mobile-nav-link">
         <i class="fas fa-crown me-3" style="color:var(--gold);width:16px;"></i>VIP
+      </a>
+      <a href="{% url 'index' %}#contacto" class="mobile-nav-link">
+        <i class="fas fa-envelope me-3" style="color:var(--gold);width:16px;"></i>Contacto
       </a>
       <a href="{% url 'orden' %}" class="mobile-nav-link">
         <i class="fas fa-shopping-bag me-3" style="color:var(--gold);width:16px;"></i>
@@ -188,10 +200,10 @@
       <div class="col-md-2 col-6">
         <span class="footer-col-title">Tienda</span>
         <a href="{% url 'tienda' %}" class="footer-link">Catálogo Completo</a>
-        <a href="{% url 'tienda' %}?categoria=anillos" class="footer-link">Anillos</a>
-        <a href="{% url 'tienda' %}?categoria=brazaletes" class="footer-link">Brazaletes</a>
-        <a href="{% url 'tienda' %}?categoria=cadenas" class="footer-link">Cadenas</a>
-        <a href="{% url 'tienda' %}?categoria=collares" class="footer-link">Collares</a>
+        <a href="{% url 'tienda' %}?categoria=anillos"     class="footer-link">Anillos</a>
+        <a href="{% url 'tienda' %}?categoria=brazaletes"  class="footer-link">Brazaletes</a>
+        <a href="{% url 'tienda' %}?categoria=cadenas"     class="footer-link">Cadenas</a>
+        <a href="{% url 'tienda' %}?categoria=collares"    class="footer-link">Collares</a>
       </div>
 
       <!-- Información -->

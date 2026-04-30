@@ -146,7 +146,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary w-100 mt-3" id="btnAddCart"
-                {% if producto.agotado %}disabled style="opacity:0.5;cursor:not-allowed;"{% endif %}>
+                {% if producto.agotado %}disabled style="cursor:not-allowed;"{% endif %}>
           <i class="fas fa-shopping-bag"></i>
           <span>{% if producto.agotado %}Producto Agotado{% else %}Agregar al Carrito{% endif %}</span>
         </button>
@@ -185,38 +185,35 @@
       <div>
         <span class="eyebrow">También te puede gustar</span>
         <h3 class="related-title">Productos Relacionados</h3>
-      <!-- ─── FILTER & SEARCH BAR ─────────────────────────────── -->
-      <div class="pf-bar" style="border-radius: 1.5rem; margin: 2.5rem auto 2.5rem auto; max-width: 900px; box-shadow: 0 2px 18px rgba(28,24,16,0.04); overflow: hidden;">
-        <div class="container">
-          <div class="pf-filters" style="padding: 0.7rem 1.5rem; gap: 1.5rem;">
-            <!-- Búsqueda -->
-            <form method="get" action="" style="display: flex; align-items: center; gap: 0.7rem; flex: 1;">
-              <div class="input-group" style="flex: 1;">
-                <span class="input-group-text"><i class="fas fa-search"></i></span>
-                <input type="text" name="q" class="form-control" placeholder="Buscar en productos..." value="{{ request.GET.q|default:'' }}">
-              </div>
-              <button type="submit" class="btn btn-primary" style="padding: 0.7rem 1.5rem; border-radius: 1.2rem; font-size: 0.7rem;">Buscar</button>
-            </form>
-            <!-- Filtro de categoría (opcional, si hay contexto de categorías) -->
-            {% if producto.categorias_hoja %}
-            <div class="pf-dropdown" style="min-width: 180px;">
-              <select class="form-control" style="border-radius: 1.2rem;" name="categoria" onchange="this.form && this.form.submit && this.form.submit()">
-                <option value="">Todas las categorías</option>
-                {% for cat in producto.categorias_hoja %}
-                  <option value="{{ cat.id }}" {% if request.GET.categoria == cat.id|stringformat:'s' %}selected{% endif %}>{{ cat.nombre }}</option>
-                {% endfor %}
-              </select>
-            </div>
-            {% endif %}
-          </div>
-        </div>
-      </div>
       </div>
       <a href="{% url 'tienda' %}" class="btn btn-ghost" style="font-size:0.6rem;">
         <span>Ver todo</span>
         <i class="fas fa-arrow-right"></i>
       </a>
     </div>
+
+   <!-- ─── FILTER & SEARCH BAR ─────────────────────────────── -->
+    <div style="margin: 1.5rem 0 2rem 0; display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+      <div class="input-group" style="width: 400px; max-width: 100%;">
+        <span class="input-group-text"><i class="fas fa-search"></i></span>
+        <input type="text" id="relatedSearchInput" class="form-control"
+              placeholder="Buscar productos...">
+      </div>
+
+      {% if producto.categorias_hoja %}
+      <select id="relatedCatFilter" class="form-control" style="width: 180px; max-width: 100%; border-radius: 1.2rem;">
+        <option value="">Todas las categorías</option>
+        {% for cat in producto.categorias_hoja %}
+          <option value="{{ cat.nombre|lower }}">{{ cat.nombre }}</option>
+        {% endfor %}
+      </select>
+      {% endif %}
+
+      <p id="relatedNoResults" style="display:none; margin: 0; color:var(--gold-dim); font-size:0.85rem;">
+        No se encontraron productos.
+      </p>
+    </div>
+
     <div class="product-grid">
       {% for sugerido in sugeridos %}
       <div class="product-card reveal">
@@ -265,6 +262,7 @@
       </div>
       {% endfor %}
     </div>
+
   </div>
 </section>
 {% endif %}
@@ -274,11 +272,10 @@
 {% block extra_scripts %}
 <script>
 (function () {
-  var list   = document.getElementById('precioPesoList');
+  var list    = document.getElementById('precioPesoList');
   var alertEl = document.getElementById('precioPesoAlert');
-  var form   = document.getElementById('addToCartForm');
+  var form    = document.getElementById('addToCartForm');
 
-  // Si no hay multiprecios en esta página, salir
   if (!list || !form) return;
 
   var inputId     = document.getElementById('inputPrecioPesoId');
@@ -288,19 +285,15 @@
   // ── Selección de fila ─────────────────────────────────────
   list.querySelectorAll('.precio-peso-option').forEach(function (li) {
     li.addEventListener('click', function () {
-      // Deseleccionar todos
       list.querySelectorAll('.precio-peso-option').forEach(function (el) {
         el.classList.remove('selected');
       });
-      // Seleccionar el clickeado
       li.classList.add('selected');
 
-      // Llenar los campos ocultos
       inputId.value     = li.dataset.id     || '';
       inputPrecio.value = li.dataset.precio || '';
       inputPeso.value   = li.dataset.peso   || '';
 
-      // Ocultar alerta si estaba visible
       alertEl.style.display = 'none';
     });
   });
@@ -310,13 +303,46 @@
     if (!inputPrecio.value) {
       e.preventDefault();
       alertEl.style.display = 'flex';
-      // Scroll suave a la lista de precios
       list.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      // Animación de sacudida para llamar la atención
       list.classList.add('shake');
       setTimeout(function () { list.classList.remove('shake'); }, 600);
     }
   });
+})();
+
+// ── Filtro en tiempo real de productos relacionados ──────────
+(function () {
+  var searchInput = document.getElementById('relatedSearchInput');
+  var catFilter   = document.getElementById('relatedCatFilter');
+  var noResults   = document.getElementById('relatedNoResults');
+
+  if (!searchInput) return;
+
+  function filterCards() {
+    var query = searchInput.value.toLowerCase().trim();
+    var cat   = catFilter ? catFilter.value.toLowerCase() : '';
+
+    var cards = document.querySelectorAll('.related-section .product-card');
+    var visible = 0;
+
+    cards.forEach(function (card) {
+      var name    = (card.querySelector('.product-card-name')  ? card.querySelector('.product-card-name').textContent  : '').toLowerCase();
+      var catText = (card.querySelector('.product-card-cat')   ? card.querySelector('.product-card-cat').textContent   : '').toLowerCase();
+
+      var matchQ   = !query || name.includes(query);
+      var matchCat = !cat   || catText.includes(cat);
+
+      card.style.display = (matchQ && matchCat) ? '' : 'none';
+      if (matchQ && matchCat) visible++;
+    });
+
+    if (noResults) {
+      noResults.style.display = visible === 0 ? 'block' : 'none';
+    }
+  }
+
+  searchInput.addEventListener('input', filterCards);
+  if (catFilter) catFilter.addEventListener('change', filterCards);
 })();
 </script>
 {% endblock %}
