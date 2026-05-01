@@ -4,27 +4,27 @@ document.addEventListener('DOMContentLoaded', function() {
   const servicios = [
     {
       selector: '.pillar-wa-reparacion',
-      mensaje: 'Hola, me interesa solicitar reparación de joyas.',
+      mensaje: '¡Hola! Me encantaría recibir información y una cotización para el servicio de restauración y reparación especializada de mis joyas. ✨',
     },
     {
       selector: '.pillar-wa-avaluo',
-      mensaje: 'Hola, me interesa un análisis y avalúo de prendas.',
+      mensaje: '¡Hola! Quisiera solicitar una cotización para un análisis o avalúo profesional de mis joyas. ✨',
     },
     {
       selector: '.pillar-wa-compra',
-      mensaje: 'Hola, me interesa vender o comprar oro.',
+      mensaje: '¡Hola! Me gustaría consultar la tasa del día y el proceso para la venta de mi oro. Quedo atento a su información. 📈',
     },
     {
       selector: '.pillar-wa-personalizada',
-      mensaje: 'Hola, quiero personalizar una joya.',
+      mensaje: '¡Hola! Me gustaría cotizar el diseño de una pieza personalizada y exclusiva. ¿Podrían asesorarme?',
     },
     {
       selector: '.pillar-wa-pulido',
-      mensaje: 'Hola, quiero pulir mis joyas.',
+      mensaje: '¡Hola! Me interesa devolverle el brillo original a mis piezas con su servicio de mantenimiento y pulido profesional. ✨',
     },
     {
       selector: '.pillar-wa-engaste',
-      mensaje: 'Hola, quiero engastar piedras en una joya.',
+      mensaje: '¡Hola! Quisiera cotizar el engaste de piedras preciosas para una joya especial. ¿Podrían indicarme los detalles del servicio? 💍',
     },
   ];
 
