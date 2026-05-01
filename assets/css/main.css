@@ -601,7 +601,7 @@ em.purple { color: var(--purple); }
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(184,150,46,0.25);
   border-radius: 4px;
-  padding: 1.5rem 1.25rem;
+  padding: 1.5rem 2.25rem;
   transition: border-color 0.3s;
 }
 .about-mv-card:hover      { border-color: rgba(184,150,46,0.6); }
