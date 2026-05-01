@@ -3,6 +3,14 @@
    Cream & Ivory · Gold Constellations
 ═══════════════════════════════════════════════════════ */
 
+@font-face {
+  font-family: 'Silver Queeny';
+  src: url('../fonts/Silver-Queen-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --gold:         #B8962E;
   --gold-light:   #D4AA4A;
@@ -31,7 +39,7 @@
   --purple-light: #8A6699;
   --purple-pale:  rgba(107,77,122,0.10);
 
-  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-display: 'Silver Queeny', Georgia, serif; letter-spacing: 0.095em;; 
   --font-body:    'Montserrat', sans-serif;
 
   --ease-gold:    cubic-bezier(0.25, 0.1, 0.25, 1);
@@ -89,7 +97,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 300;
   line-height: 1.1;
   color: var(--ink);
-  letter-spacing: -0.01em;
+  
 }
 
 h1 { font-size: clamp(2.6rem, 5.5vw, 5rem); }
@@ -97,7 +105,7 @@ h2 { font-size: clamp(1.9rem, 3.8vw, 3.4rem); }
 h3 { font-size: clamp(1.3rem, 2.4vw, 1.9rem); }
 h4 { font-size: 1.25rem; }
 
-em { font-style: italic; color: var(--gold); }
+em {  color: var(--gold); font-style: normal;}
 em.green  { color: var(--green); }
 em.purple { color: var(--purple); }
 
@@ -614,7 +622,7 @@ em.purple { color: var(--purple); }
 
 .pillar-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   border: 1px solid var(--border);
   background: var(--white);
 }
@@ -644,7 +652,7 @@ em.purple { color: var(--purple); }
 }
 .pillar:hover::before      { transform: scaleX(1); }
 .pillar-icon               { font-size: 1rem; color: var(--gold); display: block; margin-bottom: 1.5rem; }
-.pillar h5                 { font-family: var(--font-display); font-size: 1.2rem; font-weight: 400; color: var(--ink); margin-bottom: 0.9rem; }
+.pillar h5                 { font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 1.2rem; font-weight: 400; color: var(--ink); margin-bottom: 0.9rem; }
 .pillar p                  { font-size: 0.78rem; color: var(--ink-muted); line-height: 1.88; font-weight: 300; }
 
 /* ─── CUSTOM SECTION ─────────────────────────────────── */
@@ -975,7 +983,7 @@ em.purple { color: var(--purple); }
 
 .cat-circle-label {
   font-family: var(--font-display);
-  font-size: 0.98rem;
+  font-size: 1.4rem;
   font-weight: 400;
   color: var(--ink-soft);
   text-align: center;
@@ -1174,7 +1182,7 @@ em.purple { color: var(--purple); }
   align-items: baseline;
   gap: 1rem;
 }
-.product-price       { font-family: var(--font-display); font-size: 2.4rem; font-weight: 300; color: var(--gold); }
+.product-price       { font-family: var(--font-body); font-size: 1.5rem; font-weight: 300; color: var(--gold); }
 .product-price-label { font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-muted); font-family: var(--font-body); }
 
 /* Variante multiprecio */
@@ -1490,10 +1498,10 @@ a.contact-info-item:hover .contact-info-icon { background: rgba(184,150,46,0.18)
   .cat-circles-track    { gap: 1.2rem; padding: 0.5rem 1rem; justify-content: flex-start; }
   .cat-circle-wrap,
   .cat-circle-img-outer { width: 80px; height: 80px; }
-  .cat-circle-label     { font-size: 0.65rem; max-width: 85px; }
+  .cat-circle-label     { font-size: 1.25rem; max-width: 85px; }
 
   .cat-circles-section--index { padding: 4rem 0 3.5rem; }
-  .cat-circles-section--index .cat-circles-track { flex-wrap: nowrap; justify-content: flex-start; gap: 1.5rem; padding: 0.25rem 1.25rem; }
+  .cat-circles-section--index .cat-circles-track { flex-wrap: nowrap; justify-content: center; gap: 1.5rem; padding: 0.25rem 1.25rem; }
   .cat-circles-header   { margin-bottom: 2.5rem; padding: 0 1.25rem; }
 
   /* Pillars — 1 columna */
@@ -1551,7 +1559,7 @@ a.contact-info-item:hover .contact-info-icon { background: rgba(184,150,46,0.18)
   .cat-circles-section--index { padding: 3rem 0 2.5rem; }
   .cat-circle-wrap,
   .cat-circle-img-outer { width: 68px; height: 68px; }
-  .cat-circle-label     { font-size: 0.6rem; max-width: 72px; }
+  .cat-circle-label     { font-size: 1rem; max-width: 72px; }
 
   .pf-avail-pill        { font-size: 0.58rem; padding: 0.4rem; }
   .pf-btn-inline-search { padding: 0 0.75rem; font-size: 0.55rem; letter-spacing: 0.1em; }
