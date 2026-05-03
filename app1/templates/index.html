@@ -218,8 +218,8 @@
       </div>
       <div class="pillar pillar-wa-avaluo" style="cursor:pointer;">
         <span class="pillar-icon"><i class="fas fa-balance-scale"></i></span>
-        <h5>Análisis y Avalúo de Prendas</h5>
-        <p>Evaluamos tus joyas con instrumentos profesionales para determinar su pureza, peso y valor real de mercado con total transparencia.</p>
+        <h5>Fundición y Análisis de Metales</h5>
+        <p>Transformamos oro y plata en lingotes profesionales, garantizando la pureza exacta de cada gramo mediante tecnología de espectrometría de vanguardia.</p>
       </div>
       <div class="pillar pillar-wa-compra" style="cursor:pointer;">
         <span class="pillar-icon"><i class="fas fa-coins"></i></span>
@@ -238,6 +238,44 @@
     <script src="{% static 'js/servicios-wa.js' %}"></script>
   </div>
 </section>
+
+<!-- Script para WhatsApp directo por servicio -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const servicios = [
+      {
+        selector: '.pillar-wa-reparacion',
+        mensaje: '¡Hola! Me encantaría recibir información y una cotización para el servicio de restauración y reparación especializada de mis joyas. ✨',
+      },
+      {
+        selector: '.pillar-wa-avaluo',
+        mensaje: '¡Hola! Estoy interesado en el servicio de fundición y análisis de metales. ¿Podrían darme información y una cotización para transformar oro o plata en lingotes y analizar su pureza? 🧪',
+      },
+      {
+        selector: '.pillar-wa-compra',
+        mensaje: '¡Hola! Me gustaría consultar la tasa del día y el proceso para la venta de mi oro. Quedo atento a su información. 📈',
+      },
+      {
+        selector: '.pillar-wa-personalizada',
+        mensaje: '¡Hola! Me gustaría cotizar el diseño de una pieza personalizada y exclusiva. ¿Podrían asesorarme?',
+      },
+    ];
+
+    // El número se inyecta desde Django en window.WHATSAPP_EMPRESA
+    const telefono = window.WHATSAPP_EMPRESA;
+
+    servicios.forEach(servicio => {
+      document.querySelectorAll(servicio.selector).forEach(el => {
+        el.addEventListener('click', function(e) {
+          e.preventDefault();
+          if (!telefono) return;
+          const url = `https://wa.me/${telefono}?text=${encodeURIComponent(servicio.mensaje)}`;
+          window.open(url, '_blank');
+        });
+      });
+    });
+  });
+</script>
 
 <!-- ═══════════════════════════════════════════════════
      JOYERÍA PERSONALIZADA
