@@ -1,0 +1,820 @@
+{% extends 'base_index.html' %}
+{% load static %}
+
+{% block title %}Cotizador de Anillos | Universal Gold{% endblock %}
+
+{% block content %}
+
+<!-- ─── PAGE HEADER ───────────────────────────────────────── -->
+<div class="page-header">
+  <div class="container">
+    <h1>Diseña tu <em>Anillo</em></h1>
+    <p>Personaliza cada detalle y obtén una cotización al instante directamente por WhatsApp.</p>
+    <nav aria-label="breadcrumb" class="mt-3">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}">Inicio</a></li>
+        <li class="breadcrumb-item active">Cotizador de Anillos</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<!-- ─── COTIZADOR PRINCIPAL ─────────────────────────────── -->
+<section class="quoter-page-section">
+  <div class="container">
+    <div class="quoter-wrapper">
+
+      <!-- Left Column: Image Gallery -->
+      <div class="quoter-image-col">
+        <div class="quoter-image-sticky quoter-image-layout">
+          <div class="quoter-thumbnails" id="quoter-thumbs">
+            <button class="thumb-btn active" id="thumb-0" onclick="selectThumb(0)">
+              <img id="thumb-img-0" src="{% static 'images/rings/gold_round_front.png' %}" class="img-fluid thumb-img" alt="Vista frontal">
+            </button>
+            <button class="thumb-btn" id="thumb-1" onclick="selectThumb(1)">
+              <img id="thumb-img-1" src="{% static 'images/rings/gold_round_angle.png' %}" class="img-fluid thumb-img" alt="Vista angulada">
+            </button>
+            <button class="thumb-btn" id="thumb-2" onclick="selectThumb(2)">
+              <img id="thumb-img-2" src="{% static 'images/rings/gold_round_side.png' %}" class="img-fluid thumb-img" alt="Vista lateral">
+            </button>
+          </div>
+          <div class="quoter-main-img-wrap">
+            <img id="quoter-main-image" src="{% static 'images/rings/gold_round_front.png' %}" alt="Anillo" class="img-fluid quoter-img">
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Config -->
+      <div class="quoter-config-col">
+        <span class="eyebrow">Diseña tu joya</span>
+        <h2 class="quoter-title">Cotizador de <em>Anillos</em></h2>
+        <p class="quoter-subtitle">Personaliza cada detalle y obtén una cotización estimada al instante.</p>
+
+        <!-- ── SECCIÓN 1: Opciones de la piedra central ──────── -->
+        <div class="config-section-header">
+          <span class="config-section-icon"><i class="fas fa-gem"></i></span>
+          <h3 class="config-section-title">Opciones de la piedra central</h3>
+        </div>
+
+        <!-- Forma -->
+        <div class="quoter-group">
+          <label class="quoter-sublabel">Forma de la piedra central</label>
+          <div class="quoter-options quoter-shapes-grid">
+
+            <button class="quoter-opt-btn active" data-type="shape" data-val="round" onclick="updateQuoter('shape','round')">
+              <span class="q-icon"><svg viewBox="0 0 40 40" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="20" cy="20" r="14"/><circle cx="20" cy="20" r="8"/><line x1="20" y1="6" x2="20" y2="12"/><line x1="20" y1="28" x2="20" y2="34"/><line x1="6" y1="20" x2="12" y2="20"/><line x1="28" y1="20" x2="34" y2="20"/></svg></span>
+              <span class="q-label">Redondo</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="shape" data-val="oval" onclick="updateQuoter('shape','oval')">
+              <span class="q-icon"><svg viewBox="0 0 40 40" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.3"><ellipse cx="20" cy="20" rx="11" ry="15"/><ellipse cx="20" cy="20" rx="6" ry="9"/></svg></span>
+              <span class="q-label">Óvalo</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="shape" data-val="cushion" onclick="updateQuoter('shape','cushion')">
+              <span class="q-icon"><svg viewBox="0 0 40 40" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="8" y="8" width="24" height="24" rx="7"/><rect x="13" y="13" width="14" height="14" rx="3"/></svg></span>
+              <span class="q-label">Cojín</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="shape" data-val="princess" onclick="updateQuoter('shape','princess')">
+              <span class="q-icon"><svg viewBox="0 0 40 40" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="8" y="8" width="24" height="24"/><rect x="14" y="14" width="12" height="12"/><line x1="8" y1="8" x2="14" y2="14"/><line x1="32" y1="8" x2="26" y2="14"/><line x1="8" y1="32" x2="14" y2="26"/><line x1="32" y1="32" x2="26" y2="26"/></svg></span>
+              <span class="q-label">Princesa</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="shape" data-val="pear" onclick="updateQuoter('shape','pear')">
+              <span class="q-icon"><svg viewBox="0 0 40 40" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M20 5 C12 5 8 11 8 18 C8 27 13 35 20 35 C27 35 32 27 32 18 C32 11 28 5 20 5Z"/><path d="M20 12 C16 12 14 15 14 18 C14 23 16 28 20 28 C24 28 26 23 26 18 C26 15 24 12 20 12Z"/></svg></span>
+              <span class="q-label">Pera</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="shape" data-val="emerald" onclick="updateQuoter('shape','emerald')">
+              <span class="q-icon"><svg viewBox="0 0 40 40" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.3"><polygon points="13,6 27,6 34,14 34,26 27,34 13,34 6,26 6,14"/><polygon points="15,12 25,12 30,18 30,22 25,28 15,28 10,22 10,18"/></svg></span>
+              <span class="q-label">Esmeralda</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="shape" data-val="marquise" onclick="updateQuoter('shape','marquise')">
+              <span class="q-icon"><svg viewBox="0 0 40 40" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M20 4 Q34 20 20 36 Q6 20 20 4Z"/><path d="M20 11 Q28 20 20 29 Q12 20 20 11Z"/></svg></span>
+              <span class="q-label">Marquesa</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="shape" data-val="radiant" onclick="updateQuoter('shape','radiant')">
+              <span class="q-icon"><svg viewBox="0 0 40 40" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.3"><polygon points="12,6 28,6 34,12 34,28 28,34 12,34 6,28 6,12"/><rect x="12" y="12" width="16" height="16"/></svg></span>
+              <span class="q-label">Radiante</span>
+            </button>
+
+          </div>
+        </div>
+
+        <!-- Tipo de piedra -->
+        <div class="quoter-group">
+          <label class="quoter-sublabel">Tipo de piedra central</label>
+          <div class="quoter-options">
+            <button class="quoter-opt-btn active" data-type="stone" data-val="lab" onclick="updateQuoter('stone','lab')">
+              <span class="q-icon"><i class="fas fa-flask"></i></span>
+              <span class="q-label">Diamante de laboratorio</span>
+            </button>
+            <button class="quoter-opt-btn" data-type="stone" data-val="natural" onclick="updateQuoter('stone','natural')">
+              <span class="q-icon"><i class="fas fa-mountain"></i></span>
+              <span class="q-label">Diamante natural</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ── SECCIÓN 2: Opciones de montaje ───────────────── -->
+        <div class="config-section-header">
+          <span class="config-section-icon"><i class="fas fa-ring"></i></span>
+          <h3 class="config-section-title">Opciones de montaje</h3>
+        </div>
+
+        <!-- Cabeza del anillo -->
+        <div class="quoter-group">
+          <label class="quoter-sublabel">Tipo de cabeza del anillo</label>
+          <div class="quoter-options quoter-shapes-grid">
+
+            <button class="quoter-opt-btn active" data-type="head" data-val="4prong" onclick="updateQuoter('head','4prong')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 40 40" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="20" cy="18" r="9"/><line x1="20" y1="9" x2="20" y2="4"/><line x1="29" y1="18" x2="34" y2="18"/><line x1="11" y1="18" x2="6" y2="18"/><line x1="20" y1="27" x2="20" y2="32"/><rect x="16" y="27" width="8" height="8" rx="1"/></svg>
+              </span>
+              <span class="q-label">4 garras</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="head" data-val="basket" onclick="updateQuoter('head','basket')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 40 40" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.2"><ellipse cx="20" cy="18" rx="10" ry="6"/><path d="M10 18 Q10 30 20 32 Q30 30 30 18"/><line x1="14" y1="16" x2="14" y2="31"/><line x1="26" y1="16" x2="26" y2="31"/></svg>
+              </span>
+              <span class="q-label">Canasta</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="head" data-val="bezel" onclick="updateQuoter('head','bezel')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 40 40" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="20" cy="18" r="10"/><circle cx="20" cy="18" r="7"/><rect x="17" y="27" width="6" height="8" rx="1"/></svg>
+              </span>
+              <span class="q-label">Cabeza de clavija</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="head" data-val="pave" onclick="updateQuoter('head','pave')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 40 40" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="20" cy="16" r="9"/><circle cx="16" cy="14" r="2" fill="currentColor"/><circle cx="24" cy="14" r="2" fill="currentColor"/><circle cx="20" cy="10" r="2" fill="currentColor"/><rect x="16" y="25" width="8" height="8" rx="1"/></svg>
+              </span>
+              <span class="q-label">Pavé</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="head" data-val="halo" onclick="updateQuoter('head','halo')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 40 40" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="20" cy="18" r="8"/><circle cx="20" cy="18" r="12" stroke-dasharray="2 2"/><rect x="16" y="28" width="8" height="7" rx="1"/></svg>
+              </span>
+              <span class="q-label">Halo único</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="head" data-val="doublehalo" onclick="updateQuoter('head','doublehalo')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 40 40" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="20" cy="18" r="6"/><circle cx="20" cy="18" r="10" stroke-dasharray="2 2"/><circle cx="20" cy="18" r="13" stroke-dasharray="1 3"/><rect x="16" y="30" width="8" height="5" rx="1"/></svg>
+              </span>
+              <span class="q-label">Doble halo</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="head" data-val="crown" onclick="updateQuoter('head','crown')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 40 40" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M8 28 L8 14 L15 20 L20 10 L25 20 L32 14 L32 28 Z"/><circle cx="20" cy="16" r="3"/></svg>
+              </span>
+              <span class="q-label">Corona</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="head" data-val="flowerhalo" onclick="updateQuoter('head','flowerhalo')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 40 40" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="20" cy="18" r="6"/><ellipse cx="20" cy="9" rx="3" ry="4"/><ellipse cx="29" cy="18" rx="4" ry="3"/><ellipse cx="20" cy="27" rx="3" ry="4"/><ellipse cx="11" cy="18" rx="4" ry="3"/></svg>
+              </span>
+              <span class="q-label">Halo de flor</span>
+            </button>
+
+          </div>
+        </div>
+
+        <!-- ── SECCIÓN 3: Montura ─────────────────────────────── -->
+        <div class="config-section-header">
+          <span class="config-section-icon"><i class="fas fa-circle-notch"></i></span>
+          <h3 class="config-section-title">Montura</h3>
+        </div>
+
+        <div class="quoter-group">
+          <label class="quoter-sublabel">Tipo de montura</label>
+          <div class="quoter-options quoter-shapes-grid">
+
+            <button class="quoter-opt-btn active" data-type="band" data-val="single" onclick="updateQuoter('band','single')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 40 20" width="50" height="25" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 Q20 4 38 10"/><path d="M2 14 Q20 8 38 14"/></svg>
+              </span>
+              <span class="q-label">Individual</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="band" data-val="double" onclick="updateQuoter('band','double')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 40 20" width="50" height="25" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 Q20 2 38 8"/><path d="M2 12 Q20 6 38 12"/><path d="M2 17 Q20 11 38 17"/></svg>
+              </span>
+              <span class="q-label">Doble</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="band" data-val="twisted" onclick="updateQuoter('band','twisted')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 40 20" width="50" height="25" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 6 C12 6 18 14 28 14 S38 6 38 6"/><path d="M2 14 C12 14 18 6 28 6 S38 14 38 14"/></svg>
+              </span>
+              <span class="q-label">Doble trenzado</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="band" data-val="knife" onclick="updateQuoter('band','knife')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 40 20" width="50" height="25" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 Q20 2 38 10"/><path d="M2 10 Q20 18 38 10"/></svg>
+              </span>
+              <span class="q-label">Borde afilado</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="band" data-val="flat" onclick="updateQuoter('band','flat')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 40 20" width="50" height="25" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 8 Q20 8 38 8"/><path d="M2 14 Q20 14 38 14"/></svg>
+              </span>
+              <span class="q-label">Canto cuadrado</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="band" data-val="tapered" onclick="updateQuoter('band','tapered')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 40 20" width="50" height="25" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 7 Q20 4 38 7"/><path d="M2 13 Q20 16 38 13"/></svg>
+              </span>
+              <span class="q-label">Ahusado</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="band" data-val="modern" onclick="updateQuoter('band','modern')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 40 20" width="50" height="25" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 C10 5 20 10 30 5 S38 10 38 10"/><path d="M2 10 C10 15 20 10 30 15 S38 10 38 10"/></svg>
+              </span>
+              <span class="q-label">Contemporáneo</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="band" data-val="hidden" onclick="updateQuoter('band','hidden')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 40 20" width="50" height="25" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 Q20 4 38 10"/><path d="M2 10 Q20 16 38 10"/><circle cx="20" cy="10" r="3" fill="currentColor"/></svg>
+              </span>
+              <span class="q-label">Halo oculto</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="band" data-val="split" onclick="updateQuoter('band','split')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 40 20" width="50" height="25" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 Q14 4 20 7"/><path d="M20 13 Q26 16 38 10"/><path d="M2 10 Q14 16 20 13"/><path d="M20 7 Q26 4 38 10"/></svg>
+              </span>
+              <span class="q-label">Dividido</span>
+            </button>
+
+          </div>
+        </div>
+
+        <!-- ── SECCIÓN 4: Engaste lateral ────────────────────── -->
+        <div class="config-section-header">
+          <span class="config-section-icon"><i class="fas fa-th-large"></i></span>
+          <h3 class="config-section-title">Engaste lateral</h3>
+        </div>
+
+        <div class="quoter-group">
+          <label class="quoter-sublabel">Tipo de engaste lateral</label>
+          <div class="quoter-options quoter-shapes-grid">
+
+            <button class="quoter-opt-btn active" data-type="side" data-val="none" onclick="updateQuoter('side','none')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 20 40" width="20" height="40" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="5" y="2" width="10" height="36" rx="2"/></svg>
+              </span>
+              <span class="q-label">Ninguno</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="side" data-val="upave" onclick="updateQuoter('side','upave')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 20 40" width="20" height="40" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M5 2 Q2 20 5 38 L15 38 Q18 20 15 2Z"/><circle cx="10" cy="12" r="2" fill="currentColor"/><circle cx="10" cy="20" r="2" fill="currentColor"/><circle cx="10" cy="28" r="2" fill="currentColor"/></svg>
+              </span>
+              <span class="q-label">Pavé en U</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="side" data-val="channel" onclick="updateQuoter('side','channel')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 20 40" width="20" height="40" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="5" y="2" width="10" height="36" rx="2"/><rect x="7" y="8" width="6" height="6" rx="1"/><rect x="7" y="17" width="6" height="6" rx="1"/><rect x="7" y="26" width="6" height="6" rx="1"/></svg>
+              </span>
+              <span class="q-label">Canal</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="side" data-val="prong" onclick="updateQuoter('side','prong')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 20 40" width="20" height="40" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="5" y="2" width="10" height="36" rx="2"/><circle cx="10" cy="10" r="3" fill="none" stroke="currentColor"/><circle cx="10" cy="20" r="3" fill="none" stroke="currentColor"/><circle cx="10" cy="30" r="3" fill="none" stroke="currentColor"/></svg>
+              </span>
+              <span class="q-label">Garras</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="side" data-val="grain" onclick="updateQuoter('side','grain')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 20 40" width="20" height="40" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="5" y="2" width="10" height="36" rx="2"/><circle cx="10" cy="10" r="2" fill="currentColor"/><circle cx="10" cy="18" r="2" fill="currentColor"/><circle cx="10" cy="26" r="2" fill="currentColor"/><circle cx="10" cy="34" r="2" fill="currentColor"/></svg>
+              </span>
+              <span class="q-label">Granos</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="side" data-val="pave" onclick="updateQuoter('side','pave')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 20 40" width="20" height="40" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="5" y="2" width="10" height="36" rx="2"/><circle cx="8" cy="10" r="1.5" fill="currentColor"/><circle cx="12" cy="10" r="1.5" fill="currentColor"/><circle cx="8" cy="18" r="1.5" fill="currentColor"/><circle cx="12" cy="18" r="1.5" fill="currentColor"/><circle cx="8" cy="26" r="1.5" fill="currentColor"/><circle cx="12" cy="26" r="1.5" fill="currentColor"/></svg>
+              </span>
+              <span class="q-label">Pavé</span>
+            </button>
+
+          </div>
+        </div>
+
+        <!-- ── SECCIÓN 5: Detalles del tallado ───────────────── -->
+        <div class="config-section-header">
+          <span class="config-section-icon"><i class="fas fa-pen-nib"></i></span>
+          <h3 class="config-section-title">Detalles del tallado</h3>
+        </div>
+
+        <div class="quoter-group">
+          <label class="quoter-sublabel">Tipo de tallado del anillo</label>
+          <div class="quoter-options">
+
+            <button class="quoter-opt-btn active" data-type="engraving" data-val="smooth" onclick="updateQuoter('engraving','smooth')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 40 20" width="50" height="25" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 Q20 4 38 10"/><path d="M2 10 Q20 16 38 10"/></svg>
+              </span>
+              <span class="q-label">Liso</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="engraving" data-val="leaf" onclick="updateQuoter('engraving','leaf')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 40 20" width="50" height="25" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 Q20 4 38 10"/><path d="M2 10 Q20 16 38 10"/><path d="M8 7 Q12 10 8 13" stroke-width="1"/><path d="M16 5 Q20 10 16 15" stroke-width="1"/><path d="M24 5 Q28 10 24 15" stroke-width="1"/><path d="M32 7 Q36 10 32 13" stroke-width="1"/></svg>
+              </span>
+              <span class="q-label">Hoja</span>
+            </button>
+
+            <button class="quoter-opt-btn" data-type="engraving" data-val="scroll" onclick="updateQuoter('engraving','scroll')">
+              <span class="q-icon q-icon--lg">
+                <svg viewBox="0 0 40 20" width="50" height="25" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 10 Q20 4 38 10"/><path d="M2 10 Q20 16 38 10"/><path d="M10 7 C13 5 15 12 12 10 C9 8 11 5 14 7" stroke-width="0.9"/><path d="M22 7 C25 5 27 12 24 10 C21 8 23 5 26 7" stroke-width="0.9"/></svg>
+              </span>
+              <span class="q-label">Voluta</span>
+            </button>
+
+          </div>
+        </div>
+
+        <!-- ── Metal ─────────────────────────────────────────── -->
+        <div class="config-section-header">
+          <span class="config-section-icon"><i class="fas fa-coins"></i></span>
+          <h3 class="config-section-title">Metal</h3>
+        </div>
+
+        <div class="quoter-group">
+          <label class="quoter-sublabel">Tipo de metal</label>
+          <div class="quoter-options">
+            <button class="quoter-opt-btn active" data-type="metal" data-val="gold" onclick="updateQuoter('metal', 'gold')">
+              <span class="q-color-swatch" style="background: linear-gradient(135deg, #f9d976 0%, #e9b649 100%);"></span>
+              <span class="q-label">Oro 18k</span>
+            </button>
+            <button class="quoter-opt-btn" data-type="metal" data-val="silver" onclick="updateQuoter('metal', 'silver')">
+              <span class="q-color-swatch" style="background: linear-gradient(135deg, #e8e8e8 0%, #b0b0b0 100%);"></span>
+              <span class="q-label">Plata 925</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Summary Card -->
+        <div class="quoter-summary-card">
+          <h5 class="summary-title">Resumen de tu selección</h5>
+          <div class="summary-grid">
+            <div class="summary-row"><span class="summary-key">Forma</span><span class="summary-val" id="summary-shape">Redondo</span></div>
+            <div class="summary-row"><span class="summary-key">Tipo de piedra</span><span class="summary-val" id="summary-stone">Diamante de laboratorio</span></div>
+            <div class="summary-row"><span class="summary-key">Metal</span><span class="summary-val" id="summary-metal">Oro 18k</span></div>
+            <div class="summary-row"><span class="summary-key">Cabeza</span><span class="summary-val" id="summary-head">4 garras</span></div>
+            <div class="summary-row"><span class="summary-key">Montura</span><span class="summary-val" id="summary-band">Individual</span></div>
+            <div class="summary-row"><span class="summary-key">Engaste lateral</span><span class="summary-val" id="summary-side">Ninguno</span></div>
+            <div class="summary-row"><span class="summary-key">Tallado</span><span class="summary-val" id="summary-engraving">Liso</span></div>
+          </div>
+          <div class="summary-divider"></div>
+          <div class="summary-price-row">
+            <span class="price-label">Precio Estimado</span>
+            <span class="price-value" id="quoter-price">$850.00</span>
+          </div>
+          <small class="price-note">* Precio de referencia. El costo final depende del peso y acabados especificados.</small>
+        </div>
+
+        <!-- CTA -->
+        <button class="btn btn-primary btn-block quoter-submit" id="btn-cotizar" onclick="sendQuoteWA()">
+          <i class="fab fa-whatsapp"></i>
+          <span>Solicitar Cotización por WhatsApp</span>
+          <i class="fas fa-arrow-right"></i>
+        </button>
+
+        <p class="quoter-disclaimer">
+          <i class="fas fa-shield-alt" style="color:var(--gold);"></i>
+          Sin compromiso de compra. Respuesta en menos de 24 horas.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+/* ── Quoter Page ─────────────────────────────────────────── */
+.quoter-page-section {
+  padding: 60px 0 100px;
+  background: #fff;
+  color: var(--ink, #1a1a1a);
+}
+
+.quoter-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 70px;
+  align-items: stretch;
+}
+
+@media (max-width: 991px) {
+  .quoter-wrapper { grid-template-columns: 1fr; gap: 30px; }
+  .quoter-image-sticky {
+    top: 75px;
+    padding: 16px 20px;
+    z-index: 100;
+  }
+  .quoter-img {
+    max-height: 220px;
+  }
+  .quoter-thumbnails {
+    width: 60px;
+    gap: 8px;
+  }
+}
+
+/* Image panel */
+.quoter-image-col {
+  position: relative;
+  height: 100%;
+}
+
+.quoter-image-sticky {
+  position: sticky;
+  top: 90px;
+  background: #f9f9f9;
+  border-radius: 16px;
+  padding: 30px;
+  border: 1px solid #eee;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.06);
+  z-index: 100;
+  transition: all 0.3s ease;
+}
+
+.quoter-image-layout {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.quoter-thumbnails {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 78px;
+  flex-shrink: 0;
+}
+
+.thumb-btn {
+  background: #fff;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  padding: 5px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  overflow: hidden;
+}
+
+.thumb-btn:hover { border-color: #ddd; }
+.thumb-btn.active { border-color: var(--gold, #d4af37); box-shadow: 0 0 0 1px var(--gold, #d4af37); }
+
+.thumb-img { width: 100%; height: auto; border-radius: 6px; display: block; }
+
+.quoter-main-img-wrap { flex: 1; text-align: center; }
+
+.quoter-img {
+  max-width: 100%;
+  height: auto;
+  max-height: 460px;
+  object-fit: contain;
+  transition: opacity 0.3s ease;
+}
+
+.quoter-img.fade-out { opacity: 0; }
+
+/* Config panel */
+.quoter-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3rem;
+  line-height: 1.1;
+  margin: 10px 0 10px;
+}
+
+.quoter-subtitle {
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.7;
+  margin-bottom: 36px;
+}
+
+.quoter-group { margin-bottom: 32px; }
+
+.quoter-sublabel {
+  display: block;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--gold, #d4af37);
+  margin-bottom: 14px;
+  font-weight: 600;
+}
+
+/* Config section headers */
+.config-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 40px 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.config-section-header:first-of-type { margin-top: 0; }
+
+.config-section-icon {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--gold, #d4af37), #c9972e);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.config-section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.quoter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.quoter-shapes-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+@media (max-width: 600px) {
+  .quoter-shapes-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.quoter-opt-btn {
+  background: #fff;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  min-width: 0;
+}
+
+.quoter-opt-btn:hover { border-color: #ccc; background: #fafafa; }
+
+.quoter-opt-btn.active {
+  border-color: var(--gold, #d4af37);
+  background: rgba(212, 175, 55, 0.06);
+  box-shadow: 0 0 0 1px var(--gold, #d4af37);
+}
+
+.q-icon { color: #666; display: flex; align-items: center; justify-content: center; }
+.q-icon--lg { min-height: 34px; }
+.quoter-opt-btn.active .q-icon { color: var(--gold, #d4af37); }
+.q-label { font-size: 0.75rem; font-weight: 500; color: #555; text-align: center; line-height: 1.2; }
+.quoter-opt-btn.active .q-label { color: #1a1a1a; }
+
+/* Metal buttons (horizontal) */
+.quoter-options:not(.quoter-shapes-grid) .quoter-opt-btn {
+  flex-direction: row;
+  gap: 12px;
+  padding: 12px 20px;
+  min-width: 160px;
+}
+
+.q-color-swatch {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.12);
+}
+
+/* Summary card */
+.quoter-summary-card {
+  background: linear-gradient(135deg, #fafafa, #f5f5f5);
+  border: 1px solid #e8e8e8;
+  border-radius: 14px;
+  padding: 24px 28px;
+  margin: 36px 0 28px;
+}
+
+.summary-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #1a1a1a;
+}
+
+.summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 16px; }
+
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.summary-key { font-size: 0.9rem; color: #888; }
+.summary-val { font-weight: 600; color: #1a1a1a; font-size: 0.95rem; }
+
+.summary-divider {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 14px 0;
+}
+
+.summary-price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.price-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: #999; }
+
+.price-value {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.8rem;
+  color: var(--gold, #d4af37);
+  line-height: 1;
+}
+
+.price-note { color: #aaa; font-size: 0.8rem; display: block; margin-top: 4px; }
+
+/* Submit button */
+.quoter-submit {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 18px 24px;
+  font-size: 1rem;
+  border-radius: 10px;
+}
+
+.quoter-disclaimer {
+  text-align: center;
+  color: #aaa;
+  font-size: 0.82rem;
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+</style>
+
+<script>
+const WHATSAPP_EMPRESA = "{{ whatsapp_number_clean|default:'584241232838' }}";
+
+const quoterState = {
+  shape: 'round', metal: 'gold', stone: 'lab',
+  head: '4prong', band: 'single', side: 'none',
+  engraving: 'smooth', thumbIndex: 0
+};
+
+const basePrices     = { gold: 850, silver: 320 };
+const shapeModifiers = { round:1.0, oval:1.15, cushion:1.05, princess:1.08, pear:1.10, emerald:1.12, marquise:1.13, radiant:1.07 };
+
+const labelMap = {
+  shape:     { round:'Redondo', oval:'Óvalo', cushion:'Cojín', princess:'Princesa', pear:'Pera', emerald:'Esmeralda', marquise:'Marquesa', radiant:'Radiante' },
+  stone:     { lab:'Diamante de laboratorio', natural:'Diamante natural' },
+  metal:     { gold:'Oro 18k', silver:'Plata 925' },
+  head:      { '4prong':'4 garras', basket:'Canasta', bezel:'Cabeza de clavija', pave:'Pavé', halo:'Halo único', doublehalo:'Doble halo', crown:'Corona', flowerhalo:'Halo de flor' },
+  band:      { single:'Individual', double:'Doble', twisted:'Doble trenzado', knife:'Borde afilado', flat:'Canto cuadrado', tapered:'Ahusado', modern:'Contemporáneo', hidden:'Halo oculto', split:'Dividido' },
+  side:      { none:'Ninguno', upave:'Pavé en U', channel:'Canal', prong:'Garras', grain:'Granos', pave:'Pavé' },
+  engraving: { smooth:'Liso', leaf:'Hoja', scroll:'Voluta' }
+};
+
+const imagePaths = {
+  gold_round:   ["{% static 'images/rings/gold_round_front.png' %}", "{% static 'images/rings/gold_round_angle.png' %}", "{% static 'images/rings/gold_round_side.png' %}"],
+  silver_round: ["{% static 'images/rings/silver_round_front.png' %}", "{% static 'images/rings/silver_round_angle.png' %}", "{% static 'images/rings/silver_round_side.png' %}"],
+  gold_oval:    ["{% static 'images/rings/gold_oval_front.png' %}", "{% static 'images/rings/gold_oval_angle.png' %}", "{% static 'images/rings/gold_oval_side.png' %}"],
+  silver_oval:  ["{% static 'images/rings/silver_oval_front.png' %}", "{% static 'images/rings/silver_oval_angle.png' %}", "{% static 'images/rings/silver_oval_side.png' %}"],
+  gold_pear:    ["{% static 'images/rings/gold_pear_front.png' %}", "{% static 'images/rings/gold_pear_angle.png' %}", "{% static 'images/rings/gold_pear_side.png' %}"],
+  silver_pear:  ["{% static 'images/rings/silver_pear_front.png' %}", "{% static 'images/rings/silver_pear_angle.png' %}", "{% static 'images/rings/silver_pear_side.png' %}"]
+};
+
+function getImages() {
+  const key = `${quoterState.metal}_${quoterState.shape}`;
+  return imagePaths[key] || imagePaths['gold_round'];
+}
+
+function refreshImages() {
+  const imgs   = getImages();
+  const mainEl = document.getElementById('quoter-main-image');
+  for (let i = 0; i < 3; i++) {
+    const t = document.getElementById(`thumb-img-${i}`);
+    if (t) t.src = imgs[i];
+  }
+  mainEl.classList.add('fade-out');
+  setTimeout(() => {
+    mainEl.src = imgs[quoterState.thumbIndex];
+    mainEl.onload = () => mainEl.classList.remove('fade-out');
+  }, 150);
+}
+
+function selectThumb(idx) {
+  quoterState.thumbIndex = idx;
+  document.querySelectorAll('.thumb-btn').forEach((el, i) => el.classList.toggle('active', i === idx));
+  const imgs = getImages();
+  const mainEl = document.getElementById('quoter-main-image');
+  mainEl.classList.add('fade-out');
+  setTimeout(() => {
+    mainEl.src = imgs[idx];
+    mainEl.onload = () => mainEl.classList.remove('fade-out');
+  }, 150);
+}
+
+function updatePrice() {
+  const price = basePrices[quoterState.metal] * (shapeModifiers[quoterState.shape] || 1.0);
+  document.getElementById('quoter-price').textContent =
+    new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
+}
+
+function updateSummary() {
+  const fields = ['shape', 'stone', 'metal', 'head', 'band', 'side', 'engraving'];
+  fields.forEach(f => {
+    const el = document.getElementById(`summary-${f}`);
+    if (el) el.textContent = labelMap[f][quoterState[f]] || quoterState[f];
+  });
+}
+
+function updateQuoter(type, val) {
+  quoterState[type] = val;
+  if (type === 'shape' || type === 'metal') {
+    quoterState.thumbIndex = 0;
+    document.querySelectorAll('.thumb-btn').forEach((el, i) => el.classList.toggle('active', i === 0));
+  }
+  document.querySelectorAll(`.quoter-opt-btn[data-type="${type}"]`).forEach(btn =>
+    btn.classList.toggle('active', btn.dataset.val === val)
+  );
+  updatePrice();
+  updateSummary();
+  if (type === 'shape' || type === 'metal') refreshImages();
+}
+
+function sendQuoteWA() {
+  const s = quoterState;
+  const L = labelMap;
+  const price = document.getElementById('quoter-price').textContent;
+  const msg = [
+    '¡Hola! Me gustaría cotizar un anillo personalizado.',
+    '',
+    '✨ Detalles de mi anillo:',
+    `  Forma de la piedra : ${L.shape[s.shape]}`,
+    `  Tipo de piedra     : ${L.stone[s.stone]}`,
+    `  Metal              : ${L.metal[s.metal]}`,
+    `  Cabeza del anillo  : ${L.head[s.head]}`,
+    `  Montura            : ${L.band[s.band]}`,
+    `  Engaste lateral    : ${L.side[s.side]}`,
+    `  Tallado            : ${L.engraving[s.engraving]}`,
+    '',
+    `💰 Precio estimado: ${price}`,
+    '',
+    '¿Podrían darme una cotización formal?'
+  ].join('\n');
+  window.open(`https://wa.me/${WHATSAPP_EMPRESA}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  updateQuoter('shape', 'round');
+  updateQuoter('metal', 'gold');
+});
+</script>
+
+{% endblock %}

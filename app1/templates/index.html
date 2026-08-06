@@ -160,6 +160,176 @@
 </section>
 
 <!-- ═══════════════════════════════════════════════════
+     RING QUOTER CTA — mid-page banner
+════════════════════════════════════════════════════ -->
+<section class="ring-cta-section" id="cotizador-cta">
+  <div class="ring-cta-bg"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <div class="ring-cta-inner">
+      <div class="ring-cta-images">
+        <div class="ring-cta-img-stack">
+          <img src="{% static 'images/rings/gold_round_front.png' %}" alt="Anillo de Oro" class="ring-cta-img ring-cta-img--back">
+          <img src="{% static 'images/rings/silver_round_front.png' %}" alt="Anillo de Plata" class="ring-cta-img ring-cta-img--front">
+        </div>
+      </div>
+      <div class="ring-cta-content reveal">
+        <span class="eyebrow" style="color:var(--gold-light);">Diseña tu Joya Perfecta</span>
+        <h2 style="color:#fff;">Cotizador de <em>Anillos</em></h2>
+        <div class="gold-rule"></div>
+        <p style="color:rgba(255,255,255,0.75); font-size:1.05rem; max-width:480px; line-height:1.8;">
+          Selecciona la forma de la piedra, el material y obtén una cotización al instante. Enviamos tu selección directo por WhatsApp.
+        </p>
+        <div class="ring-cta-features">
+          <div class="ring-cta-feat">
+            <i class="fas fa-circle" style="color:var(--gold);font-size:0.5rem;margin-top:4px;"></i>
+            <span>Oro 18k &amp; Plata 925</span>
+          </div>
+          <div class="ring-cta-feat">
+            <i class="fas fa-circle" style="color:var(--gold);font-size:0.5rem;margin-top:4px;"></i>
+            <span>3 formas de piedra disponibles</span>
+          </div>
+          <div class="ring-cta-feat">
+            <i class="fas fa-circle" style="color:var(--gold);font-size:0.5rem;margin-top:4px;"></i>
+            <span>Precio estimado instantáneo</span>
+          </div>
+        </div>
+        <a href="{% url 'cotizador' %}" class="btn btn-primary btn-lg ring-cta-btn">
+          <i class="fas fa-gem"></i>
+          <span>Diseñar mi Anillo</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+/* Ring CTA Section */
+.ring-cta-section {
+  position: relative;
+  padding: 100px 0;
+  overflow: hidden;
+}
+
+.ring-cta-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #0d0d0d 0%, #1a1410 40%, #0d0b08 100%);
+  z-index: 0;
+}
+
+.ring-cta-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 80% at 20% 50%, rgba(212, 175, 55, 0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 80% 30%, rgba(212, 175, 55, 0.06) 0%, transparent 70%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.ring-cta-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 70px;
+  align-items: center;
+}
+
+@media (max-width: 991px) {
+  .ring-cta-inner {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .ring-cta-images {
+    order: -1;
+  }
+  .ring-cta-features {
+    justify-content: center;
+  }
+}
+
+.ring-cta-images {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.ring-cta-img-stack {
+  position: relative;
+  width: 320px;
+  height: 320px;
+}
+
+.ring-cta-img {
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  object-fit: contain;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(212,175,55,0.15);
+  padding: 20px;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.ring-cta-img--back {
+  top: 0;
+  left: 0;
+  transform: rotate(-8deg) scale(0.88);
+  filter: brightness(0.85);
+  z-index: 1;
+}
+
+.ring-cta-img--front {
+  bottom: 0;
+  right: 0;
+  transform: rotate(5deg) scale(1);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  z-index: 2;
+}
+
+.ring-cta-img-stack:hover .ring-cta-img--back {
+  transform: rotate(-12deg) scale(0.9) translateX(-10px);
+}
+
+.ring-cta-img-stack:hover .ring-cta-img--front {
+  transform: rotate(3deg) scale(1.05) translateX(10px);
+  box-shadow: 0 30px 80px rgba(212,175,55,0.2);
+}
+
+.ring-cta-content {
+  position: relative;
+  z-index: 2;
+}
+
+.ring-cta-features {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 24px 0 36px;
+}
+
+.ring-cta-feat {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  color: rgba(255,255,255,0.7);
+  font-size: 0.95rem;
+}
+
+.ring-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 32px;
+  font-size: 1.05rem;
+}
+</style>
+
+<!-- ═══════════════════════════════════════════════════
      ABOUT — SPLIT SCREEN
 ════════════════════════════════════════════════════ -->
 <section class="about-section" id="nosotros">

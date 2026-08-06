@@ -80,6 +80,19 @@ def index(request):
     })
 
 
+def cotizador(request):
+    cart_count = _get_cart_count(request)
+    whatsapp_url = get_whatsapp_url()
+    whatsapp_number = get_whatsapp_empresa()
+    whatsapp_number_clean = ''.join(ch for ch in whatsapp_number if ch.isdigit()) if whatsapp_number else ''
+    return render(request, 'cotizador.html', {
+        'cart_count': cart_count,
+        'whatsapp_url': whatsapp_url,
+        'whatsapp_number': whatsapp_number,
+        'whatsapp_number_clean': whatsapp_number_clean,
+    })
+
+
 def tienda(request):
     categorias = Category.objects.prefetch_related('subcategorias').filter(padres__isnull=True)
     productos = Product.objects.prefetch_related('categorias').all()
@@ -99,11 +112,17 @@ def tienda(request):
             cid = int(categoria_id)
             categoria_seleccionada = Category.objects.prefetch_related('subcategorias').get(id=cid)
             if subcategoria_id:
-                productos = productos.filter(categorias__id=int(subcategoria_id))
+                scid = int(subcategoria_id)
+                # Verificar que la subcategoría es hija de la principal seleccionada
+                subcat = categoria_seleccionada.subcategorias.filter(id=scid).first()
+                if subcat:
+                    # Solo productos que tengan la categoría principal y la subcategoría seleccionada
+                    productos = productos.filter(categorias__id=cid).filter(categorias__id=scid)
+                else:
+                    productos = productos.none()  # No mostrar productos si la subcategoría no es hija de la principal
             else:
-                ids_a_buscar = list(categoria_seleccionada.subcategorias.values_list('id', flat=True))
-                ids_a_buscar.append(cid)
-                productos = productos.filter(categorias__id__in=ids_a_buscar)
+                # Solo productos que tengan la categoría principal seleccionada
+                productos = productos.filter(categorias__id=cid)
         except (ValueError, TypeError, Category.DoesNotExist):
             pass
 
