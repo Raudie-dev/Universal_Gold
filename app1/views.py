@@ -10,7 +10,11 @@ from urllib.parse import quote
 from decimal import Decimal
 from app2.models import AppConfig, Afiliado
 from django.utils import timezone
-
+import json
+import os
+from django.http import JsonResponse
+from django.views.decorators.http import require_GET
+from django.conf import settings
 
 def get_whatsapp_empresa():
     telefono_ventas = AppConfig.get_valor('WHATSAPP_EMPRESA')
@@ -522,3 +526,193 @@ def guardar_contacto(request):
         return redirect('/#contacto')
 
     return redirect('/')
+
+
+
+
+# Cache del JSON en memoria para no leerlo en cada request
+_RINGS_CACHE = None
+
+def _load_rings():
+    global _RINGS_CACHE
+    if _RINGS_CACHE is None:
+        json_path = os.path.join(settings.BASE_DIR, 'app1', 'data', 'nivoda_rings.json')
+        with open(json_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        _RINGS_CACHE = data['rings']
+    return _RINGS_CACHE
+
+
+# Mapeo de valores del frontend → valores del JSON scrapeado
+SHAPE_MAP = {
+    'round':     'ROUND',
+    'oval':      'OVAL',
+    'cushion':   'CUSHION',
+    'princess':  'PRINCESS',
+    'pear':      'PEAR',
+    'emerald':   'EMERALD',
+    'marquise':  'MARQUISE',
+    'radiant':   'RADIANT',
+}
+
+STONE_MAP = {
+    'lab':     'LABGROWN_DIAMOND',
+    'natural': 'NATURAL_DIAMOND',
+}
+
+HEAD_MAP = {
+    '4prong':    'FOUR_PRONGS',
+    'basket':    'BASKET',
+    'bezel':     'PEG_HEAD',
+    'pave':      'PAVE',
+    'halo':      'SINGLE_HALO',
+    'doublehalo':'DOUBLE_HALO',
+    'crown':     'CROWN',
+    'flowerhalo':'FLOWER_HALO',
+}
+
+MOUNTING_MAP = {
+    'single':  'SINGLE',
+    'double':  'DOUBLE',
+    'twisted': 'DOUBLE_TWIST',
+    'knife':   'KNIFE_EDGE',
+    'flat':    'SQUARE_EDGE',
+    'tapered': 'TAPERED',
+    'modern':  'CONTEMPORARY',
+    'hidden':  'HIDDEN_HALO',
+    'split':   'SPLIT',
+}
+
+SIDE_MAP = {
+    'none':    'NONE',
+    'upave':   'U_PAVE',
+    'channel': 'CHANNEL',
+    'prong':   'PRONG',
+    'grain':   'BEAD',
+    'pave':    'PAVE',
+}
+
+CARVING_MAP = {
+    'smooth': 'PLAIN',
+    'leaf':   'LEAF',
+    'scroll': 'SCROLL',
+}
+
+METAL_MAP = {
+    'gold':     'GOLD',
+    'platinum': 'PLATINUM',
+}
+
+QUALITY_MAP = {
+    'kt10': 'KT_10',
+    'kt14': 'KT_14',
+    'kt18': 'KT_18',
+}
+
+PEEKABOO_MAP = {
+    'none':     'NONE',
+    'round':    'ROUND_DIAMOND',
+    'princess': 'PRINCESS_DIAMOND',
+}
+
+HEADCOLOR_MAP = {
+    'yellow': 'YELLOW_GOLD',
+    'white':  'WHITE_GOLD',
+    'rose':   'ROSE_GOLD',
+}
+
+MOUNTCOLOR_MAP = {
+    'yellow': 'YELLOW_GOLD',
+    'white':  'WHITE_GOLD',
+    'rose':   'ROSE_GOLD',
+}
+
+@require_GET
+def ring_config_api(request):
+    """
+    Endpoint que recibe la configuración del quoter y retorna
+    el anillo más cercano del JSON con sus imágenes y precio.
+
+    GET /api/ring-config/?shape=round&stone=lab&head=4prong&band=single&side=none&engraving=smooth&metal=gold
+    """
+    # Leer parámetros del frontend
+    shape    = request.GET.get('shape', 'round')
+    stone    = request.GET.get('stone', 'lab')
+    head     = request.GET.get('head', '4prong')
+    band     = request.GET.get('band', 'single')
+    side     = request.GET.get('side', 'none')
+    engraving= request.GET.get('engraving', 'smooth')
+    metal    = request.GET.get('metal', 'gold')
+    peekaboo   = request.GET.get('peekaboo', 'none')
+    quality    = request.GET.get('quality', 'kt18')
+    headcolor  = request.GET.get('headcolor', 'yellow')
+    mountcolor = request.GET.get('mountcolor', 'yellow')
+    # Convertir a valores del JSON
+
+    target = {
+        'stone_shape':    SHAPE_MAP.get(shape, 'ROUND'),
+        'stone_type':     STONE_MAP.get(stone, 'LABGROWN_DIAMOND'),
+        'ring_head':      HEAD_MAP.get(head, 'FOUR_PRONGS'),
+        'mounting':       MOUNTING_MAP.get(band, 'SINGLE'),
+        'side_setting':   SIDE_MAP.get(side, 'NONE'),
+        'ring_carving':   CARVING_MAP.get(engraving, 'PLAIN'),
+        'metal_type':     METAL_MAP.get(metal, 'GOLD'),
+        'peekaboo':       PEEKABOO_MAP.get(peekaboo, 'NONE'),
+        'metal_quality':  QUALITY_MAP.get(quality, 'KT_18'),
+        'head_color':     HEADCOLOR_MAP.get(headcolor, 'YELLOW_GOLD'),
+        'mounting_color': MOUNTCOLOR_MAP.get(mountcolor, 'YELLOW_GOLD'),
+    }
+
+    rings = _load_rings()
+
+    # ── Búsqueda por scoring: cuántos campos coinciden ────────────────────────
+    # Las dimensiones críticas tienen más peso
+    weights = {
+        'stone_shape':   5,
+        'ring_head':     4,
+        'mounting':      4,
+        'metal_type':    3,
+        'stone_type':    3,
+        'metal_quality': 3,
+        'head_color':    2,
+        'mounting_color':2,
+        'side_setting':  2,
+        'peekaboo':      2,
+        'ring_carving':  1,
+    }
+
+    best_ring = None
+    best_score = -1
+
+    for ring in rings:
+        combo = ring.get('combination', {})
+        score = 0
+        for field, weight in weights.items():
+            if combo.get(field) == target.get(field):
+                score += weight
+        if score > best_score:
+            best_score = score
+            best_ring = ring
+
+    if not best_ring:
+        return JsonResponse({'error': 'No se encontró configuración'}, status=404)
+
+    # Limpiar precio — convertir "$333.72" → 333.72
+    price_raw = best_ring.get('price_mount', '')
+    try:
+        price_num = float(price_raw.replace('$', '').replace(',', ''))
+    except (ValueError, AttributeError):
+        price_num = 0.0
+
+    return JsonResponse({
+        'sku':          best_ring['sku'],
+        'title':        best_ring.get('title', ''),
+        'images':       best_ring.get('images', []),
+        'price_mount':  price_raw,
+        'price_num':    price_num,
+        'price_sample': best_ring.get('price_sample', ''),
+        'specs':        best_ring.get('specs', {}),
+        'combination':  best_ring.get('combination', {}),
+        'score':        best_score,
+        'url':          best_ring.get('url', ''),
+    })

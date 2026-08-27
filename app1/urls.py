@@ -13,4 +13,5 @@ urlpatterns = [
     path('orden/validar-codigo-afiliado/', views.validar_codigo_afiliado, name='validar_codigo_afiliado'),
     # mantenemos rutas legacy
     path('guardar-contacto/', views.guardar_contacto, name='guardar_contacto'),
+    path('api/ring-config/', views.ring_config_api, name='ring_config_api'),
 ]
