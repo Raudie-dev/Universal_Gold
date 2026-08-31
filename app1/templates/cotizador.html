@@ -26,6 +26,11 @@
 
       <!-- Left Column: Image Gallery -->
       <div class="quoter-image-col">
+        <!-- Aviso combinación no disponible -->
+        <div id="unavailable-notice">
+          <span class="notice-icon"><i class="fas fa-exclamation-circle"></i></span>
+          <p class="notice-text">Esta combinación no está disponible.<br>Prueba con otras opciones.</p>
+        </div>
         <div class="quoter-image-sticky quoter-image-layout">
           <div class="quoter-thumbnails" id="quoter-thumbs">
             <button class="thumb-btn active" id="thumb-0" onclick="selectThumb(0)">
@@ -570,24 +575,6 @@
           <span class="config-section-icon"><i class="fas fa-coins"></i></span>
           <h3 class="config-section-title">Materiales y acabado</h3>
         </div>
-        <!-- Tipo de metal -->
-        <div class="quoter-group">
-          <label class="quoter-sublabel">Tipo de metal</label>
-          <div class="quoter-options">
-            <button class="quoter-opt-btn active" data-type="metal" data-val="gold"
-              onclick="updateQuoter('metal','gold')">
-              <span class="q-color-swatch"
-                style="background: linear-gradient(135deg, #f9d976 0%, #e9b649 100%);"></span>
-              <span class="q-label">Oro</span>
-            </button>
-            <button class="quoter-opt-btn" data-type="metal" data-val="platinum"
-              onclick="updateQuoter('metal','platinum')">
-              <span class="q-color-swatch"
-                style="background: linear-gradient(135deg, #e8e8e8 0%, #b0b0b0 100%);"></span>
-              <span class="q-label">Platino</span>
-            </button>
-          </div>
-        </div>
         <!-- Calidad del metal — solo visible para Oro -->
         <div class="quoter-group" id="group-quality">
           <label class="quoter-sublabel">Calidad del metal</label>
@@ -655,8 +642,7 @@
                 id="summary-shape">Redondo</span></div>
             <div class="summary-row"><span class="summary-key">Tipo de piedra</span><span class="summary-val"
                 id="summary-stone">Diamante de laboratorio</span></div>
-            <div class="summary-row"><span class="summary-key">Metal</span><span class="summary-val"
-                id="summary-metal">Oro 18k</span></div>
+            <div class="summary-row"><span class="summary-key">Metal</span><span class="summary-val">Oro</span></div>
             <div class="summary-row"><span class="summary-key">Cabeza</span><span class="summary-val"
                 id="summary-head">4 garras</span></div>
             <div class="summary-row"><span class="summary-key">Montura</span><span class="summary-val"
@@ -1059,15 +1045,54 @@
     justify-content: center;
     gap: 8px;
   }
+  /* ── Estado no disponible ─────────────────────────────────── */
+  .ring-unavailable {
+    position: relative;
+  }
+
+  .ring-unavailable::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.55);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  #unavailable-notice {
+    display: none;
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+    padding: 20px;
+  }
+
+  #unavailable-notice .notice-icon {
+    font-size: 2rem;
+    color: #bbb;
+  }
+
+  #unavailable-notice .notice-text {
+    font-size: 0.9rem;
+    color: #888;
+    line-height: 1.5;
+  }
+
 </style>
 
 <script>
-
   const WHATSAPP_EMPRESA = "{{ whatsapp_number_clean|default:'584241232838' }}";
   const API_URL = "{% url 'ring_config_api' %}";
+  const OPTIONS_API_URL = "{% url 'ring_options_api' %}";
 
   const quoterState = {
-    shape: 'round', metal: 'gold', stone: 'lab',
+    shape: 'round', stone: 'lab',
     head: '4prong', band: 'single', side: 'none',
     engraving: 'smooth', peekaboo: 'none',
     quality: 'kt18', headcolor: 'yellow', mountcolor: 'yellow',
@@ -1075,22 +1100,53 @@
   };
 
   const labelMap = {
-    shape: { round: 'Redondo', oval: 'Óvalo', cushion: 'Cojín', princess: 'Princesa', pear: 'Pera', emerald: 'Esmeralda', marquise: 'Marquesa', radiant: 'Radiante' },
-    stone: { lab: 'Diamante de laboratorio', natural: 'Diamante natural' },
-    metal: { gold: 'Oro', platinum: 'Platino' },
-    head: { '4prong': '4 garras', basket: 'Canasta', bezel: 'Cabeza de clavija', pave: 'Pavé', halo: 'Halo único', doublehalo: 'Doble halo', crown: 'Corona', flowerhalo: 'Halo de flor' },
-    band: { single: 'Individual', double: 'Doble', twisted: 'Doble trenzado', knife: 'Borde afilado', flat: 'Canto cuadrado', tapered: 'Ahusado', modern: 'Contemporáneo', hidden: 'Halo oculto', split: 'Dividido' },
-    side: { none: 'Ninguno', upave: 'Pavé en U', channel: 'Canal', prong: 'Garras', grain: 'Granos', pave: 'Pavé' },
-    engraving: { smooth: 'Liso', leaf: 'Hoja', scroll: 'Voluta' },
-    peekaboo: { none: 'Sin Peekaboo', round: 'Diamante redondo', princess: 'Diamante princesa' },
-    quality: { kt10: '10 KT', kt14: '14 KT', kt18: '18 KT' },
-    headcolor: { yellow: 'Oro amarillo', white: 'Oro blanco', rose: 'Oro rosa' },
+    shape:      { round: 'Redondo', oval: 'Óvalo', cushion: 'Cojín', princess: 'Princesa', pear: 'Pera', emerald: 'Esmeralda', marquise: 'Marquesa', radiant: 'Radiante' },
+    stone:      { lab: 'Diamante de laboratorio', natural: 'Diamante natural' },
+    head:       { '4prong': '4 garras', basket: 'Canasta', bezel: 'Cabeza de clavija', pave: 'Pavé', halo: 'Halo único', doublehalo: 'Doble halo', crown: 'Corona', flowerhalo: 'Halo de flor' },
+    band:       { single: 'Individual', double: 'Doble', twisted: 'Doble trenzado', knife: 'Borde afilado', flat: 'Canto cuadrado', tapered: 'Ahusado', modern: 'Contemporáneo', hidden: 'Halo oculto', split: 'Dividido' },
+    side:       { none: 'Ninguno', upave: 'Pavé en U', channel: 'Canal', prong: 'Garras', grain: 'Granos', pave: 'Pavé' },
+    engraving:  { smooth: 'Liso', leaf: 'Hoja', scroll: 'Voluta' },
+    peekaboo:   { none: 'Sin Peekaboo', round: 'Diamante redondo', princess: 'Diamante princesa' },
+    quality:    { kt10: '10 KT', kt14: '14 KT', kt18: '18 KT' },
+    headcolor:  { yellow: 'Oro amarillo', white: 'Oro blanco', rose: 'Oro rosa' },
     mountcolor: { yellow: 'Oro amarillo', white: 'Oro blanco', rose: 'Oro rosa' },
   };
 
-  // ── Estado actual del anillo (retornado por la API) ────────────────────────
   let currentRing = null;
   let fetchTimeout = null;
+
+  // ── Estado visual de disponibilidad ───────────────────────────────────────
+  function setAvailable(available) {
+    const wrap     = document.querySelector('.quoter-image-sticky');
+    const notice   = document.getElementById('unavailable-notice');
+    const btnCot   = document.getElementById('btn-cotizar');
+
+    if (available) {
+      wrap.classList.remove('ring-unavailable');
+      if (notice) notice.style.display = 'none';
+      btnCot.disabled = false;
+      btnCot.style.opacity = '';
+    } else {
+      wrap.classList.add('ring-unavailable');
+      if (notice) notice.style.display = 'flex';
+      btnCot.disabled = true;
+      btnCot.style.opacity = '0.45';
+      // Limpiar imágenes a placeholder
+      ['0','1','2'].forEach(i => {
+        const t = document.getElementById(`thumb-img-${i}`);
+        if (t) t.src = '';
+      });
+      const main = document.getElementById('quoter-main-image');
+      if (main) {
+        main.classList.add('fade-out');
+        setTimeout(() => {
+          main.src = '';
+          main.classList.remove('fade-out');
+        }, 150);
+      }
+      currentRing = null;
+    }
+  }
 
   // ── Imágenes ───────────────────────────────────────────────────────────────
   function setMainImage(src) {
@@ -1098,7 +1154,7 @@
     mainEl.classList.add('fade-out');
     setTimeout(() => {
       mainEl.src = src;
-      mainEl.onload = () => mainEl.classList.remove('fade-out');
+      mainEl.onload  = () => mainEl.classList.remove('fade-out');
       mainEl.onerror = () => mainEl.classList.remove('fade-out');
     }, 150);
   }
@@ -1106,120 +1162,132 @@
   function refreshImages(images) {
     if (!images || images.length === 0) return;
     for (let i = 0; i < 3; i++) {
-        const t = document.getElementById(`thumb-img-${i}`);
-        const thumbBtn = document.getElementById(`thumb-${i}`);
-        if (images[i]) {
-            if (t) t.src = images[i];
-            if (thumbBtn) thumbBtn.style.display = 'flex';
-        } else {
-            // Ocultar miniatura si no hay imagen
-            if (thumbBtn) thumbBtn.style.display = 'none';
-        }
+      const t       = document.getElementById(`thumb-img-${i}`);
+      const thumbBtn = document.getElementById(`thumb-${i}`);
+      if (images[i]) {
+        if (t) t.src = images[i];
+        if (thumbBtn) thumbBtn.style.display = 'flex';
+      } else {
+        if (thumbBtn) thumbBtn.style.display = 'none';
+      }
     }
-    // Reset al primer thumb disponible
     quoterState.thumbIndex = 0;
     document.querySelectorAll('.thumb-btn').forEach((el, i) =>
-        el.classList.toggle('active', i === 0)
+      el.classList.toggle('active', i === 0)
     );
     setMainImage(images[0]);
-}
+  }
 
   function selectThumb(idx) {
     quoterState.thumbIndex = idx;
     document.querySelectorAll('.thumb-btn').forEach((el, i) =>
-        el.classList.toggle('active', i === idx)
+      el.classList.toggle('active', i === idx)
     );
-    // Usar imagen del thumb directamente si no hay currentRing
     const thumbImg = document.getElementById(`thumb-img-${idx}`);
-    if (thumbImg && thumbImg.src) {
-        setMainImage(thumbImg.src);
-    }
-}
+    if (thumbImg && thumbImg.src) setMainImage(thumbImg.src);
+  }
 
   // ── API call ───────────────────────────────────────────────────────────────
   function fetchRingConfig() {
     const s = quoterState;
     const params = new URLSearchParams({
-      shape: s.shape,
-      stone: s.stone,
-      head: s.head,
-      band: s.band,
-      side: s.side,
-      engraving: s.engraving,
-      metal: s.metal,
-      peekaboo: s.peekaboo,
-      quality: s.quality,
-      headcolor: s.headcolor,
+      shape:      s.shape,
+      head:       s.head,
+      band:       s.band,
+      side:       s.side,
+      engraving:  s.engraving,
+      peekaboo:   s.peekaboo,
+      headcolor:  s.headcolor,
       mountcolor: s.mountcolor,
     });
 
     fetch(`${API_URL}?${params}`)
-      .then(r => r.json())
+      .then(r => {
+        if (r.status === 404) {
+          setAvailable(false);
+          return null;
+        }
+        return r.json();
+      })
       .then(data => {
-        if (data.error) return;
+        if (!data) return;  // ya manejado arriba (404)
+        if (data.error) { setAvailable(false); return; }
         currentRing = data;
-
-        // Actualizar imágenes
+        setAvailable(true);
         refreshImages(data.images);
-
-        // Precio guardado internamente pero no visible al cliente
-        // El vendedor lo consulta en el panel admin o en el email
-
-        // SKU y precio disponibles internamente para el vendedor
-        // currentRing.sku y currentRing.price_mount están accesibles
-        // desde el panel admin cuando llega la solicitud de WhatsApp
       })
       .catch(() => {
-        console.warn('No se pudo cargar la configuración del anillo');
+        console.warn('Error al consultar la API');
+        // En error de red no cambiamos el estado — evita falsos "no disponible"
       });
   }
 
-  // ── Debounce para no llamar la API en cada click rápido ───────────────────
   function debouncedFetch() {
     clearTimeout(fetchTimeout);
     fetchTimeout = setTimeout(fetchRingConfig, 300);
   }
 
+  function updateAvailability() {
+      const s = quoterState;
+      const params = new URLSearchParams({
+          shape:      s.shape,
+          head:       s.head,
+          band:       s.band,
+          side:       s.side,
+          engraving:  s.engraving,
+          peekaboo:   s.peekaboo,
+          headcolor:  s.headcolor,
+          mountcolor: s.mountcolor,
+      });
+      fetch(`${OPTIONS_API_URL}?${params}`)
+          .then(r => r.json())
+          .then(data => {
+              const apply = (type, valid) => {
+                  document.querySelectorAll(`.quoter-opt-btn[data-type="${type}"]`).forEach(btn => {
+                      const off = !valid.includes(btn.dataset.val);
+                      btn.disabled = off;
+                      btn.style.opacity = off ? '0.3' : '';
+                      btn.style.cursor  = off ? 'not-allowed' : '';
+                      btn.title = off ? 'No disponible para esta combinación' : '';
+                  });
+              };
+              apply('head',      data.valid_heads);
+              apply('band',      data.valid_mountings);
+              apply('side',      data.valid_sides);
+              apply('peekaboo',  data.valid_peekaboos);
+              // engraving solo aplica cuando side=none
+              document.querySelectorAll('.quoter-opt-btn[data-type="engraving"]').forEach(btn => {
+                  const off = s.side !== 'none' || !data.valid_carvings.includes(btn.dataset.val);
+                  btn.disabled = off;
+                  btn.style.opacity = off ? '0.3' : '';
+                  btn.style.cursor  = off ? 'not-allowed' : '';
+              });
+          })
+          .catch(() => {});
+  }
+
   // ── Update principal ───────────────────────────────────────────────────────
   function updateQuoter(type, val) {
-    quoterState[type] = val;
-
-    if (type === 'shape' || type === 'metal') {
-      quoterState.thumbIndex = 0;
-      document.querySelectorAll('.thumb-btn').forEach((el, i) =>
-        el.classList.toggle('active', i === 0)
+      quoterState[type] = val;
+      if (type === 'shape') {
+          quoterState.thumbIndex = 0;
+          document.querySelectorAll('.thumb-btn').forEach((el, i) =>
+              el.classList.toggle('active', i === 0)
+          );
+      }
+      document.querySelectorAll(`.quoter-opt-btn[data-type="${type}"]`).forEach(btn =>
+          btn.classList.toggle('active', btn.dataset.val === val)
       );
-    }
-
-    // Marcar botón activo
-    document.querySelectorAll(`.quoter-opt-btn[data-type="${type}"]`).forEach(btn =>
-      btn.classList.toggle('active', btn.dataset.val === val)
-    );
-
-    // Actualizar resumen
-    updateSummary();
-
-    // Llamar API con debounce
-    debouncedFetch();
+      updateSummary();
+      debouncedFetch();
+      updateAvailability();
   }
 
   function updateSummary() {
-    const fields = ['shape', 'stone', 'metal', 'head', 'band', 'side', 'engraving', 'peekaboo', 'quality', 'headcolor', 'mountcolor'];
+    const fields = ['shape','stone','head','band','side','engraving','peekaboo','quality','headcolor','mountcolor'];
     fields.forEach(f => {
       const el = document.getElementById(`summary-${f}`);
       if (el) el.textContent = labelMap[f]?.[quoterState[f]] || quoterState[f];
-    });
-
-    // Mostrar/ocultar opciones de Oro según metal seleccionado
-    const isGold = quoterState.metal === 'gold';
-    ['group-quality', 'group-headcolor', 'group-mountcolor'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.style.display = isGold ? 'block' : 'none';
-    });
-    // Ocultar filas del resumen que no aplican a Platino
-    ['summary-quality', 'summary-headcolor', 'summary-mountcolor'].forEach(id => {
-      const row = document.getElementById(id)?.closest('.summary-row');
-      if (row) row.style.display = isGold ? 'flex' : 'none';
     });
   }
 
@@ -1234,7 +1302,6 @@
       '✨ Detalles de mi anillo:',
       `  Forma de la piedra : ${L.shape[s.shape]}`,
       `  Tipo de piedra     : ${L.stone[s.stone]}`,
-      `  Metal              : ${L.metal[s.metal]}`,
       `  Cabeza del anillo  : ${L.head[s.head]}`,
       `  Montura            : ${L.band[s.band]}`,
       `  Engaste lateral    : ${L.side[s.side]}`,
@@ -1253,8 +1320,9 @@
   // ── Init ───────────────────────────────────────────────────────────────────
   document.addEventListener('DOMContentLoaded', () => {
     updateSummary();
-    fetchRingConfig();  // Carga inicial
-  });
+    fetchRingConfig();
+    updateAvailability();
+});
 </script>
 
 {% endblock %}

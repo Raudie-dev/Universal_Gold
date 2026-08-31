@@ -14,4 +14,5 @@ urlpatterns = [
     # mantenemos rutas legacy
     path('guardar-contacto/', views.guardar_contacto, name='guardar_contacto'),
     path('api/ring-config/', views.ring_config_api, name='ring_config_api'),
+    path('api/ring-options/', views.ring_options_api, name='ring_options_api'),
 ]

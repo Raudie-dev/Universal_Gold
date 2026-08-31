@@ -533,10 +533,10 @@ def guardar_contacto(request):
 # Cache del JSON en memoria para no leerlo en cada request
 _RINGS_CACHE = None
 
-def _load_rings():
+def _load_rings(force_reload=False):
     global _RINGS_CACHE
-    if _RINGS_CACHE is None:
-        json_path = os.path.join(settings.BASE_DIR, 'app1', 'data', 'nivoda_rings.json')
+    if _RINGS_CACHE is None or force_reload:
+        json_path = os.path.join(settings.BASE_DIR, 'app1', 'data', 'nivoda_rings_v5.json')
         with open(json_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
         _RINGS_CACHE = data['rings']
@@ -598,11 +598,6 @@ CARVING_MAP = {
     'scroll': 'SCROLL',
 }
 
-METAL_MAP = {
-    'gold':     'GOLD',
-    'platinum': 'PLATINUM',
-}
-
 QUALITY_MAP = {
     'kt10': 'KT_10',
     'kt14': 'KT_14',
@@ -636,83 +631,131 @@ def ring_config_api(request):
     GET /api/ring-config/?shape=round&stone=lab&head=4prong&band=single&side=none&engraving=smooth&metal=gold
     """
     # Leer parámetros del frontend
-    shape    = request.GET.get('shape', 'round')
-    stone    = request.GET.get('stone', 'lab')
-    head     = request.GET.get('head', '4prong')
-    band     = request.GET.get('band', 'single')
-    side     = request.GET.get('side', 'none')
-    engraving= request.GET.get('engraving', 'smooth')
-    metal    = request.GET.get('metal', 'gold')
+    shape      = request.GET.get('shape', 'round')
+    head       = request.GET.get('head', '4prong')
+    band       = request.GET.get('band', 'single')
+    side       = request.GET.get('side', 'none')
+    engraving  = request.GET.get('engraving', 'smooth')
     peekaboo   = request.GET.get('peekaboo', 'none')
-    quality    = request.GET.get('quality', 'kt18')
     headcolor  = request.GET.get('headcolor', 'yellow')
     mountcolor = request.GET.get('mountcolor', 'yellow')
+
+    # Campos que se muestran al usuario pero no afectan la imagen
+    # (no se usan para buscar, solo se devuelven como referencia)
+
     # Convertir a valores del JSON
+    side_val    = SIDE_MAP.get(side, 'NONE')
+    carving_val = CARVING_MAP.get(engraving, 'PLAIN') if side_val == 'NONE' else None
 
     target = {
         'stone_shape':    SHAPE_MAP.get(shape, 'ROUND'),
-        'stone_type':     STONE_MAP.get(stone, 'LABGROWN_DIAMOND'),
         'ring_head':      HEAD_MAP.get(head, 'FOUR_PRONGS'),
         'mounting':       MOUNTING_MAP.get(band, 'SINGLE'),
-        'side_setting':   SIDE_MAP.get(side, 'NONE'),
-        'ring_carving':   CARVING_MAP.get(engraving, 'PLAIN'),
-        'metal_type':     METAL_MAP.get(metal, 'GOLD'),
+        'side_setting':   side_val,
+        'ring_carving':   carving_val,
         'peekaboo':       PEEKABOO_MAP.get(peekaboo, 'NONE'),
-        'metal_quality':  QUALITY_MAP.get(quality, 'KT_18'),
         'head_color':     HEADCOLOR_MAP.get(headcolor, 'YELLOW_GOLD'),
         'mounting_color': MOUNTCOLOR_MAP.get(mountcolor, 'YELLOW_GOLD'),
     }
 
     rings = _load_rings()
-
-    # ── Búsqueda por scoring: cuántos campos coinciden ────────────────────────
-    # Las dimensiones críticas tienen más peso
-    weights = {
-        'stone_shape':   5,
-        'ring_head':     4,
-        'mounting':      4,
-        'metal_type':    3,
-        'stone_type':    3,
-        'metal_quality': 3,
-        'head_color':    2,
-        'mounting_color':2,
-        'side_setting':  2,
-        'peekaboo':      2,
-        'ring_carving':  1,
-    }
-
-    best_ring = None
-    best_score = -1
-
+    # ── Búsqueda exacta únicamente ────────────────────────────────────────────
+    exact_ring = None
     for ring in rings:
         combo = ring.get('combination', {})
-        score = 0
-        for field, weight in weights.items():
-            if combo.get(field) == target.get(field):
-                score += weight
-        if score > best_score:
-            best_score = score
-            best_ring = ring
-
-    if not best_ring:
-        return JsonResponse({'error': 'No se encontró configuración'}, status=404)
-
-    # Limpiar precio — convertir "$333.72" → 333.72
-    price_raw = best_ring.get('price_mount', '')
+        if all(combo.get(k) == v for k, v in target.items()):
+            exact_ring = ring
+            break
+    if not exact_ring:
+        return JsonResponse({'error': 'Combinación no disponible'}, status=404)
+    # Limpiar precio
+    price_raw = exact_ring.get('price_mount', '')
     try:
         price_num = float(price_raw.replace('$', '').replace(',', ''))
     except (ValueError, AttributeError):
         price_num = 0.0
+    return JsonResponse({
+        'sku':         exact_ring['sku'],
+        'title':       exact_ring.get('title', ''),
+        'images':      exact_ring.get('images', []),
+        'price_mount': price_raw,
+        'price_num':   price_num,
+        'combination': exact_ring.get('combination', {}),
+        'exact_match': True,
+        'url':         exact_ring.get('url', ''),
+    })
+    
+    
+@require_GET
+def ring_options_api(request):
+    """
+    Dado el estado actual, devuelve qué valores son válidos para cada dimensión.
+    Usado para deshabilitar botones que generarían 404.
+    """
+    shape      = request.GET.get('shape', 'round')
+    head       = request.GET.get('head', '')
+    band       = request.GET.get('band', '')
+    side       = request.GET.get('side', '')
+    engraving  = request.GET.get('engraving', '')
+    peekaboo   = request.GET.get('peekaboo', '')
+    headcolor  = request.GET.get('headcolor', '')
+    mountcolor = request.GET.get('mountcolor', '')
+
+    shape_val = SHAPE_MAP.get(shape, 'ROUND')
+    rings     = _load_rings()
+
+    # Filtrar por shape siempre
+    pool = [r for r in rings if r['combination']['stone_shape'] == shape_val]
+
+    def valid_values(pool, field):
+        return set(r['combination'].get(field) for r in pool if r['combination'].get(field) is not None)
+
+    # Para cada dimensión: filtrar el pool con las dims ya fijadas y ver qué queda
+    def pool_with(filters):
+        result = pool
+        for field, val in filters.items():
+            if val:
+                result = [r for r in result if r['combination'].get(field) == val]
+        return result
+
+    head_val      = HEAD_MAP.get(head, '')      if head      else ''
+    band_val      = MOUNTING_MAP.get(band, '')  if band      else ''
+    side_val      = SIDE_MAP.get(side, '')      if side      else ''
+    carving_val   = (CARVING_MAP.get(engraving, '') if side_val == 'NONE' else None) if side else ''
+    peekaboo_val  = PEEKABOO_MAP.get(peekaboo, '')  if peekaboo  else ''
+    hcolor_val    = HEADCOLOR_MAP.get(headcolor, '') if headcolor else ''
+    mcolor_val    = MOUNTCOLOR_MAP.get(mountcolor,'') if mountcolor else ''
+
+    # Qué heads son válidos (fijando solo shape)
+    valid_heads = valid_values(pool, 'ring_head')
+
+    # Qué mountings son válidos (fijando shape + head)
+    p_head = pool_with({'ring_head': head_val}) if head_val else pool
+    valid_mountings = valid_values(p_head, 'mounting')
+
+    # Qué sides son válidos (fijando shape + head + mounting)
+    p_mount = pool_with({'ring_head': head_val, 'mounting': band_val}) if band_val else p_head
+    valid_sides = valid_values(p_mount, 'side_setting')
+
+    # Qué carvings son válidos (solo cuando side=NONE)
+    p_side = pool_with({'ring_head': head_val, 'mounting': band_val, 'side_setting': 'NONE'}) if band_val else pool
+    valid_carvings = valid_values(p_side, 'ring_carving')
+
+    # Qué peekaboos son válidos
+    p_carv = pool_with({'ring_head': head_val, 'mounting': band_val, 'side_setting': side_val}) if side_val else p_mount
+    valid_peekaboos = valid_values(p_carv, 'peekaboo')
+
+    # Reverse maps JSON→frontend
+    HEAD_REV     = {v: k for k, v in HEAD_MAP.items()}
+    MOUNT_REV    = {v: k for k, v in MOUNTING_MAP.items()}
+    SIDE_REV     = {v: k for k, v in SIDE_MAP.items()}
+    CARVING_REV  = {v: k for k, v in CARVING_MAP.items()}
+    PEEKABOO_REV = {v: k for k, v in PEEKABOO_MAP.items()}
 
     return JsonResponse({
-        'sku':          best_ring['sku'],
-        'title':        best_ring.get('title', ''),
-        'images':       best_ring.get('images', []),
-        'price_mount':  price_raw,
-        'price_num':    price_num,
-        'price_sample': best_ring.get('price_sample', ''),
-        'specs':        best_ring.get('specs', {}),
-        'combination':  best_ring.get('combination', {}),
-        'score':        best_score,
-        'url':          best_ring.get('url', ''),
+        'valid_heads':     [HEAD_REV[v]     for v in valid_heads     if v in HEAD_REV],
+        'valid_mountings': [MOUNT_REV[v]    for v in valid_mountings if v in MOUNT_REV],
+        'valid_sides':     [SIDE_REV[v]     for v in valid_sides     if v in SIDE_REV],
+        'valid_carvings':  [CARVING_REV[v]  for v in valid_carvings  if v in CARVING_REV],
+        'valid_peekaboos': [PEEKABOO_REV[v] for v in valid_peekaboos if v in PEEKABOO_REV],
     })
