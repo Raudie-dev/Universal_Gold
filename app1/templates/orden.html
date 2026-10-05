@@ -47,11 +47,113 @@
 </div>
 
 
+<style>
+  /* ── Hero Header ───────────── */
+  .quoter-hero-header {
+    background: #111113;
+    padding: 120px 0 90px;
+    color: #faf7f0;
+    border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+    position: relative;
+    overflow: hidden;
+  }
+  .quoter-hero-header::before {
+    content: '';
+    position: absolute;
+    top: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 650px;
+    height: 450px;
+    background: radial-gradient(circle, rgba(184, 150, 46, 0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .quoter-hero-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold, #c9a84c), transparent);
+  }
+  .quoter-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(201, 168, 76, 0.14);
+    border: 1px solid rgba(201, 168, 76, 0.38);
+    color: #ebd175;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 6px 18px;
+    border-radius: 30px;
+    margin-bottom: 16px;
+  }
+  .quoter-hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.3rem;
+    font-weight: 400;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+    color: #ffffff;
+  }
+  .quoter-hero-title em {
+    font-style: italic;
+    color: var(--gold, #ebd175);
+    font-weight: 300;
+  }
+  .quoter-hero-subtitle {
+    color: rgba(250, 247, 240, 0.65);
+    font-size: 1.05rem;
+    max-width: 640px;
+    margin: 0 auto 18px;
+    line-height: 1.6;
+  }
+  .quoter-breadcrumb {
+    background: rgba(255, 255, 255, 0.06);
+    padding: 6px 18px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: inline-flex;
+    margin: 0;
+  }
+  .quoter-breadcrumb .breadcrumb-item, .quoter-breadcrumb .breadcrumb-item a {
+    color: rgba(250, 247, 240, 0.55);
+    font-size: 0.85rem;
+    text-decoration: none;
+  }
+  .quoter-breadcrumb .breadcrumb-item a:hover {
+    color: #ebd175;
+  }
+  .quoter-breadcrumb .breadcrumb-item.active {
+    color: #ebd175;
+    font-weight: 600;
+  }
+  @media (max-width: 991px) {
+    .quoter-hero-header { padding: 110px 0 60px; }
+    .quoter-hero-title { font-size: 2.5rem; }
+  }
+  @media (max-width: 600px) {
+    .quoter-hero-header { padding: 100px 0 50px; }
+    .quoter-hero-title { font-size: 2.0rem; }
+    .quoter-hero-subtitle { font-size: 0.9rem; }
+  }
+</style>
+
 <!-- ─── PAGE HEADER ───────────────────────────────────────── -->
-<div class="page-header">
-  <div class="container">
-    <span class="eyebrow">Tu selección</span>
-    <h1>Carrito de <em>Compras</em></h1>
+<div class="page-header quoter-hero-header">
+  <div class="container text-center position-relative">
+    <h1 class="quoter-hero-title">Carrito de <em>Compras</em></h1>
+    <p class="quoter-hero-subtitle">Revisa los artículos de tu carrito antes de completar tu orden.</p>
+    <nav aria-label="breadcrumb" class="mt-3 d-flex justify-content-center">
+      <ol class="breadcrumb quoter-breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'index' %}"><i class="fas fa-home me-1"></i> Inicio</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'tienda' %}">Catálogo</a></li>
+        <li class="breadcrumb-item active">Carrito</li>
+      </ol>
+    </nav>
   </div>
 </div>
 

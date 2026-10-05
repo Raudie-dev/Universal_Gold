@@ -1,0 +1,2457 @@
+{
+  "generated_at": "2026-08-26T07:16:06.030249",
+  "summary": {
+    "snapshots_taken": 114,
+    "unique_combos_recorded": 107,
+    "total_estimated_combos": 1829521728,
+    "shapes_explored": [
+      "CUSHION",
+      "EMERALD",
+      "MARQUISE",
+      "OVAL",
+      "PEAR",
+      "PRINCESS",
+      "RADIANT",
+      "ROUND"
+    ],
+    "groups_captured": [
+      "center_stone_size",
+      "head_color",
+      "head_stones_type",
+      "metal_quality",
+      "metal_type",
+      "mounting",
+      "mounting_color",
+      "mounting_length",
+      "peekaboo",
+      "ring_carving",
+      "ring_head",
+      "ring_size",
+      "side_setting",
+      "side_stones_type",
+      "stone_shape",
+      "stone_type"
+    ]
+  },
+  "values_seen": {
+    "stone_shape": [
+      "CUSHION",
+      "EMERALD",
+      "MARQUISE",
+      "OVAL",
+      "PEAR",
+      "PRINCESS",
+      "RADIANT",
+      "ROUND"
+    ],
+    "stone_type": [
+      "LABGROWN_DIAMOND",
+      "NATURAL_DIAMOND"
+    ],
+    "ring_head": [
+      "BASKET",
+      "CROWN",
+      "DOUBLE_HALO",
+      "FLOWER_HALO",
+      "FOUR_PRONGS",
+      "PAVE",
+      "SINGLE_HALO"
+    ],
+    "mounting": [
+      "CONTEMPORARY",
+      "DOUBLE",
+      "DOUBLE_TWIST",
+      "HIDDEN_HALO",
+      "KNIFE_EDGE",
+      "SINGLE",
+      "SPLIT",
+      "SQUARE_EDGE",
+      "TAPERED"
+    ],
+    "side_setting": [
+      "BEAD",
+      "CHANNEL",
+      "NONE",
+      "PAVE",
+      "PRONG",
+      "U_PAVE"
+    ],
+    "peekaboo": [
+      "NONE"
+    ],
+    "ring_carving": [
+      "PLAIN"
+    ],
+    "metal_type": [
+      "GOLD",
+      "PLATINUM"
+    ],
+    "metal_quality": [
+      "KT_10",
+      "KT_14",
+      "KT_18",
+      "PT_950"
+    ],
+    "head_color": [
+      "ROSE_GOLD",
+      "WHITE_GOLD",
+      "YELLOW_GOLD"
+    ],
+    "mounting_color": [
+      "ROSE_GOLD",
+      "WHITE_GOLD",
+      "YELLOW_GOLD"
+    ],
+    "center_stone_size": [
+      "0.25ct",
+      "0.33ct",
+      "0.5ct",
+      "0.75ct",
+      "1.5ct",
+      "10ct",
+      "1ct",
+      "2.5ct",
+      "2ct",
+      "3ct",
+      "4ct",
+      "5ct",
+      "6ct",
+      "7ct",
+      "8ct",
+      "9ct"
+    ],
+    "ring_size": [
+      "10",
+      "3",
+      "3.25",
+      "3.5",
+      "3.75",
+      "4",
+      "4.25",
+      "4.5",
+      "4.75",
+      "5",
+      "5.25",
+      "5.5",
+      "5.75",
+      "6",
+      "6.25",
+      "6.5",
+      "6.75",
+      "7",
+      "7.25",
+      "7.5",
+      "7.75",
+      "8",
+      "8.25",
+      "8.5",
+      "8.75",
+      "9",
+      "9.25",
+      "9.5",
+      "9.75"
+    ],
+    "head_stones_type": [
+      "BLACK_DIAMONDS",
+      "DIAMONDS",
+      "SAPPHIRE"
+    ],
+    "side_stones_type": [
+      "ALTERNATING_BLACK_DIAMOND",
+      "ALTERNATING_EMERALD",
+      "ALTERNATING_RUBY",
+      "ALTERNATING_SAPPHIRE",
+      "DIAMONDS",
+      "NATURAL_BLACK_DIAMOND"
+    ],
+    "mounting_length": [
+      "HALF",
+      "THREE_QUARTERS"
+    ]
+  },
+  "availability_by_shape": {
+    "ROUND": {
+      "estimated_combinations": 644972544,
+      "breakdown": {
+        "stone_type": [
+          "LABGROWN_DIAMOND",
+          "NATURAL_DIAMOND"
+        ],
+        "ring_head": [
+          "BASKET",
+          "CROWN",
+          "DOUBLE_HALO",
+          "FLOWER_HALO",
+          "FOUR_PRONGS",
+          "PAVE",
+          "PEG_HEAD",
+          "SINGLE_HALO"
+        ],
+        "mounting": [
+          "CONTEMPORARY",
+          "DOUBLE",
+          "DOUBLE_TWIST",
+          "HIDDEN_HALO",
+          "KNIFE_EDGE",
+          "SINGLE",
+          "SPLIT",
+          "SQUARE_EDGE",
+          "TAPERED"
+        ],
+        "side_setting": [
+          "BEAD",
+          "CHANNEL",
+          "NONE",
+          "PAVE",
+          "PRONG",
+          "U_PAVE"
+        ],
+        "peekaboo": [
+          "NONE",
+          "PRINCESS_DIAMOND",
+          "ROUND_DIAMOND"
+        ],
+        "ring_carving": [
+          "LEAF",
+          "PLAIN",
+          "SCROLL"
+        ],
+        "metal_type": [
+          "GOLD",
+          "PLATINUM"
+        ],
+        "metal_quality": [
+          "KT_10",
+          "KT_14",
+          "KT_18",
+          "PT_950"
+        ],
+        "head_color": [
+          "ROSE_GOLD",
+          "WHITE_GOLD",
+          "YELLOW_GOLD"
+        ],
+        "mounting_color": [
+          "ROSE_GOLD",
+          "WHITE_GOLD",
+          "YELLOW_GOLD"
+        ],
+        "center_stone_size": [
+          "0.25ct",
+          "0.33ct",
+          "0.5ct",
+          "0.75ct",
+          "1.5ct",
+          "10ct",
+          "1ct",
+          "2.5ct",
+          "2ct",
+          "3ct",
+          "4ct",
+          "5ct",
+          "6ct",
+          "7ct",
+          "8ct",
+          "9ct"
+        ],
+        "ring_size": [
+          "10",
+          "6"
+        ],
+        "head_stones_type": [
+          "BLACK_DIAMONDS",
+          "DIAMONDS",
+          "SAPPHIRE"
+        ],
+        "side_stones_type": [
+          "ALTERNATING_BLACK_DIAMOND",
+          "ALTERNATING_EMERALD",
+          "ALTERNATING_RUBY",
+          "ALTERNATING_SAPPHIRE",
+          "DIAMONDS",
+          "NATURAL_BLACK_DIAMOND"
+        ],
+        "mounting_length": [
+          "HALF",
+          "THREE_QUARTERS"
+        ]
+      }
+    },
+    "OVAL": {
+      "estimated_combinations": 1169012736,
+      "breakdown": {
+        "stone_type": [
+          "LABGROWN_DIAMOND",
+          "NATURAL_DIAMOND"
+        ],
+        "ring_head": [
+          "BASKET",
+          "CROWN",
+          "DOUBLE_HALO",
+          "FLOWER_HALO",
+          "FOUR_PRONGS",
+          "PAVE",
+          "PEG_HEAD",
+          "SINGLE_HALO"
+        ],
+        "mounting": [
+          "CONTEMPORARY",
+          "DOUBLE",
+          "DOUBLE_TWIST",
+          "HIDDEN_HALO",
+          "KNIFE_EDGE",
+          "SINGLE",
+          "SPLIT",
+          "SQUARE_EDGE",
+          "TAPERED"
+        ],
+        "side_setting": [
+          "BEAD",
+          "CHANNEL",
+          "NONE",
+          "PAVE",
+          "PRONG",
+          "U_PAVE"
+        ],
+        "peekaboo": [
+          "NONE",
+          "PRINCESS_DIAMOND",
+          "ROUND_DIAMOND"
+        ],
+        "ring_carving": [
+          "LEAF",
+          "PLAIN",
+          "SCROLL"
+        ],
+        "metal_type": [
+          "GOLD",
+          "PLATINUM"
+        ],
+        "metal_quality": [
+          "KT_10",
+          "KT_14",
+          "KT_18",
+          "PT_950"
+        ],
+        "head_color": [
+          "ROSE_GOLD",
+          "WHITE_GOLD",
+          "YELLOW_GOLD"
+        ],
+        "mounting_color": [
+          "ROSE_GOLD",
+          "WHITE_GOLD",
+          "YELLOW_GOLD"
+        ],
+        "center_stone_size": [
+          "1ct",
+          "2ct"
+        ],
+        "ring_size": [
+          "10",
+          "3",
+          "3.25",
+          "3.5",
+          "3.75",
+          "4",
+          "4.25",
+          "4.5",
+          "4.75",
+          "5",
+          "5.25",
+          "5.5",
+          "5.75",
+          "6",
+          "6.25",
+          "6.5",
+          "6.75",
+          "7",
+          "7.25",
+          "7.5",
+          "7.75",
+          "8",
+          "8.25",
+          "8.5",
+          "8.75",
+          "9",
+          "9.25",
+          "9.5",
+          "9.75"
+        ],
+        "head_stones_type": [
+          "BLACK_DIAMONDS",
+          "DIAMONDS",
+          "SAPPHIRE"
+        ],
+        "side_stones_type": [
+          "ALTERNATING_BLACK_DIAMOND",
+          "ALTERNATING_EMERALD",
+          "ALTERNATING_RUBY",
+          "ALTERNATING_SAPPHIRE",
+          "DIAMONDS",
+          "NATURAL_BLACK_DIAMOND"
+        ],
+        "mounting_length": [
+          "HALF",
+          "THREE_QUARTERS"
+        ]
+      }
+    },
+    "CUSHION": {
+      "estimated_combinations": 419904,
+      "breakdown": {
+        "stone_type": [
+          "LABGROWN_DIAMOND",
+          "NATURAL_DIAMOND"
+        ],
+        "ring_head": [
+          "BASKET",
+          "CROWN",
+          "DOUBLE_HALO",
+          "FLOWER_HALO",
+          "FOUR_PRONGS",
+          "PAVE",
+          "PEG_HEAD",
+          "SINGLE_HALO"
+        ],
+        "mounting": [
+          "CONTEMPORARY",
+          "DOUBLE",
+          "DOUBLE_TWIST",
+          "HIDDEN_HALO",
+          "KNIFE_EDGE",
+          "SINGLE",
+          "SPLIT",
+          "SQUARE_EDGE",
+          "TAPERED"
+        ],
+        "side_setting": [
+          "BEAD",
+          "CHANNEL",
+          "NONE",
+          "PAVE",
+          "PRONG",
+          "U_PAVE"
+        ],
+        "peekaboo": [
+          "NONE",
+          "PRINCESS_DIAMOND",
+          "ROUND_DIAMOND"
+        ],
+        "ring_carving": [
+          "LEAF",
+          "PLAIN",
+          "SCROLL"
+        ],
+        "metal_type": [
+          "GOLD",
+          "PLATINUM"
+        ],
+        "metal_quality": [
+          "KT_10",
+          "KT_14",
+          "KT_18"
+        ],
+        "head_color": [
+          "ROSE_GOLD",
+          "WHITE_GOLD",
+          "YELLOW_GOLD"
+        ],
+        "mounting_color": [
+          "ROSE_GOLD",
+          "WHITE_GOLD",
+          "YELLOW_GOLD"
+        ],
+        "center_stone_size": [
+          "1ct"
+        ],
+        "ring_size": [
+          "6"
+        ]
+      }
+    },
+    "PRINCESS": {
+      "estimated_combinations": 419904,
+      "breakdown": {
+        "stone_type": [
+          "LABGROWN_DIAMOND",
+          "NATURAL_DIAMOND"
+        ],
+        "ring_head": [
+          "BASKET",
+          "CROWN",
+          "DOUBLE_HALO",
+          "FLOWER_HALO",
+          "FOUR_PRONGS",
+          "PAVE",
+          "PEG_HEAD",
+          "SINGLE_HALO"
+        ],
+        "mounting": [
+          "CONTEMPORARY",
+          "DOUBLE",
+          "DOUBLE_TWIST",
+          "HIDDEN_HALO",
+          "KNIFE_EDGE",
+          "SINGLE",
+          "SPLIT",
+          "SQUARE_EDGE",
+          "TAPERED"
+        ],
+        "side_setting": [
+          "BEAD",
+          "CHANNEL",
+          "NONE",
+          "PAVE",
+          "PRONG",
+          "U_PAVE"
+        ],
+        "peekaboo": [
+          "NONE",
+          "PRINCESS_DIAMOND",
+          "ROUND_DIAMOND"
+        ],
+        "ring_carving": [
+          "LEAF",
+          "PLAIN",
+          "SCROLL"
+        ],
+        "metal_type": [
+          "GOLD",
+          "PLATINUM"
+        ],
+        "metal_quality": [
+          "KT_10",
+          "KT_14",
+          "KT_18"
+        ],
+        "head_color": [
+          "ROSE_GOLD",
+          "WHITE_GOLD",
+          "YELLOW_GOLD"
+        ],
+        "mounting_color": [
+          "ROSE_GOLD",
+          "WHITE_GOLD",
+          "YELLOW_GOLD"
+        ],
+        "center_stone_size": [
+          "1ct"
+        ],
+        "ring_size": [
+          "6"
+        ]
+      }
+    },
+    "PEAR": {
+      "estimated_combinations": 13436928,
+      "breakdown": {
+        "stone_type": [
+          "LABGROWN_DIAMOND",
+          "NATURAL_DIAMOND"
+        ],
+        "ring_head": [
+          "BASKET",
+          "CROWN",
+          "DOUBLE_HALO",
+          "FLOWER_HALO",
+          "FOUR_PRONGS",
+          "PAVE",
+          "PEG_HEAD",
+          "SINGLE_HALO"
+        ],
+        "mounting": [
+          "CONTEMPORARY",
+          "DOUBLE",
+          "DOUBLE_TWIST",
+          "HIDDEN_HALO",
+          "KNIFE_EDGE",
+          "SINGLE",
+          "SPLIT",
+          "SQUARE_EDGE",
+          "TAPERED"
+        ],
+        "side_setting": [
+          "BEAD",
+          "CHANNEL",
+          "NONE",
+          "PAVE",
+          "PRONG",
+          "U_PAVE"
+        ],
+        "peekaboo": [
+          "NONE",
+          "PRINCESS_DIAMOND",
+          "ROUND_DIAMOND"
+        ],
+        "ring_carving": [
+          "LEAF",
+          "PLAIN",
+          "SCROLL"
+        ],
+        "metal_type": [
+          "GOLD",
+          "PLATINUM"
+        ],
+        "metal_quality": [
+          "KT_10",
+          "KT_14",
+          "KT_18",
+          "PT_950"
+        ],
+        "head_color": [
+          "ROSE_GOLD",
+          "WHITE_GOLD",
+          "YELLOW_GOLD"
+        ],
+        "mounting_color": [
+          "ROSE_GOLD",
+          "WHITE_GOLD",
+          "YELLOW_GOLD"
+        ],
+        "center_stone_size": [
+          "1ct"
+        ],
+        "ring_size": [
+          "10",
+          "6"
+        ],
+        "side_stones_type": [
+          "ALTERNATING_BLACK_DIAMOND",
+          "ALTERNATING_EMERALD",
+          "ALTERNATING_RUBY",
+          "ALTERNATING_SAPPHIRE",
+          "DIAMONDS",
+          "NATURAL_BLACK_DIAMOND"
+        ],
+        "mounting_length": [
+          "HALF",
+          "THREE_QUARTERS"
+        ]
+      }
+    },
+    "EMERALD": {
+      "estimated_combinations": 419904,
+      "breakdown": {
+        "stone_type": [
+          "LABGROWN_DIAMOND",
+          "NATURAL_DIAMOND"
+        ],
+        "ring_head": [
+          "BASKET",
+          "CROWN",
+          "DOUBLE_HALO",
+          "FLOWER_HALO",
+          "FOUR_PRONGS",
+          "PAVE",
+          "PEG_HEAD",
+          "SINGLE_HALO"
+        ],
+        "mounting": [
+          "CONTEMPORARY",
+          "DOUBLE",
+          "DOUBLE_TWIST",
+          "HIDDEN_HALO",
+          "KNIFE_EDGE",
+          "SINGLE",
+          "SPLIT",
+          "SQUARE_EDGE",
+          "TAPERED"
+        ],
+        "side_setting": [
+          "BEAD",
+          "CHANNEL",
+          "NONE",
+          "PAVE",
+          "PRONG",
+          "U_PAVE"
+        ],
+        "peekaboo": [
+          "NONE",
+          "PRINCESS_DIAMOND",
+          "ROUND_DIAMOND"
+        ],
+        "ring_carving": [
+          "LEAF",
+          "PLAIN",
+          "SCROLL"
+        ],
+        "metal_type": [
+          "GOLD",
+          "PLATINUM"
+        ],
+        "metal_quality": [
+          "KT_10",
+          "KT_14",
+          "KT_18"
+        ],
+        "head_color": [
+          "ROSE_GOLD",
+          "WHITE_GOLD",
+          "YELLOW_GOLD"
+        ],
+        "mounting_color": [
+          "ROSE_GOLD",
+          "WHITE_GOLD",
+          "YELLOW_GOLD"
+        ],
+        "center_stone_size": [
+          "1ct"
+        ],
+        "ring_size": [
+          "6"
+        ]
+      }
+    },
+    "MARQUISE": {
+      "estimated_combinations": 419904,
+      "breakdown": {
+        "stone_type": [
+          "LABGROWN_DIAMOND",
+          "NATURAL_DIAMOND"
+        ],
+        "ring_head": [
+          "BASKET",
+          "CROWN",
+          "DOUBLE_HALO",
+          "FLOWER_HALO",
+          "FOUR_PRONGS",
+          "PAVE",
+          "PEG_HEAD",
+          "SINGLE_HALO"
+        ],
+        "mounting": [
+          "CONTEMPORARY",
+          "DOUBLE",
+          "DOUBLE_TWIST",
+          "HIDDEN_HALO",
+          "KNIFE_EDGE",
+          "SINGLE",
+          "SPLIT",
+          "SQUARE_EDGE",
+          "TAPERED"
+        ],
+        "side_setting": [
+          "BEAD",
+          "CHANNEL",
+          "NONE",
+          "PAVE",
+          "PRONG",
+          "U_PAVE"
+        ],
+        "peekaboo": [
+          "NONE",
+          "PRINCESS_DIAMOND",
+          "ROUND_DIAMOND"
+        ],
+        "ring_carving": [
+          "LEAF",
+          "PLAIN",
+          "SCROLL"
+        ],
+        "metal_type": [
+          "GOLD",
+          "PLATINUM"
+        ],
+        "metal_quality": [
+          "KT_10",
+          "KT_14",
+          "KT_18"
+        ],
+        "head_color": [
+          "ROSE_GOLD",
+          "WHITE_GOLD",
+          "YELLOW_GOLD"
+        ],
+        "mounting_color": [
+          "ROSE_GOLD",
+          "WHITE_GOLD",
+          "YELLOW_GOLD"
+        ],
+        "center_stone_size": [
+          "1ct"
+        ],
+        "ring_size": [
+          "6"
+        ]
+      }
+    },
+    "RADIANT": {
+      "estimated_combinations": 419904,
+      "breakdown": {
+        "stone_type": [
+          "LABGROWN_DIAMOND",
+          "NATURAL_DIAMOND"
+        ],
+        "ring_head": [
+          "BASKET",
+          "CROWN",
+          "DOUBLE_HALO",
+          "FLOWER_HALO",
+          "FOUR_PRONGS",
+          "PAVE",
+          "PEG_HEAD",
+          "SINGLE_HALO"
+        ],
+        "mounting": [
+          "CONTEMPORARY",
+          "DOUBLE",
+          "DOUBLE_TWIST",
+          "HIDDEN_HALO",
+          "KNIFE_EDGE",
+          "SINGLE",
+          "SPLIT",
+          "SQUARE_EDGE",
+          "TAPERED"
+        ],
+        "side_setting": [
+          "BEAD",
+          "CHANNEL",
+          "NONE",
+          "PAVE",
+          "PRONG",
+          "U_PAVE"
+        ],
+        "peekaboo": [
+          "NONE",
+          "PRINCESS_DIAMOND",
+          "ROUND_DIAMOND"
+        ],
+        "ring_carving": [
+          "LEAF",
+          "PLAIN",
+          "SCROLL"
+        ],
+        "metal_type": [
+          "GOLD",
+          "PLATINUM"
+        ],
+        "metal_quality": [
+          "KT_10",
+          "KT_14",
+          "KT_18"
+        ],
+        "head_color": [
+          "ROSE_GOLD",
+          "WHITE_GOLD",
+          "YELLOW_GOLD"
+        ],
+        "mounting_color": [
+          "ROSE_GOLD",
+          "WHITE_GOLD",
+          "YELLOW_GOLD"
+        ],
+        "center_stone_size": [
+          "1ct"
+        ],
+        "ring_size": [
+          "6"
+        ]
+      }
+    }
+  },
+  "unique_combos_recorded": [
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "LABGROWN_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "LABGROWN_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "CUSHION",
+      "stone_type": "LABGROWN_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "PRINCESS",
+      "stone_type": "LABGROWN_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "PEAR",
+      "stone_type": "LABGROWN_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "EMERALD",
+      "stone_type": "LABGROWN_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "MARQUISE",
+      "stone_type": "LABGROWN_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "RADIANT",
+      "stone_type": "LABGROWN_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "RADIANT",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "EMERALD",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "MARQUISE",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "PEAR",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "PRINCESS",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "CUSHION",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "0.5ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "0.33ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "0.25ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "0.75ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1.5ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "2ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "2.5ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "3ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "4ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "5ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "6ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "7ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "8ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "9ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "10ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "BASKET",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "10ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "PAVE",
+      "head_stones_type": "DIAMONDS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "10ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FLOWER_HALO",
+      "head_stones_type": "DIAMONDS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "10ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "CROWN",
+      "head_stones_type": "DIAMONDS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "10ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "SINGLE_HALO",
+      "head_stones_type": "DIAMONDS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "10ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "SINGLE_HALO",
+      "head_stones_type": "DIAMONDS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "5ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "SINGLE_HALO",
+      "head_stones_type": "DIAMONDS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "2.5ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "SINGLE_HALO",
+      "head_stones_type": "DIAMONDS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "2ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "SINGLE_HALO",
+      "head_stones_type": "DIAMONDS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "2ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "SINGLE_HALO",
+      "head_stones_type": "DIAMONDS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "DOUBLE_HALO",
+      "head_stones_type": "DIAMONDS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "DOUBLE_HALO",
+      "head_stones_type": "SAPPHIRE",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "DOUBLE_HALO",
+      "head_stones_type": "BLACK_DIAMONDS",
+      "mounting": "SINGLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "DOUBLE_HALO",
+      "head_stones_type": "BLACK_DIAMONDS",
+      "mounting": "DOUBLE",
+      "side_setting": "NONE",
+      "peekaboo": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "DOUBLE_HALO",
+      "head_stones_type": "BLACK_DIAMONDS",
+      "mounting": "DOUBLE_TWIST",
+      "side_setting": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "DOUBLE_HALO",
+      "head_stones_type": "BLACK_DIAMONDS",
+      "mounting": "KNIFE_EDGE",
+      "side_setting": "NONE",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "DOUBLE_HALO",
+      "head_stones_type": "BLACK_DIAMONDS",
+      "mounting": "SQUARE_EDGE",
+      "side_setting": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "DOUBLE_HALO",
+      "head_stones_type": "BLACK_DIAMONDS",
+      "mounting": "TAPERED",
+      "side_setting": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "DOUBLE_HALO",
+      "head_stones_type": "BLACK_DIAMONDS",
+      "mounting": "CONTEMPORARY",
+      "side_setting": "U_PAVE",
+      "side_stones_type": "DIAMONDS",
+      "mounting_length": "HALF",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "DOUBLE_HALO",
+      "head_stones_type": "BLACK_DIAMONDS",
+      "mounting": "SPLIT",
+      "side_setting": "U_PAVE",
+      "side_stones_type": "DIAMONDS",
+      "mounting_length": "HALF",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "SPLIT",
+      "side_setting": "U_PAVE",
+      "side_stones_type": "DIAMONDS",
+      "mounting_length": "HALF",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "U_PAVE",
+      "side_stones_type": "DIAMONDS",
+      "mounting_length": "HALF",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "CHANNEL",
+      "side_stones_type": "DIAMONDS",
+      "mounting_length": "HALF",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PRONG",
+      "side_stones_type": "DIAMONDS",
+      "mounting_length": "HALF",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "BEAD",
+      "side_stones_type": "DIAMONDS",
+      "mounting_length": "HALF",
+      "ring_carving": "PLAIN",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "DIAMONDS",
+      "mounting_length": "HALF",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "NATURAL_BLACK_DIAMOND",
+      "mounting_length": "HALF",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_BLACK_DIAMOND",
+      "mounting_length": "HALF",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_SAPPHIRE",
+      "mounting_length": "HALF",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_EMERALD",
+      "mounting_length": "HALF",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "HALF",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_10",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_14",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "YELLOW_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "WHITE_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "YELLOW_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "WHITE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "3.75"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "3"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "3.25"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "3.5"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "4"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "4.25"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "4.5"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "4.75"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "5"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "5.25"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "5.5"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "5.75"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6.25"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6.5"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "6.75"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "7"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "7.25"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "7.5"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "7.75"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "8"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "8.25"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "8.5"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "8.75"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "9"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "9.25"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "9.5"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "9.75"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "GOLD",
+      "metal_quality": "KT_18",
+      "head_color": "ROSE_GOLD",
+      "mounting_color": "ROSE_GOLD",
+      "center_stone_size": "1ct",
+      "ring_size": "10"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PAVE",
+      "side_stones_type": "ALTERNATING_RUBY",
+      "mounting_length": "THREE_QUARTERS",
+      "metal_type": "PLATINUM",
+      "metal_quality": "PT_950",
+      "center_stone_size": "1ct",
+      "ring_size": "10"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "NONE",
+      "ring_carving": "PLAIN",
+      "metal_type": "PLATINUM",
+      "metal_quality": "PT_950",
+      "center_stone_size": "1ct",
+      "ring_size": "10"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "U_PAVE",
+      "side_stones_type": "DIAMONDS",
+      "mounting_length": "HALF",
+      "metal_type": "PLATINUM",
+      "metal_quality": "PT_950",
+      "center_stone_size": "1ct",
+      "ring_size": "10"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "CHANNEL",
+      "side_stones_type": "DIAMONDS",
+      "mounting_length": "HALF",
+      "ring_carving": "PLAIN",
+      "metal_type": "PLATINUM",
+      "metal_quality": "PT_950",
+      "center_stone_size": "1ct",
+      "ring_size": "10"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "HIDDEN_HALO",
+      "side_setting": "PRONG",
+      "side_stones_type": "DIAMONDS",
+      "mounting_length": "HALF",
+      "metal_type": "PLATINUM",
+      "metal_quality": "PT_950",
+      "center_stone_size": "1ct",
+      "ring_size": "10"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "TAPERED",
+      "side_setting": "PRONG",
+      "side_stones_type": "DIAMONDS",
+      "mounting_length": "HALF",
+      "metal_type": "PLATINUM",
+      "metal_quality": "PT_950",
+      "center_stone_size": "1ct",
+      "ring_size": "10"
+    },
+    {
+      "stone_shape": "OVAL",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "CONTEMPORARY",
+      "side_setting": "PRONG",
+      "side_stones_type": "DIAMONDS",
+      "mounting_length": "HALF",
+      "metal_type": "PLATINUM",
+      "metal_quality": "PT_950",
+      "center_stone_size": "1ct",
+      "ring_size": "10"
+    },
+    {
+      "stone_shape": "ROUND",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "CONTEMPORARY",
+      "side_setting": "PRONG",
+      "side_stones_type": "DIAMONDS",
+      "mounting_length": "HALF",
+      "metal_type": "PLATINUM",
+      "metal_quality": "PT_950",
+      "center_stone_size": "1ct",
+      "ring_size": "10"
+    },
+    {
+      "stone_shape": "PEAR",
+      "stone_type": "NATURAL_DIAMOND",
+      "ring_head": "FOUR_PRONGS",
+      "mounting": "CONTEMPORARY",
+      "side_setting": "PRONG",
+      "side_stones_type": "DIAMONDS",
+      "mounting_length": "HALF",
+      "metal_type": "PLATINUM",
+      "metal_quality": "PT_950",
+      "center_stone_size": "1ct",
+      "ring_size": "10"
+    }
+  ]
+}

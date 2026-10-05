@@ -54,12 +54,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- Desktop Nav — se oculta en < 992px -->
     <nav class="header-nav d-none d-lg-flex">
       <a href="{% url 'index' %}#heroSection"    class="nav-link">Inicio</a>
-      <a href="{% url 'index' %}#categorias"               class="nav-link">Joyas</a>
+      <a href="{% url 'tienda' %}"               class="nav-link">Tienda</a>
       <a href="{% url 'index' %}#nosotros"       class="nav-link">Nuestra Historia</a>
       <a href="{% url 'index' %}#servicios"      class="nav-link">Servicios</a>
       <a href="{% url 'index' %}#personalizada"  class="nav-link">Personalizada</a>
       <a href="{% url 'index' %}#vip"            class="nav-link">VIP</a>
-      <a href="{% url 'cotizador' %}"            class="nav-link nav-link--highlight">Cotizador 💍</a>
+      <a href="{% url 'cotizador' %}"            class="nav-link nav-link--highlight">Diseña tu anillo</a>
       <a href="{% url 'index' %}#contacto"       class="nav-link">Contacto</a>
       <a href="{% url 'orden' %}" class="btn-cart-header ms-3">
         <i class="fas fa-shopping-bag"></i>
@@ -108,7 +108,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <i class="fas fa-book-open me-3" style="color:var(--gold);width:16px;"></i>Nuestra Historia
       </a>
       <a href="{% url 'tienda' %}" class="mobile-nav-link">
-        <i class="fas fa-gem me-3" style="color:var(--gold);width:16px;"></i>Joyas
+        <i class="fas fa-gem me-3" style="color:var(--gold);width:16px;"></i>Tienda
       </a>
       <a href="{% url 'index' %}#servicios" class="mobile-nav-link">
         <i class="fas fa-tools me-3" style="color:var(--gold);width:16px;"></i>Servicios
@@ -118,6 +118,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </a>
       <a href="{% url 'vip' %}" class="mobile-nav-link">
         <i class="fas fa-crown me-3" style="color:var(--gold);width:16px;"></i>VIP
+      </a>
+      <a href="{% url 'cotizador' %}" class="mobile-nav-link">
+        <i class="fas fa-calculator me-3" style="color:var(--gold);width:16px;"></i>Diseña tu anillo
       </a>
       <a href="{% url 'index' %}#contacto" class="mobile-nav-link">
         <i class="fas fa-envelope me-3" style="color:var(--gold);width:16px;"></i>Contacto
