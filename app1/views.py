@@ -654,7 +654,6 @@ def ring_config_api(request):
             r['combination'].get('mounting')    == target_band and
             r['combination'].get('side_setting')== target_side and
             r['combination'].get('peekaboo')    == target_peek and
-            r['combination'].get('head_color', 'YELLOW_GOLD')  == target_color and
             r['combination'].get('mounting_color', 'YELLOW_GOLD') == target_color
         )
     ]
@@ -677,14 +676,31 @@ def ring_config_api(request):
     if not candidates:
         return JsonResponse({'error': 'Combinación no disponible'}, status=404)
 
-    # Seleccionar la mejor opción visual (priorizando tallado liso)
+    # Seleccionar la mejor opción visual (priorizando tallado liso y color de cabeza)
     best_ring = None
 
+    # 1. Priorizar que la cabeza sea del mismo color que la montura
     for r in candidates:
         c = r['combination']
-        if target_side != 'NONE' or c.get('ring_carving') == 'PLAIN':
+        if (target_side != 'NONE' or c.get('ring_carving') == 'PLAIN') and c.get('head_color') == target_color:
             best_ring = r
             break
+
+    # 2. Si no hay cabeza del mismo color, priorizar Oro Blanco (estándar para diamantes)
+    if not best_ring:
+        for r in candidates:
+            c = r['combination']
+            if (target_side != 'NONE' or c.get('ring_carving') == 'PLAIN') and c.get('head_color') == 'WHITE_GOLD':
+                best_ring = r
+                break
+
+    # 3. Si tampoco hay, aceptar cualquiera con tallado liso
+    if not best_ring:
+        for r in candidates:
+            c = r['combination']
+            if target_side != 'NONE' or c.get('ring_carving') == 'PLAIN':
+                best_ring = r
+                break
 
     if not best_ring:
         best_ring = candidates[0]
