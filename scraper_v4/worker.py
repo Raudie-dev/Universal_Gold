@@ -885,24 +885,24 @@ def scrape_shape(page: Page, shape: str, shape_data: dict,
                                 continue
                             page.wait_for_timeout(200)
 
-                                idx += 1
-                                state = capture_state(page, combo)
-                                if state is None:
-                                    log("Sesion expirada")
-                                    return False
+                            idx += 1
+                            state = capture_state(page, combo)
+                            if state is None:
+                                log("Sesion expirada")
+                                return False
 
-                                seen_keys.add(combo_key)
-                                results.append(state)
-                                imgs = len(state["images"])
-                                log(
-                                    f"[{idx}] {'OK' if imgs else 'NO-IMG'} "
-                                    f"{state['sku'][:20]} | {ring_head} | {mounting} | "
-                                    f"{side_setting} | {carving} | {peekaboo} | "
-                                    f"{hcolor} | {mcolor} | imgs:{imgs}"
-                                )
+                            seen_keys.add(combo_key)
+                            results.append(state)
+                            imgs = len(state["images"])
+                            log(
+                                f"[{idx}] {'OK' if imgs else 'NO-IMG'} "
+                                f"{state['sku'][:20]} | {ring_head} | {mounting} | "
+                                f"{side_setting} | {carving} | {peekaboo} | "
+                                f"{hcolor} | {mcolor} | imgs:{imgs}"
+                            )
 
-                                if len(results) % 20 == 0:
-                                    save()
+                            if len(results) % 20 == 0:
+                                save()
 
     save()
     return True

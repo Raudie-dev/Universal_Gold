@@ -37,7 +37,7 @@ WORKER_SCRIPT = BASE_DIR / "worker.py"
 OUTPUT_DIR    = BASE_DIR / "results"
 FINAL_OUTPUT  = BASE_DIR / "nivoda_rings_v5.json"
 
-MAX_PARALLEL  = 4   # cuántos browsers simultáneos
+MAX_PARALLEL  = 1   # cuántos browsers simultáneos
 DELAY_BETWEEN = 25  # segundos entre lanzamientos dentro del mismo lote
 DELAY_LOTE    = 30  # segundos de pausa entre lotes
 

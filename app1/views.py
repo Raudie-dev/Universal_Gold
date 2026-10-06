@@ -674,34 +674,49 @@ def ring_config_api(request):
         ]
 
     if not candidates:
+        # Fallback extremo: Si la montura solicitada no existe con el `side_setting` o `peekaboo` actual
+        # (ej. porque "Tapered" siempre tiene piedras laterales y el usuario tenía "none"),
+        # ignoramos todo menos shape, head y band.
+        candidates = [
+            r for r in rings
+            if (
+                r['combination'].get('stone_shape') == target_shape and
+                r['combination'].get('ring_head')   == target_head and
+                r['combination'].get('mounting')    == target_band
+            )
+        ]
+
+    if not candidates:
         return JsonResponse({'error': 'Combinación no disponible'}, status=404)
 
-    # Seleccionar la mejor opción visual (priorizando tallado liso y color de cabeza)
+    # Seleccionar la mejor opción visual
     best_ring = None
 
-    # 1. Priorizar que la cabeza sea del mismo color que la montura
+    # 1. Priorizar que coincida el color (y preferir liso si no tiene side stones)
     for r in candidates:
         c = r['combination']
-        if (target_side != 'NONE' or c.get('ring_carving') == 'PLAIN') and c.get('head_color') == target_color:
+        carving_ok = (target_side != 'NONE' or c.get('ring_carving') in ('PLAIN', None))
+        if carving_ok and c.get('mounting_color', c.get('head_color')) == target_color:
             best_ring = r
             break
 
-    # 2. Si no hay cabeza del mismo color, priorizar Oro Blanco (estándar para diamantes)
+    # 2. Si no hay con carving preferido, solo buscar que coincida el color
     if not best_ring:
         for r in candidates:
             c = r['combination']
-            if (target_side != 'NONE' or c.get('ring_carving') == 'PLAIN') and c.get('head_color') == 'WHITE_GOLD':
+            if c.get('mounting_color', c.get('head_color')) == target_color:
                 best_ring = r
                 break
 
-    # 3. Si tampoco hay, aceptar cualquiera con tallado liso
+    # 3. Si no hay del color, priorizar Oro Blanco
     if not best_ring:
         for r in candidates:
             c = r['combination']
-            if target_side != 'NONE' or c.get('ring_carving') == 'PLAIN':
+            if c.get('mounting_color', c.get('head_color')) == 'WHITE_GOLD':
                 best_ring = r
                 break
 
+    # 4. Fallback al primero
     if not best_ring:
         best_ring = candidates[0]
 
